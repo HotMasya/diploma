@@ -1,0 +1,19 @@
+.env
+.env.local
+out
+node_modules
+*.log
+/build
+/builds
+/temp
+coverage
+.metadata
+.settings
+.eslintcache
+*.tar.gz
+*.svg
+
+# Intellij
+*.iml
+.idea
+.vscode
