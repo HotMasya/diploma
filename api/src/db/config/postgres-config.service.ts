@@ -5,7 +5,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 
 @Injectable()
 export class PostgresConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
   createTypeOrmOptions(): PostgresConnectionOptions {
     return {
@@ -15,9 +15,8 @@ export class PostgresConfigService implements TypeOrmOptionsFactory {
       username: this.configService.getOrThrow('PSQL_USERNAME'),
       password: this.configService.getOrThrow('PSQL_PASSWORD'),
       database: this.configService.getOrThrow('PSQL_DATABASE'),
-      entities: ['dist/database/entities/*.js'],
-      synchronize: true,
-      // migrations: ['dist/src/db/migrations/*.js'],
+      entities: ['dist/**/*.entity.js'],
+      migrations: ['src/db/migrations/*.ts'],
     };
   }
 }
