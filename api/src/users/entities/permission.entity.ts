@@ -1,13 +1,13 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
+export class Permission {
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column('varchar')
+  @Column({ unique: true })
   name: string;
 
   @Column()
-  age: number;
+  displayName: string;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator'
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import * as path from 'path';
 
 @Injectable()
 export class PostgresConfigService implements TypeOrmOptionsFactory {
@@ -10,13 +11,13 @@ export class PostgresConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): PostgresConnectionOptions {
     return {
       type: 'postgres',
-      host: this.configService.getOrThrow('PSQL_HOST'),
-      port: +this.configService.getOrThrow('PSQL_PORT'),
-      username: this.configService.getOrThrow('PSQL_USERNAME'),
-      password: this.configService.getOrThrow('PSQL_PASSWORD'),
-      database: this.configService.getOrThrow('PSQL_DATABASE'),
-      entities: ['dist/**/*.entity.js'],
-      migrations: ['src/db/migrations/*.ts'],
+      host: this.configService.get('PSQL_HOST'),
+      port: +this.configService.get('PSQL_PORT'),
+      username: this.configService.get('PSQL_USERNAME'),
+      password: this.configService.get('PSQL_PASSWORD'),
+      database: this.configService.get('PSQL_DATABASE'),
+      entities: ['dist/**/*.entity.{js,ts}'],
+      migrations: [path.resolve(__dirname, '../migrations/*.ts')],
     };
   }
 }
