@@ -1,6 +1,6 @@
 export enum Permission {
   // Users
-  CREATE_USER = 'CREATE_USER',
-  UPDATE_USER = 'UPDATE_USER',
-  DELETE_USER = 'DELETE_USER',
+  ADMIN = 1,
+  READ = 1 << 1,
+  UPDATE = 1 << 2,
 }
