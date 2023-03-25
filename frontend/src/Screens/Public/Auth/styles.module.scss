@@ -1,0 +1,14 @@
+.screen {
+  height: 100%;
+  display: flex;
+  width: 100%;
+}
+
+.half {
+  flex: 1;
+  width: 50%;
+}
+
+.info {
+  background-color: #222;
+}

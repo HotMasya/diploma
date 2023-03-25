@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // Api
 import Users from './endpoints/user';
+import Auth from './endpoints/auth';
 
 // Config
 import { BASE_URLS } from '../Config/routes';
@@ -16,6 +17,7 @@ const instance = axios.create({
 
 const api = {
   instance,
+  Auth,
   Users,
 };
 

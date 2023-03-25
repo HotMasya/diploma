@@ -9,10 +9,15 @@ import {
 } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Permission } from '../../constants/permission';
-import reduce from 'lodash/reduce';
+import * as _ from 'lodash';
 
 @Entity()
 export class User {
+
+  constructor(props: Partial<User> = {}) {
+    _.assign(this, props);
+  }
+
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -28,7 +33,7 @@ export class User {
   @Column({ length: 256 })
   lastName: string;
 
-  @Column({ type: 'bigint', default: 0 })
+  @Column({ default: 0 })
   permissions: number;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -40,14 +45,13 @@ export class User {
   static readonly saltRounds = 10;
 
   static async fromDto(dto: CreateUserDto): Promise<User> {
-    const user = new User();
-    assign(user, dto);
+    const user = new User(dto);
     user.password = await hash(user.password, User.saltRounds);
     return user;
   }
 
-  hasPermissios(...permissions: Permission[]) {
-    const mergedPermissions = reduce(
+  hasPermissions(...permissions: Permission[]) {
+    const mergedPermissions = _.reduce(
       permissions,
       (acc, permission) => (acc |= permission),
       0,
