@@ -36,7 +36,7 @@ export class UsersController {
   }
 
   @Get('me')
-  @Permissions(Permission.READ)
+  @Permissions(Permission.ANY)
   findMe(@Request() req) {
     return req.user;
   }

@@ -6,13 +6,19 @@ import PropTypes from 'prop-types';
 import styles from './styles.module.scss';
 
 function Input(props) {
-  const { className, ...rest } = props;
+  const { className, hasError, ...rest } = props;
 
-  return <input className={cx(className, styles.input)} {...rest} />;
+  return (
+    <input
+      className={cx(className, styles.input, { [styles.error]: hasError })}
+      {...rest}
+    />
+  );
 }
 
 Input.propTypes = {
   className: PropTypes.string,
+  hasError: PropTypes.bool,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
@@ -22,6 +28,7 @@ Input.propTypes = {
 
 Input.defaultProps = {
   className: '',
+  hasError: false,
   onBlur: undefined,
   onChange: undefined,
   onFocus: undefined,

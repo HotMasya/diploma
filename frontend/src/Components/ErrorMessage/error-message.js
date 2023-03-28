@@ -2,13 +2,20 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 
+// Helpers
+import getErrorFromMeta from 'Helpers/getErrorFromMeta';
+
 // Styles
 import styles from './styles.module.scss';
 
 function ErrorMessage(props) {
   const { className, meta } = props;
 
-  return <span className={cx(className, styles.error)}>{meta.error}</span>;
+  const { error, showError } = getErrorFromMeta(meta);
+
+  if (!showError) return null;
+
+  return <span className={cx(className, styles.error)}>{error}</span>;
 }
 
 ErrorMessage.propTypes = {

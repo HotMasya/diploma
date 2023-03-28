@@ -1,18 +1,20 @@
 // Modules
-import assign from 'lodash/assign';
 import isString from 'lodash/isString';
 import reduce from 'lodash/reduce';
 
 class User {
   constructor(props) {
-    assign(this, props);
+    this.firstName = props.firstName;
+    this.lastName = props.lastName;
+    this.id = props.id;
+    this.permissions = props.permissions;
 
-    if (isString(this.updatedAt)) {
-      this.updatedAt = new Date(this.updatedAt);
+    if (isString(props.updatedAt)) {
+      this.updatedAt = new Date(props.updatedAt);
     }
 
-    if (isString(this.createdAt)) {
-      this.createdAt = new Date(this.createdAt);
+    if (isString(props.createdAt)) {
+      this.createdAt = new Date(props.createdAt);
     }
   }
 

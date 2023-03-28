@@ -5,7 +5,9 @@ export const BASE_URLS = freeze({
 });
 
 export const ROUTES = freeze({
-  auth: 'auth',
-  dashboard: 'dashboard',
+  auth: '/auth',
   signUp: 'signup',
+
+  dashboard: '/dashboard',
+  console: 'console',
 });

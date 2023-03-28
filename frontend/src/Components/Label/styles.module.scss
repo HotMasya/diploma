@@ -1,3 +1,8 @@
-.label {
+@import 'colors.scss';
 
+.label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
 }

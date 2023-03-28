@@ -3,17 +3,15 @@
 *::before {
   box-sizing: border-box;
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
   padding: 0;
 }
 
 body, #app {
-  font-family: 'Montserrat', sans-serif;
   height: 100vh;
-  overflow: hidden;
 }
 
 a {
-  font-family: 'Montserrat', sans-serif;
   text-decoration: none;
 }
 

@@ -1,3 +1,22 @@
+@import 'colors.scss';
+
 .input {
+  border: 1px solid $grey_300;
+  border-radius: 4px;
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.05);
+  color: $text_default;
   display: block;
+  font-size: 16px;
+  padding: 8px 16px;
+  width: 100%;
+
+  &:focus {
+    outline: 2px solid $blue_500;
+    outline-offset: -1px;
+  }
+}
+
+
+.error {
+  border-color: red;
 }
