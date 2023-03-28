@@ -1,0 +1,30 @@
+@import 'colors.scss';
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  color: $text_subdued;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+
+  &.disabled {
+    color: $text_disabled;
+  }
+
+  &.active {
+    color: $blue
+  }
+}
+

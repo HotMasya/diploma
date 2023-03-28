@@ -1,0 +1,74 @@
+@import 'colors.scss';
+@import 'responsive.scss';
+
+.header {
+  background-color: $blue_500;
+  color: $bg_primary;
+  height: 64px;
+  padding: 8px 16px;
+  position: relative;
+
+  path {
+    fill: $bg_primary;
+  }
+
+  a {
+    color: $bg_primary;
+  }
+}
+
+.logo {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  width: fit-content;
+
+  @include md {
+    h2 {
+      display: none;
+    }
+  }
+}
+
+.navbar {
+  display: flex;
+  gap: 16px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+$hover_color: $grey_400;
+
+.navlink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    color: $hover_color;
+
+    path {
+      fill: $hover_color;
+    }
+  }
+
+  &.active:hover::after {
+    background-color: $hover_color;
+  }
+
+  &.active::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    background-color: $bg_primary;
+    width: 100%;
+    left: 0;
+    bottom: -4px;
+  }
+}

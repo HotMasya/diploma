@@ -13,23 +13,30 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { Permissions } from '../decorators/permissions.decorator';
+import { Permission } from '../constants/permission';
+import { FindManyOptions } from 'typeorm';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('users')
+@Permissions(Permission.ADMIN)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @Public()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const user = await User.fromDto(createUserDto);
     return this.usersService.create(user);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Body() options: FindManyOptions) {
+    return this.usersService.findAll(options);
   }
 
   @Get('me')
+  @Permissions(Permission.ANY)
   findMe(@Request() req) {
     return req.user;
   }
