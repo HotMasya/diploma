@@ -17,16 +17,21 @@ import { Permissions } from '../decorators/permissions.decorator';
 import { Permission } from '../constants/permission';
 import { FindManyOptions } from 'typeorm';
 import { Public } from '../decorators/public.decorator';
+import { EmailService } from '../email/email.service';
 
 @Controller('users')
 @Permissions(Permission.ADMIN)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @Post()
   @Public()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const user = await User.fromDto(createUserDto);
+    await this.emailService.sendConfirmationEmail(user.email);
     return this.usersService.create(user);
   }
 

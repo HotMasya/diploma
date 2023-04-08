@@ -22,10 +22,21 @@ class User {
     const mergedPermissions = reduce(
       permissions,
       (acc, permission) => (acc |= permission),
-      0,
+      0
     );
 
     return (this.permissions | mergedPermissions) === this.permissions;
+  }
+
+  get fullName() {
+    return [this.firstName, this.lastName].filter(Boolean).join(' ');
+  }
+
+  get acronym() {
+    return this.fullName
+      .split(' ', 2)
+      .map((item) => item[0])
+      .join('');
   }
 }
 

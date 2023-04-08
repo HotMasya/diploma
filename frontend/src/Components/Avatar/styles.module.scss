@@ -1,0 +1,12 @@
+@import 'colors.scss';
+
+.acronym {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  font-weight: 500;
+  background-color: $blue_100;
+  color: $blue_500;
+}

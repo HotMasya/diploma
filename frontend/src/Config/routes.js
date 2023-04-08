@@ -6,8 +6,11 @@ export const BASE_URLS = freeze({
 
 export const ROUTES = freeze({
   auth: '/auth',
-  signUp: 'signup',
+  signUp: '/auth/signup',
+  congratulations: '/auth/congratulations',
 
   dashboard: '/dashboard',
-  console: 'console',
+  console: '/dashboard/console',
 });
+
+export const GOOGLE_OAUTH_URL = `${BASE_URLS.API}/auth/google`;

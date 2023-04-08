@@ -31,6 +31,7 @@ class Auth {
   clearStorageToken() {
     this.#token = null;
     this.storage.removeItem(this.#tokenStorageKey);
+    API.updateAccessToken(null);
   }
 
   logIn(token, rememberMe = true) {
@@ -40,7 +41,6 @@ class Auth {
   }
 
   logOut() {
-    this.#rememberMe = false;
     this.clearStorageToken();
   }
 }

@@ -1,0 +1,23 @@
+@import 'colors.scss';
+
+.container {
+  background-color: $bg_primary;
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.05);
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  top: 100%;
+  right: 12px;
+  min-width: 200px;
+}
+
+.item {
+  background-color: $bg_primary;
+  color: $text_default;
+  cursor: pointer;
+  padding: 8px 16px;
+
+  &:hover {
+    background-color: $grey_100;
+  }
+}

@@ -15,10 +15,19 @@ async function findAll(options, requestOptions = {}) {
 }
 
 async function me(requestOptions = {}) {
-  return API.instance.get('users/me', requestOptions).then((res) => new User(res.data));
+  return API.instance
+    .get('users/me', requestOptions)
+    .then((res) => new User(res.data));
+}
+
+async function create(data, requestOptions = {}) {
+  return API.instance
+    .post('users', data, requestOptions)
+    .then((res) => new User(res.data));
 }
 
 const users = {
+  create,
   findAll,
   me,
 };

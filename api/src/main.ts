@@ -1,16 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(cookieParser());
   app.setGlobalPrefix('api');
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle("Diploma API")
-    .setDescription("Disploma API requests descrption")
+    .setTitle('Diploma API')
+    .setDescription('Disploma API requests descrption')
     .setVersion('1.0')
     .build();
 

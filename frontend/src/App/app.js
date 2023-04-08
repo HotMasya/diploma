@@ -11,6 +11,7 @@ import UserContextProvider from 'Context/UserContext/user-context';
 // Screens
 import SignIn from 'Screens/Public/SignIn';
 import SignUp from 'Screens/Public/SignUp';
+import Congratulations from 'Screens/Public/Congratulations';
 
 const Auth = lazy(() => import('Screens/Public/Auth'));
 const Dashboard = lazy(() => import('Screens/Dashboard'));
@@ -26,6 +27,7 @@ function App() {
             <Route element={<Auth />} path={ROUTES.auth}>
               <Route element={<SignIn />} index />
               <Route element={<SignUp />} path={ROUTES.signUp} />
+              <Route element={<Congratulations />} path={ROUTES.congratulations} />
             </Route>
 
             <Route element={<Dashboard />} path={ROUTES.dashboard}>

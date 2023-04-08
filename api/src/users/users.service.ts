@@ -21,11 +21,18 @@ export class UsersService {
     let user = await this.findOneByEmail(createUserDto.email);
 
     if (user) {
-      throw new ConflictException(null, 'User already exists');
+      throw new ConflictException(
+        null,
+        'Користувач із такою електронною поштою вже зареєстрований',
+      );
     }
 
     user = this.usersRepository.create(createUserDto);
-    this.usersRepository.save(user);
+
+    await this.usersRepository.save(user);
+
+    delete user.password;
+
     return user;
   }
 
@@ -50,5 +57,9 @@ export class UsersService {
 
   async remove(id: number): Promise<DeleteResult> {
     return this.usersRepository.delete(id);
+  }
+
+  async save(user: User): Promise<User> {
+    return this.usersRepository.save(user);
   }
 }

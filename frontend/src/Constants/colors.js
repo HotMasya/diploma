@@ -73,7 +73,7 @@ export const MAGENTA = freeze({
 });
 
 export const BG = freeze({
-  primary: GREY._100,
+  primary: '#ffffff',
   secondary: GREY._200,
   tertiary: GREY._300,
 });

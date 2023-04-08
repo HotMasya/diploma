@@ -7,6 +7,9 @@ import { HiDesktopComputer } from 'react-icons/hi';
 // Assets
 import { EducationCap } from 'Assets/Icons/education-cap';
 
+// Components
+import HeaderProfile from 'Components/HeaderProfile';
+
 // Config
 import { ROUTES } from 'Config/routes';
 
@@ -40,6 +43,8 @@ function Header() {
           Консоль
         </NavLink>
       </nav>
+
+      <HeaderProfile />
     </header>
   );
 }

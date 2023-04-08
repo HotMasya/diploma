@@ -1,4 +1,3 @@
-import { assign } from 'lodash';
 import { hash } from 'bcrypt';
 import {
   Column,
@@ -13,7 +12,6 @@ import * as _ from 'lodash';
 
 @Entity()
 export class User {
-
   constructor(props: Partial<User> = {}) {
     _.assign(this, props);
   }
@@ -35,6 +33,9 @@ export class User {
 
   @Column({ default: 0 })
   permissions: number;
+
+  @Column({ type: 'boolean', default: false })
+  verified: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

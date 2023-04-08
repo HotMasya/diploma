@@ -1,7 +1,6 @@
 // Modules
 import { Field } from 'react-final-form';
 import { MdKey } from 'react-icons/md';
-import { FcGoogle } from 'react-icons/fc';
 import { HiOutlineUserAdd } from 'react-icons/hi';
 
 // Components
@@ -18,11 +17,12 @@ import { BLUE, TEXT } from 'Constants/colors';
 
 // Styles
 import styles from './styles.module.scss';
+import GoogleAuthButton from 'Components/GoogleAuthButton/google-auth-button';
 
 const emailFieldValidator = combineValidators(isRequired(), isEmail());
 
 function SignUp(props) {
-  const { handleSubmit, onGoogleAuth, onLogin } = props;
+  const { handleSubmit, onLogin, pending } = props;
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -33,6 +33,7 @@ function SignUp(props) {
       <h3 className={styles.subtitle}>Вітання! Вкажіть свої дані, будь-ласка.</h3>
       <Field
         component={FormInput}
+        disabled={pending}
         labelText="Електронна пошта"
         name="email"
         placeholder="Введіть електронну пошту"
@@ -41,6 +42,7 @@ function SignUp(props) {
       />
       <Field
         component={FormInput}
+        disabled={pending}
         labelText="Пароль"
         name="password"
         placeholder="Введіть пароль"
@@ -49,6 +51,7 @@ function SignUp(props) {
       />
       <Field
         component={FormInput}
+        disabled={pending}
         labelText="Повторіть пароль"
         name="repeatPassword"
         placeholder="Введіть пароль знову"
@@ -57,6 +60,7 @@ function SignUp(props) {
       />
       <Field
         component={FormInput}
+        disabled={pending}
         labelText="Ім'я"
         name="firstName"
         placeholder="Введіть ваше ім'я"
@@ -65,18 +69,17 @@ function SignUp(props) {
       />
       <Field
         component={FormInput}
+        disabled={pending}
         labelText="Прізвище"
         name="lastName"
         placeholder="Введіть ваше прізвище"
         type="text"
         validate={isRequired()}
       />
-      <Button type="submit">Готово</Button>
+      <Button disabled={pending} type="submit">Готово</Button>
       <div className={styles.separator}>АБО</div>
-      <Button onClick={onGoogleAuth} type="button" variant="secondary">
-        <FcGoogle size="24px" /> Авторизуватись через Google
-      </Button>
-      <Button onClick={onLogin} type="button" variant="secondary">
+      <GoogleAuthButton disabled={pending} />
+      <Button disabled={pending} onClick={onLogin} type="button" variant="secondary">
         <MdKey color={TEXT.default} size="24px" />
         Авторизуватись
       </Button>

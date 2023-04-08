@@ -1,0 +1,16 @@
+@import 'colors.scss';
+@import 'responsive.scss';
+@import 'global.scss';
+
+.container {
+  align-items: center;
+  border-radius: 8px;
+  gap: 16px;
+  box-shadow: $small-elevation;
+  display: flex;
+  padding: 24px 16px;
+}
+
+.avatar {
+  font-size: 2rem;
+}

@@ -25,10 +25,20 @@ function updateAccessToken(token) {
   instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
+/**
+ * @param {import('axios').AxiosError} axiosError
+ *
+ * @returns {{ message: string, statusCode: number }} Error message and status code
+ */
+function parseError(axiosError) {
+  return axiosError.response.data;
+}
+
 const api = {
   // Internal
   instance,
   updateAccessToken,
+  parseError,
 
   // Endpoints
   Auth,

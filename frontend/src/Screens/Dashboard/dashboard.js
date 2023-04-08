@@ -1,6 +1,7 @@
 // Modules
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 // API
 import API from 'API';
@@ -35,17 +36,31 @@ function Dashboard() {
       return;
     }
 
+    console.log(pending, user);
+
     if (pending || user instanceof User) return;
 
     setPending(true);
 
-    API.Users.me()
-      .then(setUser)
+    const request = API.Users.me()
+      .then((user) => {
+        setUser(user);
+        return user;
+      })
       .catch(() => {
         Auth.logOut();
         navigate(ROUTES.auth);
       })
       .finally(() => setPending(false));
+
+    toast.promise(request, {
+      success: {
+        render: ({ data }) => (<>Вітаємо в DIPLOMA, <b>{data.fullName}</b>!</>),
+      }
+    }, {
+      autoClose: 3000,
+      toastId: 'get-user-toast',
+    });
   }, [navigate, pending, setUser, user]);
 
   if (pending) {

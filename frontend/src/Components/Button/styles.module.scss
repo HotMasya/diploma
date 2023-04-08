@@ -21,6 +21,22 @@
     outline: 1px solid $blue_500;
     outline-offset: 1px;
   }
+
+  &:disabled {
+    background-color: $grey_200;
+    color: $text_disabled;
+    cursor: not-allowed;
+
+    path {
+      fill: $text_disabled;
+      stroke: $text_disabled;
+    }
+
+    &:hover {
+      background-color: $grey_200;
+      color: $text_disabled;
+    }
+  }
 }
 
 .primary {
