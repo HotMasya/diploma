@@ -7,7 +7,7 @@ async function login(email, password) {
 }
 
 async function verify(token) {
-  return API.instance.post('auth/verify', { token });
+  return API.instance.post('email/verify', { token });
 }
 
 async function loginWithGoogle() {

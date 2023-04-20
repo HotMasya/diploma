@@ -11,4 +11,10 @@ export class EmailController {
   async sendVerification(@Body('email') email: string) {
     return this.emailService.sendConfirmationEmail(email);
   }
+
+  @Public()
+  @Post('verify')
+  async verify(@Body('token') token: string) {
+    return this.emailService.verifyToken(token);
+  }
 }

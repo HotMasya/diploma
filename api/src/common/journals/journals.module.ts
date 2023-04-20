@@ -8,5 +8,6 @@ import { Journal } from './journal.entity';
   imports: [TypeOrmModule.forFeature([Journal])],
   controllers: [JournalsController],
   providers: [JournalsService],
+  exports: [JournalsService],
 })
 export class JournalsModule {}

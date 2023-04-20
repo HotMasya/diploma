@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
@@ -30,12 +29,6 @@ export class AuthController {
     return {
       accessToken,
     };
-  }
-
-  @Public()
-  @Post('verify')
-  async verify(@Body('token') token: string) {
-    return this.authService.verifyToken(token);
   }
 
   @UseGuards(GoogleOAuthGuard)

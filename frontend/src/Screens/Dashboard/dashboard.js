@@ -36,8 +36,6 @@ function Dashboard() {
       return;
     }
 
-    console.log(pending, user);
-
     if (pending || user instanceof User) return;
 
     setPending(true);

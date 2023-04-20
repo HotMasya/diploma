@@ -1,3 +1,9 @@
 $small-elevation: 0px 2px 5px 1px rgba(0,0,0,0.02);
+$medium-elevation: 0px 2px 5px 5px rgba(0,0,0,0.02);
 
 $interactive: 150ms ease-out;
+
+$max-admin-width: 1400px;
+$min-admin-height: 767px;
+
+$bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);

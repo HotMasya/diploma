@@ -1,0 +1,17 @@
+@import 'colors.scss';
+
+.container {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.span {
+  font-size: 14px;
+
+  b {
+    font-weight: 500;
+  }
+}

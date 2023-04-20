@@ -1,0 +1,57 @@
+@import 'colors.scss';
+
+$padding: 10px;
+
+.table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+
+  th {
+    border-bottom: 1px solid $grey_300;
+    padding: 8px 0;
+    font-size: 14px;
+    color: $text_subdued;
+    text-align: left;
+    padding: $padding;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  tr + tr, tr:first-child {
+    border-top: 1px solid $grey_300;
+  }
+
+  tr:last-child {
+    border-bottom: 1px solid $grey_300;
+  }
+
+  td {
+    font-size: 16px;
+    line-height: 18px;
+    overflow: hidden;
+    padding: $padding calc($padding + 4px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:last-child {
+      float: right;
+      overflow: unset;
+    }
+  }
+
+  .sortable {
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    transition: background-color 100ms ease-out;
+    width: fit-content;
+
+    &:hover {
+      background-color: $grey_100;
+    }
+  }
+}

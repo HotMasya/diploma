@@ -1,0 +1,10 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+.paper {
+  border-radius: 8px;
+  box-shadow: $small-elevation;
+  flex-shrink: 0;
+  padding: 16px;
+  width: 100%;
+}

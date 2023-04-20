@@ -36,7 +36,6 @@ function Header() {
 
         <NavLink
           className={({ isActive }) => cx(styles.navlink, { [styles.active]: isActive})}
-          end
           to={ROUTES.console}
         >
           <HiDesktopComputer size="24px" />

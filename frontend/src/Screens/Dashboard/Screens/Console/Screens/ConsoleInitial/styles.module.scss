@@ -1,0 +1,54 @@
+@import 'colors.scss';
+@import 'responsive.scss';
+@import 'global.scss';
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  max-width: $max-admin-width;
+  width: 100%;
+}
+
+.card {
+  background-color: $bg_primary;
+  border-radius: 8px;
+  border: 1px solid $grey_300;
+  box-shadow: $small-elevation;
+  color: $text_default;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  gap: 24px;
+  transition: all $interactive;
+
+  &:hover {
+    box-shadow: $medium-elevation;
+    transform: scale(1.05);
+  }
+}
+
+.icon {
+  border-radius: 50%;
+  border: 3px solid $blue_500;
+  color: $blue_500;
+  height: 64px;
+  flex-shrink: 0;
+  padding: 8px;
+  width: 64px;
+}
+
+.details {
+  gap: 12px;
+
+  p {
+    color: $text_subdued;
+  }
+}
+
+.wrapper {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+}

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Request,
+  Query,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -15,9 +16,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Permissions } from '../decorators/permissions.decorator';
 import { Permission } from '../constants/permission';
-import { FindManyOptions } from 'typeorm';
 import { Public } from '../decorators/public.decorator';
 import { EmailService } from '../email/email.service';
+import { FindUsersDto } from './dto/find-users.dto';
 
 @Controller('users')
 @Permissions(Permission.ADMIN)
@@ -36,8 +37,13 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Body() options: FindManyOptions) {
-    return this.usersService.findAll(options);
+  async findAll(@Query() dto: FindUsersDto) {
+    return this.usersService.findAll(dto);
+  }
+
+  @Get('count/total')
+  async totalCount(@Query('search') search?: string) {
+    return this.usersService.getTotalCount(search);
   }
 
   @Get('me')
@@ -49,6 +55,14 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
+  }
+
+  @Post(':id/password')
+  async changePassword(
+    @Body('password') password: string,
+    @Param('id') id: string,
+  ) {
+    this.usersService.changePassword(password, +id);
   }
 
   @Patch(':id')

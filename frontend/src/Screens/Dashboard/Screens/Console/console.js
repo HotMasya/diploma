@@ -1,5 +1,9 @@
 // Modules
-import { Navigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+
+// Components
+import Paper from 'Components/Paper/paper';
 
 // Config
 import { ROUTES } from 'Config/routes';
@@ -10,17 +14,20 @@ import { PERMISSION } from 'Constants/permission';
 // Context
 import { useUserContext } from 'Context/UserContext';
 
-// Styles
-import styles from './styles.module.scss';
-
 function Console() {
   const [user] = useUserContext();
+  const outletContext = useState({});
 
   if (!user.hasPermissions(PERMISSION.ADMIN)) {
     return <Navigate to={ROUTES.dashboard} />;
   }
 
-  return <h1>Admin Console</h1>;
+  return (
+    <Paper>
+      <h1>Консоль Адміністратора</h1>
+      <Outlet context={outletContext} />
+    </Paper>
+  );
 }
 
 export default Console;

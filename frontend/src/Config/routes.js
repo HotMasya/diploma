@@ -11,6 +11,12 @@ export const ROUTES = freeze({
 
   dashboard: '/dashboard',
   console: '/dashboard/console',
+  consoleUsers: '/dashboard/console/users',
+  consoleUsersDetails: '/dashboard/console/users/:userId',
+  consoleUsersDelete: '/dashboard/console/users/:userId/delete',
+  consoleDepartments: '/dashboard/console/departments',
+  consoleFaculties: '/dashboard/console/faculties',
+  consoleGroups: '/dashboard/console/groups',
 });
 
 export const GOOGLE_OAUTH_URL = `${BASE_URLS.API}/auth/google`;

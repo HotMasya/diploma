@@ -8,6 +8,8 @@ class User {
     this.lastName = props.lastName;
     this.id = props.id;
     this.permissions = props.permissions;
+    this.verified = props.verified;
+    this.email = props.email;
 
     if (isString(props.updatedAt)) {
       this.updatedAt = new Date(props.updatedAt);
@@ -19,6 +21,8 @@ class User {
   }
 
   hasPermissions(...permissions) {
+    if (!permissions.length) return true;
+
     const mergedPermissions = reduce(
       permissions,
       (acc, permission) => (acc |= permission),

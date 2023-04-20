@@ -13,4 +13,8 @@ export class DepartmentsService {
   async findAll() {
     return await this.departmentsRepository.find();
   }
+
+  async getTotalCount() {
+    return await this.departmentsRepository.count();
+  }
 }

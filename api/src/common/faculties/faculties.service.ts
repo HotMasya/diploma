@@ -13,4 +13,8 @@ export class FacultiesService {
   async findAll() {
     return await this.facultiesRepository.find();
   }
+
+  async getTotalCount() {
+    return await this.facultiesRepository.count();
+  }
 }

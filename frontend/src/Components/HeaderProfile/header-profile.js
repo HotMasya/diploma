@@ -1,9 +1,13 @@
-// Context
+// Modules
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+// Componets
 import Avatar from 'Components/Avatar';
 import Dropdown from 'Components/Dropdown';
+
+// Context
 import { useUserContext } from 'Context/UserContext';
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 // Config
 import { ROUTES } from 'Config/routes';
@@ -14,14 +18,20 @@ import Auth from 'Helpers/auth';
 // Styles
 import styles from './styles.module.scss';
 
+const options = [
+  {
+    label: 'Settings',
+    value: 'settings',
+  },
+  {
+    label: 'Log Out',
+    value: 'logout',
+  },
+];
+
 function HeaderProfile() {
   const [user, setUser] = useUserContext();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
-  const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
-  };
 
   const handleLogout = useCallback(() => {
     Auth.logOut();
@@ -29,23 +39,36 @@ function HeaderProfile() {
     navigate(ROUTES.auth);
   }, [navigate, setUser]);
 
+  const handleSelect = useCallback(
+    ({ value }) => {
+      switch (value) {
+        case 'logout':
+          handleLogout();
+          break;
+        default:
+          break;
+      }
+    },
+    [handleLogout]
+  );
+
   if (!user) {
     return null;
   }
 
-  const dropdown = dropdownOpen && (
-    <Dropdown>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
-    </Dropdown>
+  const profile = (
+    <div className={styles.container}>
+      <h4>{user.fullName}</h4>
+      <Avatar user={user} />
+    </div>
   );
 
   return (
-    <div className={styles.container} onClick={toggleDropdown}>
-      <h4>{user.fullName}</h4>
-      <Avatar user={user} />
-      {dropdown}
-    </div>
+    <Dropdown
+      targetElement={profile}
+      onSelect={handleSelect}
+      options={options}
+    />
   );
 }
 

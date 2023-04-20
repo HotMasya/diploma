@@ -13,4 +13,8 @@ export class GroupsService {
   async findAll() {
     return await this.groupsRepository.find();
   }
+
+  async getTotalCount() {
+    return await this.groupsRepository.count();
+  }
 }

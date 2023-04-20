@@ -7,25 +7,23 @@ import PropTypes from 'prop-types';
 import styles from './styles.module.scss';
 
 function DropdownItem(props) {
-  const { children, className, onClick } = props;
+  const { className, onSelect, ...option } = props;
 
   return (
-    <li className={cx(className, styles.item)} onClick={onClick}>
-      {children}
+    <li className={cx(className, styles.item)} onClick={() => onSelect(option)}>
+      {option.label}
     </li>
   );
 }
 
 DropdownItem.propTypes = {
-  children: PropTypes.node,
   className: PropTypes.string,
-  onClick: PropTypes.func,
+  onSelect: PropTypes.func,
 };
 
 DropdownItem.defaultProps = {
-  children: [],
   className: '',
-  onClick: undefined,
+  onSelect: undefined,
 };
 
 export default memo(DropdownItem);

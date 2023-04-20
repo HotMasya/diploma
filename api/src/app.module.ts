@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './auth/guards/permissions.guard';
@@ -15,10 +14,12 @@ import { JournalsModule } from './common/journals/journals.module';
 import { StudentsModule } from './common/students/students.module';
 import { TeachersModule } from './common/teacher/teachers.module';
 import { UpdatesModule } from './common/updates/updates.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    AdminModule,
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -34,7 +35,6 @@ import { UpdatesModule } from './common/updates/updates.module';
     UpdatesModule,
   ],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

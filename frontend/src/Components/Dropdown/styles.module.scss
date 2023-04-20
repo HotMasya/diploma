@@ -1,14 +1,23 @@
 @import 'colors.scss';
 
 .container {
+  position: relative;
+
+  button {
+    z-index: 10;
+  }
+}
+
+.menu {
   background-color: $bg_primary;
-  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.05);
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.05);
   border-radius: 6px;
   padding: 8px 0;
   position: absolute;
-  top: 100%;
-  right: 12px;
+  top: calc(100% + 8px);
+  right: 0px;
   min-width: 200px;
+  z-index: 100;
 }
 
 .item {
@@ -16,8 +25,15 @@
   color: $text_default;
   cursor: pointer;
   padding: 8px 16px;
+  transition: background-color 100ms ease-out;
 
   &:hover {
     background-color: $grey_100;
   }
+}
+
+.separator {
+  height: 1px;
+  background-color: $grey_300;
+  margin: 8px;
 }
