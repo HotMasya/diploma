@@ -17,6 +17,9 @@ export class Department {
   @Column({ length: 256 })
   name: string;
 
+  @Column({ length: 16 })
+  shortName: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

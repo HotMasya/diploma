@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FindUsersDto {
+export class AdminFindDto {
   @ApiProperty()
   skip?: number;
 

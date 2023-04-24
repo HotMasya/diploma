@@ -26,11 +26,11 @@ export class Student {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Group, (group) => group.students)
-  groups: Group[];
+  @ManyToMany(() => Group, (group) => group.students, { nullable: true })
+  group?: Group;
 
-  @ManyToMany(() => Faculty, (faculty) => faculty.students)
-  faculties: Faculty[];
+  @ManyToMany(() => Faculty, (faculty) => faculty.students, { nullable: true })
+  faculty?: Faculty;
 
   @OneToOne(() => User, { nullable: true })
   user?: User;

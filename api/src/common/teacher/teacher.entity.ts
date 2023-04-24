@@ -10,6 +10,7 @@ import {
 
 import { User } from '../../users/entities/user.entity';
 import { Department } from '../departments/department.entity';
+import { Group } from '../groups/group.entity';
 
 @Entity()
 export class Teacher {
@@ -25,8 +26,13 @@ export class Teacher {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Department, (department) => department.teachers)
+  @ManyToMany(() => Department, (department) => department.teachers, {
+    nullable: true,
+  })
   departments: Department[];
+
+  @ManyToMany(() => Group, (group) => group.curator, { nullable: true })
+  groups: Group[];
 
   @OneToOne(() => User, { nullable: true })
   user?: User;

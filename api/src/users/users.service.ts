@@ -1,3 +1,12 @@
+import { AdminFindDto } from '../dto/admin-find.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { DeleteResult, Repository, SelectQueryBuilder } from 'typeorm';
+import { EmailService } from '../email/email.service';
+import { hash } from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+
 import {
   ConflictException,
   Inject,
@@ -5,20 +14,6 @@ import {
   NotFoundException,
   forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { hash } from 'bcrypt';
-
-import {
-  DeleteResult,
-  Repository,
-  SelectQueryBuilder,
-  UpdateResult,
-} from 'typeorm';
-import { FindUsersDto } from './dto/find-users.dto';
-import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UsersService {
@@ -85,7 +80,7 @@ export class UsersService {
     return user;
   }
 
-  async findAll(dto?: FindUsersDto): Promise<User[]> {
+  async findAll(dto?: AdminFindDto): Promise<User[]> {
     const builder = this.usersRepository
       .createQueryBuilder('user')
       .select()
@@ -122,11 +117,23 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  async update(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UpdateResult> {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    const updatedUser = { ...user, ...updateUserDto, updatedAt: new Date() };
+
+    if (updateUserDto.password) {
+      updatedUser.password = await hash(
+        updateUserDto.password,
+        User.saltRounds,
+      );
+    }
+
+    await this.usersRepository.update(id, updatedUser);
+
+    delete updatedUser.password;
+
+    return updatedUser as User;
   }
 
   async remove(id: number): Promise<DeleteResult> {

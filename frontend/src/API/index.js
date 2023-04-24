@@ -3,9 +3,12 @@ import { redirect } from 'react-router-dom';
 import axios from 'axios';
 
 // Api
-import Users from './endpoints/user';
-import Auth from './endpoints/auth';
 import Admin from './endpoints/admin';
+import Auth from './endpoints/auth';
+import Departments from './endpoints/departments';
+import Faculties from './endpoints/factulties';
+import Groups from './endpoints/groups';
+import Users from './endpoints/users';
 
 // Config
 import { BASE_URLS, ROUTES } from '../Config/routes';
@@ -58,6 +61,9 @@ const api = {
   // Endpoints
   Admin,
   Auth,
+  Departments,
+  Faculties,
+  Groups,
   Users,
 };
 

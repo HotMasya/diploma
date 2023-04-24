@@ -50,6 +50,11 @@ async function changePassword(userId, password, requestOptions = {}) {
   );
 }
 
+async function update(userId, data, requestOptions = {}) {
+  return API.instance.patch(`users/${userId}`, data, requestOptions)
+    .then((res) => new User(res.data));
+}
+
 const users = {
   changePassword,
   countTotal,
@@ -58,6 +63,7 @@ const users = {
   findOne,
   me,
   remove,
+  update,
 };
 
 export default users;

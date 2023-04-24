@@ -2,8 +2,10 @@
 import ErrorMessage from 'Components/ErrorMessage';
 import FieldGroup from 'Components/FieldGroup';
 import Label from 'Components/Label';
-import getErrorFromMeta from 'Helpers/getErrorFromMeta';
 import Input from 'Components/Input';
+
+// Helpers
+import getErrorFromMeta from 'Helpers/getErrorFromMeta';
 
 function FormInput(props) {
   const { disabled, id, input, labelText, meta, placeholder } = props;

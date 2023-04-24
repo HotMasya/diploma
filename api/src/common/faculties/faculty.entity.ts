@@ -17,7 +17,10 @@ export class Faculty {
   @Column({ length: 256 })
   name: string;
 
-  @ManyToMany(() => Student, (student) => student.faculties)
+  @Column({ length: 16 })
+  shortName: string;
+
+  @ManyToMany(() => Student, (student) => student.faculty, { nullable: true })
   students: Student[];
 
   @CreateDateColumn({ name: 'created_at' })

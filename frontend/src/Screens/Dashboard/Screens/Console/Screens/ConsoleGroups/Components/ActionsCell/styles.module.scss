@@ -1,0 +1,22 @@
+@import 'colors.scss';
+
+.cell {
+  display: flex;
+  gap: 8px;
+
+  button {
+    padding: 8px;
+  }
+}
+
+.actions {
+  text-decoration: none;
+}
+
+.remove {
+  color: $red_500;
+
+  &:hover {
+    background-color: $red_100;
+  }
+}

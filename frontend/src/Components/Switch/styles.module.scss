@@ -1,0 +1,51 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+$thumb_size: 24px;
+$padding: 2px;
+$transition-duration: 150ms;
+
+.switch {
+  appearance: none;
+  background-color: $grey_300;
+  border-radius: 5000px;
+  cursor: pointer;
+  height: calc($thumb_size + $padding * 2);
+  position: relative;
+  transition: all $transition-duration ease-out;
+  width: calc($thumb_size * 2 + $padding * 2);
+
+  &::after {
+    content: '';
+    background-color: $bg_primary;
+    border-radius: 50%;
+    display: block;
+    height: $thumb_size;
+    left: $padding;
+    position: absolute;
+    top: $padding;
+    transition: all $transition-duration $bounce;
+    width: $thumb_size;
+  }
+
+  &:checked {
+    background-color: $blue_500;
+
+    &:hover {
+      background-color: $blue_600;
+    }
+
+    &::after {
+      left: $thumb_size;
+    }
+  }
+
+  &:hover {
+    background-color: $grey_400;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

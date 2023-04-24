@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { Student } from '../students/student.entity';
+import { Teacher } from '../teacher/teacher.entity';
 
 @Entity()
 export class Group {
@@ -23,6 +24,9 @@ export class Group {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Student, (student) => student.groups)
+  @ManyToMany(() => Student, (student) => student.group, { nullable: true })
   students: Student[];
+
+  @ManyToMany(() => Teacher, (teacher) => teacher.groups, { nullable: true })
+  curator: Teacher;
 }

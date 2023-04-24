@@ -18,7 +18,7 @@ import styles from './styles.module.scss';
 function Avatar(props) {
   const { className, size, user } = props;
 
-  const style = { height: size, width: size };
+  const style = { height: size, width: size, fontSize: size / 2.5 };
 
   if (!user.avatarUrl) {
     return (

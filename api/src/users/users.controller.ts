@@ -18,7 +18,7 @@ import { Permissions } from '../decorators/permissions.decorator';
 import { Permission } from '../constants/permission';
 import { Public } from '../decorators/public.decorator';
 import { EmailService } from '../email/email.service';
-import { FindUsersDto } from './dto/find-users.dto';
+import { AdminFindDto } from '../dto/admin-find.dto';
 
 @Controller('users')
 @Permissions(Permission.ADMIN)
@@ -37,7 +37,7 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(@Query() dto: FindUsersDto) {
+  async findAll(@Query() dto: AdminFindDto) {
     return this.usersService.findAll(dto);
   }
 
