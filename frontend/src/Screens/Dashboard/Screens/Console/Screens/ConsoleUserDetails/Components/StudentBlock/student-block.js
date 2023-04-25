@@ -6,6 +6,7 @@ import API from 'API';
 
 // Components
 import SearchableFormSelect from 'Components/SearchableFormSelect';
+import Button, { BUTTON_VARIANT } from 'Components/Button';
 
 // Styles
 import styles from '../../styles.module.scss';
@@ -23,7 +24,9 @@ const formatOption = ({ value, label, shortName }) => (
   </span>
 );
 
-function StudentBlock() {
+function StudentBlock(props) {
+  const { onDelete } = props;
+
   return (
     <>
       <h2 className={styles.title}>Інформація про студента</h2>
@@ -31,23 +34,28 @@ function StudentBlock() {
         <Field
           component={SearchableFormSelect}
           labelText="Група"
-          name="group"
+          name="student.group"
           placeholder="Виберіть групу"
           request={API.Groups.findAll}
           title="Виберіть групу"
         />
       </div>
+      <div className={styles.pair}>
+        <Field
+          component={SearchableFormSelect}
+          formatOption={formatOption}
+          labelText="Факультет"
+          mapToOption={mapFactultyToOption}
+          name="student.faculty"
+          placeholder="Виберіть факультет"
+          request={API.Faculties.findAll}
+          title="Виберіть факультет"
+        />
+      </div>
 
-      <Field
-        component={SearchableFormSelect}
-        formatOption={formatOption}
-        labelText="Факультет"
-        mapToOption={mapFactultyToOption}
-        name="faculty"
-        placeholder="Виберіть факультет"
-        request={API.Faculties.findAll}
-        title="Виберіть факультет"
-      />
+      <Button onClick={onDelete} variant={BUTTON_VARIANT.destructive}>
+        Видалити студента
+      </Button>
     </>
   );
 }

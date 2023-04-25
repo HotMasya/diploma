@@ -9,6 +9,8 @@ import Departments from './endpoints/departments';
 import Faculties from './endpoints/factulties';
 import Groups from './endpoints/groups';
 import Users from './endpoints/users';
+import Students from './endpoints/students';
+import Teachers from './endpoints/teachers';
 
 // Config
 import { BASE_URLS, ROUTES } from '../Config/routes';
@@ -64,6 +66,8 @@ const api = {
   Departments,
   Faculties,
   Groups,
+  Students,
+  Teachers,
   Users,
 };
 

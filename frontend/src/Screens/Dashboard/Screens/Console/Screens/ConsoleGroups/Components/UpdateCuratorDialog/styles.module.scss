@@ -1,0 +1,18 @@
+@import 'colors.scss';
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.empty {
+  color: $text_subdued;
+  text-align: center;
+}

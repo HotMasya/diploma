@@ -1,35 +1,36 @@
 // Modules
-import { Link, generatePath, useLocation } from 'react-router-dom';
-import cx from 'classnames';
 import { FaBook, FaUserAlt } from 'react-icons/fa';
-import { BsFillShieldLockFill, BsFillPencilFill } from 'react-icons/bs';
-import { Suspense, lazy, useCallback, useState } from 'react';
 import { FormSpy } from 'react-final-form';
+import { Link, generatePath, useLocation } from 'react-router-dom';
+import { Suspense, lazy, useCallback, useState } from 'react';
+import cx from 'classnames';
+
+import {
+  BsFillShieldLockFill,
+  BsFillPencilFill,
+  BsPlusLg,
+} from 'react-icons/bs';
 
 // Assets
 import { EducationCap } from 'Assets/Icons/education-cap';
 
 // Components
 import UserSummary from './Components/UserSummary';
+import Button, { BUTTON_VARIANT } from 'Components/Button';
 
 // Config
 import { ROUTES } from 'Config/routes';
 
+// Constants
+import { tags } from './constants';
+
 // Styles
 import styles from './styles.module.scss';
-import Button, { BUTTON_VARIANT } from 'Components/Button';
 
 const UserBlock = lazy(() => import('./Components/UserBlock'));
 const PermissionsBlock = lazy(() => import('./Components/PermissionsBlock'));
 const StudentBlock = lazy(() => import('./Components/StudentBlock'));
 const TeacherBlock = lazy(() => import('./Components/TeacherBlock'));
-
-const tags = {
-  user: 'user',
-  teacher: 'teacher',
-  student: 'student',
-  permissions: 'permissions',
-};
 
 const tabLinks = [
   {
@@ -64,7 +65,16 @@ const tabs = {
 const spySubscription = { dirty: true };
 
 function ConsoleUserDetails(props) {
-  const { form, handleSubmit, user } = props;
+  const {
+    form,
+    handleSubmit,
+    initialValues,
+    onStudentCreate,
+    onStudentRemove,
+    onTeacherCreate,
+    onTeacherRemove,
+    user,
+  } = props;
 
   const { state } = useLocation();
   const [changes, setChanges] = useState({});
@@ -84,6 +94,68 @@ function ConsoleUserDetails(props) {
     form.reset();
   }, [form]);
 
+  const handleSave = useCallback(() => {
+    form.submit().then(() => setChanges({}));
+  }, [form]);
+
+  const isEmptyTab = useCallback(
+    (tag) => {
+      switch (tag) {
+        case tags.student:
+          if (!initialValues.student) return true;
+          break;
+
+        case tags.teacher:
+          if (!initialValues.teacher) return true;
+          break;
+
+        default:
+          break;
+      }
+
+      return false;
+    },
+    [initialValues.student, initialValues.teacher]
+  );
+
+  const handleLinkClick = useCallback(
+    (tag) => {
+      switch (tag) {
+        case tags.student:
+          if (!initialValues.student) onStudentCreate();
+          break;
+
+        case tags.teacher:
+          if (!initialValues.teacher) onTeacherCreate();
+          break;
+
+        default:
+          break;
+      }
+    },
+    [
+      initialValues.student,
+      initialValues.teacher,
+      onStudentCreate,
+      onTeacherCreate,
+    ]
+  );
+
+  const handleDelete = useCallback(() => {
+    switch (activeTab) {
+      case tags.student:
+        onStudentRemove();
+        break;
+
+      case tags.teacher:
+        onTeacherRemove();
+        break;
+
+      default:
+        break;
+    }
+  }, [activeTab, onStudentRemove, onTeacherRemove]);
+
   return (
     <div className={styles.container}>
       <UserSummary user={user} />
@@ -97,18 +169,20 @@ function ConsoleUserDetails(props) {
               <Button onClick={handleReset} variant={BUTTON_VARIANT.secondary}>
                 Скасувати
               </Button>
-              <Button onClick={form.submit}>Зберегти</Button>
+              <Button onClick={handleSave}>Зберегти</Button>
             </div>
           </>
         )}
       </div>
       <ul className={styles.tabs}>
         {tabLinks.map(({ icon, title, tag }) => (
-          <li key={tag}>
+          <li key={tag} onClick={() => handleLinkClick(tag)}>
             <Link
-              className={cx(styles.tab, { [styles.active]: activeTab === tag })}
-              to={generatePath(ROUTES.consoleUsersDetails, { userId: user.id })}
+              className={cx(styles.tab, {
+                [styles.active]: activeTab === tag,
+              })}
               state={tag}
+              to={generatePath(ROUTES.consoleUsersDetails, { userId: user.id })}
             >
               {icon}
               {title}
@@ -119,13 +193,20 @@ function ConsoleUserDetails(props) {
                   title="Незбережені зміни"
                 />
               )}
+
+              {isEmptyTab(tag) && (
+                <BsPlusLg
+                  className={styles.changed}
+                  title="Натисніть, щоб створити"
+                />
+              )}
             </Link>
           </li>
         ))}
       </ul>
       <form className={styles.content} onSubmit={handleSubmit}>
         <Suspense fallback={null}>
-          <TabContent />
+          <TabContent onDelete={handleDelete} />
         </Suspense>
       </form>
       <FormSpy onChange={handleChange} subscription={spySubscription} />

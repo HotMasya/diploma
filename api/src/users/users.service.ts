@@ -24,7 +24,7 @@ export class UsersService {
     private readonly emailService: EmailService,
   ) {}
 
-  static addSearchWhere(builder: SelectQueryBuilder<User>, search?: string) {
+  static addSearchWhere(builder: SelectQueryBuilder<any>, search?: string) {
     if (!search) return;
 
     const params = {
@@ -110,7 +110,18 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOne({
+      relations: ['teacher', 'teacher.departments', 'student'],
+      where: {
+        id,
+      },
+    });
+
+    if (!user) throw new NotFoundException(null, 'Користувач не знайдений');
+
+    delete user.password;
+
+    return user;
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -118,9 +129,12 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOne({
+      relations: ['teacher', 'teacher.departments', 'student'],
+      where: { id },
+    });
 
-    const updatedUser = { ...user, ...updateUserDto, updatedAt: new Date() };
+    const updatedUser = { ...updateUserDto, updatedAt: new Date() };
 
     if (updateUserDto.password) {
       updatedUser.password = await hash(
@@ -133,7 +147,7 @@ export class UsersService {
 
     delete updatedUser.password;
 
-    return updatedUser as User;
+    return { ...user, ...updatedUser } as User;
   }
 
   async remove(id: number): Promise<DeleteResult> {

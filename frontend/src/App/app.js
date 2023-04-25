@@ -22,7 +22,8 @@ const ConsoleDepartments = lazy(() => import('Screens/Dashboard/Screens/Console/
 const ConsoleGroups = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroups/console-groups'));
 const ConsoleFaculties = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleFaculties/console-faculties'));
 const ConsoleUsers = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUsers/console-users'));
-const ConsoleUserDetails = lazy(() => import ('Screens/Dashboard/Screens/Console/Screens/ConsoleUserDetails'));
+const ConsoleUserDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUserDetails'));
+const ConsoleGroupDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroupDetails/console-group-details'));
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                 <Route path={ROUTES.consoleFaculties} element={<ConsoleFaculties />} />
                 <Route path={ROUTES.consoleUsers} element={<ConsoleUsers />} />
                 <Route path={ROUTES.consoleUsersDetails} element={<ConsoleUserDetails />} />
+                <Route path={ROUTES.consoleGroupsDetails} element={<ConsoleGroupDetails />} />
               </Route>
             </Route>
 

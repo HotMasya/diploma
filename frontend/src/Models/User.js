@@ -1,6 +1,9 @@
 // Modules
-import isString from 'lodash/isString';
 import reduce from 'lodash/reduce';
+
+// Models
+import Student from './Student';
+import Teacher from './Teacher';
 
 class User {
   constructor(props) {
@@ -10,12 +13,14 @@ class User {
     this.permissions = props.permissions;
     this.verified = props.verified;
     this.email = props.email;
+    this.student = props.student ? new Student(props.student) : null;
+    this.teacher = props.teacher ? new Teacher(props.teacher) : null;
 
-    if (isString(props.updatedAt)) {
+    if (props.updatedAt) {
       this.updatedAt = new Date(props.updatedAt);
     }
 
-    if (isString(props.createdAt)) {
+    if (props.createdAt) {
       this.createdAt = new Date(props.createdAt);
     }
   }

@@ -23,7 +23,25 @@ async function update(userId, data, requestOptions = {}) {
     .then((res) => new Group(res.data));
 }
 
+async function countTotal(search, requestOptions = {}) {
+  return API.instance
+    .get('groups/count/total', { ...requestOptions, params: { search } })
+    .then((res) => res.data);
+}
+
+async function create(data, requestOptions = {}) {
+  return API.instance
+    .post('groups', data, requestOptions)
+    .then((res) => new Group(res.data));
+}
+
+async function updateCurator(data, requestOptions = {}) {
+
+}
+
 const groups = {
+  countTotal,
+  create,
   findAll,
   remove,
   update,

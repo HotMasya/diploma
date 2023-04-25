@@ -3,12 +3,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Permission } from '../../constants/permission';
 import * as _ from 'lodash';
+import { Teacher } from '../../common/teacher/teacher.entity';
+import { Student } from '../../common/students/student.entity';
 
 @Entity()
 export class User {
@@ -42,6 +45,12 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToOne(() => Teacher, (teacher) => teacher.user)
+  teacher: Teacher;
+
+  @OneToOne(() => Student, (student) => student.user)
+  student: Student;
 
   static readonly saltRounds = 10;
 

@@ -2,6 +2,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import formatRelative from 'date-fns/formatRelative';
 import ukLocale from 'date-fns/locale/uk';
+import { BsDashLg } from 'react-icons/bs';
 
 // Components
 import ActionsCell from './Components/ActionsCell/actions-cell';
@@ -9,19 +10,28 @@ import ActionsCell from './Components/ActionsCell/actions-cell';
 const helper = createColumnHelper();
 
 function CenteredCell({ children }) {
-  return <span style={{ display: 'block', textAlign: 'center' }}>
-    {children}
-  </span>
+  return (
+    <span style={{ display: 'block', textAlign: 'center' }}>{children}</span>
+  );
 }
 
 export const columns = [
   helper.accessor('name', {
-    header: "Назва",
+    header: 'Назва',
     cell: (props) => <b>{props.getValue()}</b>,
+  }),
+  helper.accessor('curatorFullName', {
+    header: 'Куратор',
+    cell: (props) =>
+      props.getValue() || (
+        <BsDashLg cursor="pointer" title="Куратор відсутній" />
+      ),
+    enableSorting: false,
   }),
   helper.accessor('studentsCount', {
     header: <CenteredCell>Студенти</CenteredCell>,
-    cell: (props) => <CenteredCell>{props.getValue()}</CenteredCell>
+    cell: (props) => <CenteredCell>{props.getValue()}</CenteredCell>,
+    enableSorting: false,
   }),
   helper.accessor('createdAt', {
     cell: (props) =>

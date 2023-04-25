@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,7 +20,7 @@ export class Faculty {
   @Column({ length: 16 })
   shortName: string;
 
-  @ManyToMany(() => Student, (student) => student.faculty, { nullable: true })
+  @OneToMany(() => Student, (student) => student.faculty, { nullable: true })
   students: Student[];
 
   @CreateDateColumn({ name: 'created_at' })

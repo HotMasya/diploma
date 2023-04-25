@@ -2,7 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,9 +26,13 @@ export class Group {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Student, (student) => student.group, { nullable: true })
+  @OneToMany(() => Student, (student) => student.group, { nullable: true })
   students: Student[];
 
-  @ManyToMany(() => Teacher, (teacher) => teacher.groups, { nullable: true })
+  @ManyToOne(() => Teacher, (teacher) => teacher.groups, {
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'curatorid' })
   curator: Teacher;
 }

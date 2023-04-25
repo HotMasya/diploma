@@ -26,6 +26,12 @@ export class GroupsController {
     return this.service.findAll(dto);
   }
 
+  @Get('count/total')
+  @Permissions(Permission.READ_GROUPS)
+  async totalCount(@Query('search') search?: string) {
+    return this.service.getTotalCount(search);
+  }
+
   @Post()
   @Permissions(Permission.CREATE_GROUPS)
   async create(@Body() dto: CreateGroupDto) {
@@ -34,13 +40,13 @@ export class GroupsController {
 
   @Patch(':id')
   @Permissions(Permission.UPDATE_GROUPS)
-  async update(@Param() id: string, @Body() dto: UpdateGroupDto) {
+  async update(@Param('id') id: string, @Body() dto: UpdateGroupDto) {
     return this.service.update(+id, dto);
   }
 
   @Delete(':id')
   @Permissions(Permission.DELETE_GROUPS)
-  async delete(@Param() id: string) {
+  async delete(@Param('id') id: string) {
     return this.service.delete(+id);
   }
 }

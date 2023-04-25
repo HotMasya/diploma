@@ -8,6 +8,7 @@ import isFunction from 'lodash/isFunction';
 import map from 'lodash/map';
 import PropTypes from 'prop-types';
 import { IoClose } from 'react-icons/io5';
+import some from 'lodash/some';
 
 // Components
 import Input from 'Components/Input';
@@ -66,10 +67,10 @@ function Select(props) {
     () =>
       options.filter((option) => {
         if (isArray(value)) {
-          return !value.includes(option);
+          return !some(value, option);
         }
 
-        return value !== option;
+        return value.value !== option.value;
       }),
     [options, value]
   );

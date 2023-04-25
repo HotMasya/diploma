@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Group } from './group.entity';
 import { AdminFindDto } from '../../dto/admin-find.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -20,14 +20,17 @@ export class GroupsService {
   ) {}
 
   async findAll(dto: AdminFindDto) {
-    const studentsBuilder =
-      this.studentRepository.createQueryBuilder('students');
-
-    // const countSubquery = studentsBuilder.select('COUNT(*)').where(`${studentsBuilder.alias}.user`)
-
     const builder = this.groupsRepository
       .createQueryBuilder('group')
       .select()
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(Student, 's')
+            .where('group.id = s.groupid'),
+        'studentsCount',
+      )
       .skip(dto.skip)
       .take(dto.take);
 
@@ -48,8 +51,16 @@ export class GroupsService {
     return builder.getMany();
   }
 
-  async getTotalCount() {
-    return await this.groupsRepository.count();
+  async getTotalCount(search?: string) {
+    if (!search) {
+      return await this.groupsRepository.count();
+    }
+
+    return await this.groupsRepository.count({
+      where: {
+        name: ILike(`%${search}%`),
+      },
+    });
   }
 
   async create(dto: CreateGroupDto) {
@@ -62,6 +73,15 @@ export class GroupsService {
     const group = await this.groupsRepository.findOneBy({ id });
 
     const updatedGroup = { ...group, ...dto, updatedAt: new Date() };
+
+    if (dto.curatorId) {
+      const curator = new Teacher();
+      curator.id = dto.curatorId;
+
+      updatedGroup.curator = curator;
+
+      delete updatedGroup.curatorId;
+    }
 
     await this.groupsRepository.update(id, updatedGroup);
 

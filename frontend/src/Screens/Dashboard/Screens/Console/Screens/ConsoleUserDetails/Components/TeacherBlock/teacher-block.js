@@ -6,6 +6,7 @@ import API from 'API';
 
 // Components
 import SearchableFormSelect from 'Components/SearchableFormSelect';
+import Button, { BUTTON_VARIANT } from 'Components/Button';
 
 // Styles
 import styles from '../../styles.module.scss';
@@ -25,7 +26,9 @@ const formatOption = ({ label, shortName }) => (
   </span>
 );
 
-function TeacherBlock() {
+function TeacherBlock(props) {
+  const { onDelete } = props;
+
   return (
     <>
       <h2 className={styles.title}>Інформація про викладача</h2>
@@ -36,12 +39,15 @@ function TeacherBlock() {
           formatOption={formatOption}
           labelText="Кафедри"
           mapToOption={mapFacultyToOption}
-          name="departments"
+          name="teacher.departments"
           placeholder="Виберіть кафедри"
           request={API.Departments.findAll}
           title="Виберіть кафедри"
         />
       </div>
+      <Button onClick={onDelete} variant={BUTTON_VARIANT.destructive}>
+        Видалити викладача
+      </Button>
     </>
   );
 }

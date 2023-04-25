@@ -1,8 +1,10 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
   ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,9 +19,6 @@ export class Teacher {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ length: 256 })
-  name: string;
-
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -29,11 +28,17 @@ export class Teacher {
   @ManyToMany(() => Department, (department) => department.teachers, {
     nullable: true,
   })
+  @JoinTable({
+    name: 'teacher_department',
+    joinColumn: { name: 'teacherid' },
+    inverseJoinColumn: { name: 'departmentid' },
+  })
   departments: Department[];
 
-  @ManyToMany(() => Group, (group) => group.curator, { nullable: true })
+  @OneToMany(() => Group, (group) => group.curator, { nullable: true })
   groups: Group[];
 
-  @OneToOne(() => User, { nullable: true })
-  user?: User;
+  @OneToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'userid' })
+  user: User;
 }
