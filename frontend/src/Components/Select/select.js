@@ -191,10 +191,6 @@ function Select(props) {
   let optionsContent;
 
   switch (true) {
-    case pending:
-      optionsContent = <li className={styles.empty}>Завантаження опцій...</li>;
-      break;
-
     case isEmpty(filteredOptions):
       optionsContent = <li className={styles.empty}>Немає доступних опцій</li>;
       break;
@@ -241,51 +237,54 @@ function Select(props) {
           onClick={handleOverlayClick}
           ref={overlayRef}
         >
-          <div className={selectClassNames}>
-            <div className={styles.header}>
-              <h3>{title}</h3>
-              <IconButton onClick={handleClose}>
-                <IoClose size={24} />
-              </IconButton>
-            </div>
-            {isSearchable && (
-              <div className={styles.wrapper}>
-                <Input
-                  onChange={searchHandler}
-                  placeholder="Пошук..."
-                  type="text"
-                  value={search}
-                />
+          <div className={styles.selectWrapper}>
+            <div className={selectClassNames}>
+              <div className={styles.header}>
+                <h3>{title}</h3>
+                <IconButton onClick={handleClose}>
+                  <IoClose size={24} />
+                </IconButton>
               </div>
-            )}
+              {isSearchable && (
+                <div className={styles.wrapper}>
+                  <Input
+                    onChange={searchHandler}
+                    placeholder="Пошук..."
+                    type="text"
+                    value={search}
+                  />
+                  {pending && <span>Завантаження опцій...</span>}
+                </div>
+              )}
 
-            {!isEmpty(value) && (
-              <ul className={styles.selected}>
-                <li className={styles.sectionTitle}>Вибрані опції</li>
-                {isArray(value) ? (
-                  map(value, (option) => (
+              {!isEmpty(value) && (
+                <ul className={styles.selected}>
+                  <li className={styles.sectionTitle}>Вибрані опції</li>
+                  {isArray(value) ? (
+                    map(value, (option) => (
+                      <Option
+                        formatOption={formatOption}
+                        key={option.value}
+                        onSelect={handleDelete}
+                        option={option}
+                      />
+                    ))
+                  ) : (
                     <Option
                       formatOption={formatOption}
-                      key={option.value}
+                      key={value.value}
+                      option={value}
                       onSelect={handleDelete}
-                      option={option}
                     />
-                  ))
-                ) : (
-                  <Option
-                    formatOption={formatOption}
-                    key={value.value}
-                    option={value}
-                    onSelect={handleDelete}
-                  />
-                )}
-              </ul>
-            )}
+                  )}
+                </ul>
+              )}
 
-            <ul>
-              <li className={styles.sectionTitle}>Доступні опції</li>
-              {optionsContent}
-            </ul>
+              <ul>
+                <li className={styles.sectionTitle}>Доступні опції</li>
+                {optionsContent}
+              </ul>
+            </div>
           </div>
         </div>
       )}

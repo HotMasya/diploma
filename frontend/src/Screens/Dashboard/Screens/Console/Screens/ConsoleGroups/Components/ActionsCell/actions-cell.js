@@ -1,5 +1,5 @@
 // Modules
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import {
   Link,
   generatePath,
@@ -10,38 +10,26 @@ import { FaEllipsisH } from 'react-icons/fa';
 import get from 'lodash/get';
 
 // Components
-import Button, { BUTTON_VARIANT } from 'Components/Button/button';
+import Button, { BUTTON_VARIANT } from 'Components/Button';
 import Dropdown from 'Components/Dropdown';
 
 // Config
 import { ROUTES } from 'Config/routes';
 
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Styles
 import styles from './styles.module.scss';
-
-const options = [
-  {
-    label: 'Змінити куратора',
-    value: 'change_curator',
-  },
-  {
-    label: 'Деталі',
-    value: 'details',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.remove,
-    label: 'Видалити',
-    value: 'remove',
-  },
-];
+import { PERMISSION } from 'Constants/permission';
 
 function ActionsCell(props) {
   const { row, table } = props;
 
-  const { setDeleteModalOpen, setCuratorModalOpen } = table.options.meta;
+  const { setCuratorModalOpen, setDeleteModalOpen, setDeleteCuratorModalOpen } =
+    table.options.meta;
+
+  const [user] = useUserContext();
   const group = row.original;
   const [, setOutletContext] = useOutletContext();
   const navigate = useNavigate();
@@ -49,21 +37,60 @@ function ActionsCell(props) {
   const groupId = get(group, 'id');
   const detailsPath = generatePath(ROUTES.consoleGroupsDetails, { groupId });
 
+  const options = useMemo(() => {
+    const options = [
+      {
+        label: 'Змінити куратора',
+        value: 'change_curator',
+      },
+      {
+        label: 'Деталі',
+        value: 'details',
+      },
+      {
+        separator: true,
+      },
+    ];
+
+    if (group.curator) {
+      options.push({
+        className: styles.remove,
+        label: 'Видалити куратора',
+        value: 'remove_curator',
+      })
+    }
+
+    if (user.hasPermissions(PERMISSION.DELETE_GROUPS)) {
+      options.push({
+        className: styles.remove,
+        label: 'Видалити',
+        value: 'remove',
+      });
+    }
+
+    return options;
+  }, [group.curator, user]);
+
   const handleSelect = useCallback(
     ({ value }) => {
       switch (value) {
-        case 'remove':
+        case 'change_curator':
           setOutletContext({ group });
-          setDeleteModalOpen(true);
+          setCuratorModalOpen(true);
           break;
 
         case 'details':
           navigate(detailsPath);
           break;
 
-        case 'change_curator':
+        case 'remove_curator':
           setOutletContext({ group });
-          setCuratorModalOpen(true);
+          setDeleteCuratorModalOpen(true);
+          break;
+
+        case 'remove':
+          setOutletContext({ group });
+          setDeleteModalOpen(true);
           break;
 
         default:
@@ -76,6 +103,7 @@ function ActionsCell(props) {
       group,
       navigate,
       setCuratorModalOpen,
+      setDeleteCuratorModalOpen,
       setDeleteModalOpen,
       setOutletContext,
     ]

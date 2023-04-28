@@ -36,6 +36,14 @@ export class FacultiesService {
         .orWhere(`${builder.alias}.shortName ILIKE :searchQuery`, params);
     }
 
+    if (dto.excludeIds?.length) {
+      const params = {
+        ids: dto.excludeIds,
+      };
+
+      builder.andWhere(`${builder.alias}.id NOT IN (:...ids)`, params);
+    }
+
     return builder.getMany();
   }
 

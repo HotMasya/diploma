@@ -43,7 +43,7 @@ function SelectedOption(props) {
       <Avatar user={curator.user} />
       {curator.user.fullName}
 
-      <IconButton onClick={onDelete}>
+      <IconButton onClick={onDelete} title="Видалити вибрану опцію">
         <IoClose size={24} />
       </IconButton>
     </div>
@@ -80,8 +80,8 @@ function UpdateCuratorDialog(props) {
 
       setPending(true);
 
-      const request = API.Groups.create({ name })
-        .then((group) => {
+      const request = API.Groups.update(group.id, { curatorId: curator.id })
+        .then(() => {
           modalRef.current.close();
           if (isFunction(onUpdate)) {
             onUpdate();
@@ -109,7 +109,7 @@ function UpdateCuratorDialog(props) {
         }
       );
     },
-    [onUpdate, pending]
+    [curator?.id, group.id, onUpdate, pending]
   );
 
   useEffect(() => {
@@ -118,10 +118,11 @@ function UpdateCuratorDialog(props) {
     API.Teachers.findAll({
       take: 10,
       search: debouncedSearch,
+      excludeIds: group.curator ? [group.curator.id] : [],
     })
       .then(setOptions)
       .finally(() => setPendingSearch(false));
-  }, [debouncedSearch]);
+  }, [debouncedSearch, group.curator]);
 
   const description = (
     <>
@@ -173,7 +174,7 @@ function UpdateCuratorDialog(props) {
 
         <div className={styles.buttons}>
           <Button disabled={!curator} onClick={handleUpdate}>
-            Створити
+            Змінити
           </Button>
           <Button
             onClick={() => modalRef.current?.close()}

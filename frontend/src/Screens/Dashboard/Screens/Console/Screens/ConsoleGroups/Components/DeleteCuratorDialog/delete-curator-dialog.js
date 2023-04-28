@@ -12,7 +12,7 @@ import API from 'API';
 import Dialog from 'Components/Dialog';
 import Button, { BUTTON_VARIANT } from 'Components/Button';
 
-function DeleteGroupCuratorDialog(props) {
+function DeleteGroupDialog(props) {
   const { onClose, onDelete } = props;
 
   const [outletContext] = useOutletContext();
@@ -27,7 +27,7 @@ function DeleteGroupCuratorDialog(props) {
 
     setPending(true);
 
-    const request = API.Groups.remove(groupId)
+    const request = API.Groups.removeCurator(groupId)
       .then(() => {
         modalRef.current.close();
         if (isFunction(onDelete)) {
@@ -39,7 +39,7 @@ function DeleteGroupCuratorDialog(props) {
     toast.promise(
       request,
       {
-        success: 'Група була успішно видалена',
+        success: 'Куратор був успішно видалений для даної групи',
         error: {
           render({ data }) {
             return (
@@ -52,7 +52,7 @@ function DeleteGroupCuratorDialog(props) {
       },
       {
         autoClose: 3000,
-        toastId: 'delete-group',
+        toastId: 'delete-group-curator',
       }
     );
   }, [onDelete, pending, groupId]);
@@ -61,9 +61,8 @@ function DeleteGroupCuratorDialog(props) {
 
   const description = (
     <>
-      Група <b>{group.name}</b> буде видалена назавжди. Студенти та куратор цієї
-      групи не будуть видалені. Ця дія&nbsp;
-      <b>не є зворотньою</b>.
+      Для групи <b>{group.name}</b> буде видалено куратора. Безпосередньо сам
+      куратор не буде видалений і його можна буде встановити знову.
     </>
   );
 
@@ -73,7 +72,7 @@ function DeleteGroupCuratorDialog(props) {
       onClose={onClose}
       pending={pending}
       ref={modalRef}
-      title="Видалити групу"
+      title="Видалити куратора групи"
     >
       <Button onClick={handleDelete} variant={BUTTON_VARIANT.destructive}>
         Видалити
@@ -88,4 +87,4 @@ function DeleteGroupCuratorDialog(props) {
   );
 }
 
-export default memo(DeleteGroupCuratorDialog);
+export default memo(DeleteGroupDialog);

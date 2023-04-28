@@ -18,8 +18,13 @@ async function remove(groupId, requestOptions = {}) {
   return API.instance.delete(`groups/${groupId}`, requestOptions);
 }
 
-async function update(userId, data, requestOptions = {}) {
-  return API.instance.patch(`groups/${userId}`, data, requestOptions)
+async function update(groupId, data, requestOptions = {}) {
+  return API.instance.patch(`groups/${groupId}`, data, requestOptions)
+    .then((res) => new Group(res.data));
+}
+
+async function findOne(groupId, requestOptions = {}) {
+  return API.instance.get(`groups/${groupId}`, requestOptions)
     .then((res) => new Group(res.data));
 }
 
@@ -35,15 +40,19 @@ async function create(data, requestOptions = {}) {
     .then((res) => new Group(res.data));
 }
 
-async function updateCurator(data, requestOptions = {}) {
-
+async function removeCurator(groupId, requestOptions = {}) {
+  return API.instance
+    .delete(`groups/${groupId}/curator/remove`, requestOptions)
+    .then((res) => new Group(res.data));
 }
 
 const groups = {
   countTotal,
   create,
   findAll,
+  findOne,
   remove,
+  removeCurator,
   update,
 };
 

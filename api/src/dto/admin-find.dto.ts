@@ -12,4 +12,7 @@ export class AdminFindDto {
 
   @ApiProperty()
   order?: string;
+
+  @ApiProperty()
+  excludeIds?: number[];
 }

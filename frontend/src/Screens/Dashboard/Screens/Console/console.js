@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 // Components
-import Paper from 'Components/Paper/paper';
+import Paper from 'Components/Paper';
 
 // Config
 import { ROUTES } from 'Config/routes';

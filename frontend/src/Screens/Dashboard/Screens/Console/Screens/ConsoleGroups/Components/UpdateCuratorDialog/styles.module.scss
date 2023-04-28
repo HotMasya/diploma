@@ -16,3 +16,30 @@
   color: $text_subdued;
   text-align: center;
 }
+
+.option {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 16px;
+  transition: all 150ms ease-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $grey_100;
+  }
+}
+
+.selected {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  align-items: center;
+  position: relative;
+
+  button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+}

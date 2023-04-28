@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 
@@ -13,10 +14,17 @@ import { Permissions } from '../../decorators/permissions.decorator';
 import { Permission } from '../../constants/permission';
 import { StudentsService } from './students.service';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { AdminFindDto } from '../../dto/admin-find.dto';
 
 @Controller('students')
 export class StudentsController {
   constructor(private readonly service: StudentsService) {}
+
+  @Get()
+  @Permissions(Permission.READ_USERS)
+  async findAll(@Query() dto: AdminFindDto) {
+    return this.service.findAll(dto);
+  }
 
   @Get('me')
   @Permissions(Permission.ANY)

@@ -108,13 +108,34 @@ $transition-duration: 150ms;
   }
 }
 
+.selectWrapper {
+  border-radius: 16px;
+  max-width: 500px;
+  overflow: hidden;
+  width: 100%;
+}
+
 .select {
   animation: showDialog $transition-duration $bounce forwards;
   background-color: $bg_primary;
   border-radius: 16px;
   max-height: 50vh;
-  max-width: 500px;
+  overflow: overlay;
   width: 100%;
+
+  &::-webkit-scrollbar {
+    cursor: pointer;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5000px;
+    background-color: $grey_300;
+
+    &:hover {
+      background-color: $grey_500;
+    }
+  }
 
   &.closing {
     animation: hideDialog $transition-duration linear forwards;
@@ -122,9 +143,9 @@ $transition-duration: 150ms;
 
   ul {
     padding: 16px;
+    width: 100%;
   }
 }
-
 
 .option {
   align-items: center;
@@ -135,7 +156,7 @@ $transition-duration: 150ms;
   transition: all 100ms ease-out;
 
   &:hover {
-    background-color: $blue_100;
+    background-color: $grey_100;
   }
 }
 

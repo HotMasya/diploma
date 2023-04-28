@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { Group } from './group.entity';
@@ -19,10 +24,40 @@ export class GroupsService {
     private readonly studentRepository: Repository<Student>,
   ) {}
 
+  private static validateGroup(group: Group) {
+    if (!group) {
+      throw new NotFoundException(null, 'Група не знайдена');
+    }
+  }
+
+  async findOne(id: number) {
+    const builder = this.groupsRepository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.curator', 'curator')
+      .leftJoinAndSelect('curator.user', 'user')
+      .leftJoinAndSelect('curator.departments', 'departments')
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(Student, 's')
+            .where('group.id = s.groupid'),
+        'studentsCount',
+      )
+      .where('group.id = :id', { id });
+
+    const group = await builder.getOne();
+
+    GroupsService.validateGroup(group);
+
+    return group;
+  }
+
   async findAll(dto: AdminFindDto) {
     const builder = this.groupsRepository
       .createQueryBuilder('group')
-      .select()
+      .leftJoinAndSelect('group.curator', 'curator')
+      .leftJoinAndSelect('curator.user', 'user')
       .addSelect(
         (qb) =>
           qb
@@ -48,6 +83,14 @@ export class GroupsService {
       builder.where(`${builder.alias}.name ILIKE :searchQuery`, params);
     }
 
+    if (dto.excludeIds?.length) {
+      const params = {
+        ids: dto.excludeIds,
+      };
+
+      builder.andWhere(`${builder.alias}.id NOT IN (:...ids)`, params);
+    }
+
     return builder.getMany();
   }
 
@@ -64,6 +107,14 @@ export class GroupsService {
   }
 
   async create(dto: CreateGroupDto) {
+    const existingGroup = await this.groupsRepository.findOneBy({
+      name: dto.name,
+    });
+
+    if (existingGroup) {
+      throw new ConflictException(null, 'Група з такою назвою вже існує');
+    }
+
     const group = this.groupsRepository.create(dto);
 
     return this.groupsRepository.save(group);
@@ -86,6 +137,16 @@ export class GroupsService {
     await this.groupsRepository.update(id, updatedGroup);
 
     return updatedGroup as Group;
+  }
+
+  async removeCurator(id: number) {
+    const group = await this.findOne(id);
+
+    if (group.curator) {
+      group.curator = null;
+    }
+
+    return this.groupsRepository.save(group);
   }
 
   async delete(id: number) {

@@ -1,5 +1,7 @@
 // Modules
 import { useEffect, useState } from 'react';
+import isArray from 'lodash/isArray';
+import map from 'lodash/map';
 
 // Components
 import ErrorMessage from 'Components/ErrorMessage';
@@ -49,11 +51,17 @@ function SearchableFormSelect(props) {
       filter.search = debouncedSearch;
     }
 
+    if (isArray(input.value) && input.value.length) {
+      filter.excludeIds = map(input.value, 'value');
+    } else if (input.value) {
+      filter.excludeIds = [input.value.value];
+    }
+
     request(filter)
       .then((groups) => groups.map(mapToOption))
       .then(setOptions)
       .finally(() => setPending(false));
-  }, [debouncedSearch, mapToOption, request]);
+  }, [debouncedSearch, input.value, mapToOption, request]);
 
   return (
     <FieldGroup>

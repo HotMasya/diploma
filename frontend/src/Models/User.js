@@ -4,6 +4,7 @@ import reduce from 'lodash/reduce';
 // Models
 import Student from './Student';
 import Teacher from './Teacher';
+import { PERMISSION } from 'Constants/permission';
 
 class User {
   constructor(props) {
@@ -26,7 +27,7 @@ class User {
   }
 
   hasPermissions(...permissions) {
-    if (!permissions.length) return true;
+    if (!permissions.length || this.isAdmin) return true;
 
     const mergedPermissions = reduce(
       permissions,
@@ -39,6 +40,10 @@ class User {
 
   get fullName() {
     return [this.firstName, this.lastName].filter(Boolean).join(' ');
+  }
+
+  get isAdmin() {
+    return this.permissions | PERMISSION.ADMIN === this.permissions;
   }
 
   get acronym() {

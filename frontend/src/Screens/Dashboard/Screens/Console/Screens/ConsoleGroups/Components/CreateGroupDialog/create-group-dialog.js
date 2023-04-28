@@ -28,7 +28,7 @@ function CreateGroupDialog(props) {
   const modalRef = useRef();
 
   const handleSubmit = useCallback(
-    (name) => {
+    ({ name }) => {
       if (pending) return;
 
       setPending(true);

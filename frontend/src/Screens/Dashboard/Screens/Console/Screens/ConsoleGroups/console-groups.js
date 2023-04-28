@@ -25,6 +25,7 @@ import { useDebounceValue } from 'Hooks/useDebounceValue';
 
 // Styles
 import styles from '../ConsoleUsers/styles.module.scss';
+import DeleteCuratorDialog from './Components/DeleteCuratorDialog/delete-curator-dialog';
 
 const limit = 10;
 
@@ -35,6 +36,7 @@ function ConsoleGroups() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [curatorModalOpen, setCuratorModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [deleteCuratorModalOpen, setDeleteCuratorModalOpen] = useState(false);
 
   const searchValue = useDebounceValue(searchParams.get('q'));
   const currentPage = Number(searchParams.get('p')) || 1;
@@ -54,12 +56,18 @@ function ConsoleGroups() {
     []
   );
 
+  const handleDeleteCuratormodalClose = useCallback(
+    () => setDeleteCuratorModalOpen(false),
+    []
+  );
+
   const handleCreateModalOpen = useCallback(() => setCreateModalOpen(true), []);
 
   const tableMeta = useMemo(
     () => ({
       setDeleteModalOpen,
       setCuratorModalOpen,
+      setDeleteCuratorModalOpen,
     }),
     []
   );
@@ -190,6 +198,13 @@ function ConsoleGroups() {
         <UpdateCuratorDialog
           onClose={handleCuratorModalClose}
           onUpdate={fetchGroups}
+        />
+      )}
+
+      {deleteCuratorModalOpen && (
+        <DeleteCuratorDialog
+          onClose={handleDeleteCuratormodalClose}
+          onDelete={fetchGroups}
         />
       )}
     </div>

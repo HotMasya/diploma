@@ -31,6 +31,14 @@ export class TeachersService {
 
     UsersService.addSearchWhere(builder, dto.search);
 
+    if (dto.excludeIds?.length) {
+      const params = {
+        ids: dto.excludeIds,
+      };
+
+      builder.andWhere(`${builder.alias}.id NOT IN (:...ids)`, params);
+    }
+
     return builder.getMany();
   }
 
@@ -61,13 +69,11 @@ export class TeachersService {
       throw new NotFoundException(null, 'Викладач не знайдений');
     }
 
-    if (dto.departmentIds.length) {
-      const departments = await this.departmentsRepository.findBy({
-        id: In(dto.departmentIds),
-      });
+    const departments = await this.departmentsRepository.findBy({
+      id: In(dto.departmentIds),
+    });
 
-      teacher.departments = departments;
-    }
+    teacher.departments = departments;
 
     return this.teachersRepository.save(teacher);
   }

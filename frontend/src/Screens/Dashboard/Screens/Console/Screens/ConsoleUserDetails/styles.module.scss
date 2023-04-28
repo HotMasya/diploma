@@ -6,17 +6,17 @@
   grid-template-columns: 0.5fr 1fr;
   grid-template-rows: auto auto 1fr;
   gap: 0 16px;
-  width: 1000px;
   min-height: $min-admin-height;
   position: relative;
   margin-top: 16px;
-  // width: 100%;
+  width: 100%;
 }
 
 .content {
- border-left: 1px solid $grey_300;
- height: 100%;
- padding: 16px 0 0 16px;
+  border-left: 1px solid $grey_300;
+  height: 100%;
+  padding: 16px 0 0 16px;
+  width: 100%;
 }
 
 .tabs {
@@ -136,7 +136,7 @@
     color: $text_disabled;
     cursor: not-allowed;
 
-    &:hover .label{
+    &:hover .label {
       font-weight: 400;
     }
   }

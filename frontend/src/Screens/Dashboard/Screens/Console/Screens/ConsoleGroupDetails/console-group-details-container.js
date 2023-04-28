@@ -1,16 +1,31 @@
 // Modules
-import { Form } from 'react-final-form';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+// API
+import API from 'API';
 
 // Components
 import ConsoleGroupDetails from './console-group-details';
 
 function ConsoleGroupDetailsContainer() {
-  const handleSumbit = useCallback((values) => {
-    console.log(values);
-  }, []);
+  const { groupId } = useParams();
 
-  return <Form component={ConsoleGroupDetails} onSubmit={handleSumbit} />;
+  const [group, setGroup] = useState();
+
+  const fetchGroup = useCallback(() => {
+    API.Groups.findOne(groupId).then(setGroup);
+  }, [groupId]);
+
+  useEffect(() => {
+    fetchGroup();
+  }, [fetchGroup]);
+
+  if (!group) return null;
+
+  return (
+    <ConsoleGroupDetails group={group} onUpdate={fetchGroup} />
+  );
 }
 
 export default ConsoleGroupDetailsContainer;

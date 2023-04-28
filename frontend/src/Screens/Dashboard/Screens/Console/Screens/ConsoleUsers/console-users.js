@@ -108,7 +108,7 @@ function ConsoleUsers() {
   );
 
   const fetchUsers = useCallback(
-    async () =>
+    () =>
       API.Users.findAll({
         skip: (currentPage - 1) * limit,
         take: limit,
@@ -129,11 +129,13 @@ function ConsoleUsers() {
   );
 
   useEffect(() => {
+    if (searchValue !== searchParams.get('q')) return;
+
     fetchUsers().catch((err) => {
       const message = API.parseError(err).message;
       toast(message, { toastId: 'fetch-users-error' });
     });
-  }, [currentPage, fetchUsers, order, searchValue]);
+  }, [fetchUsers, searchParams, searchValue]);
 
   return (
     <div className={styles.container}>

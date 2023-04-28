@@ -1,6 +1,6 @@
 // Modules
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 // API
@@ -71,7 +71,9 @@ function Dashboard() {
     <>
       <Header />
       <main className={styles.body}>
-        {isUserValid ? <Outlet /> : null}
+        <Suspense fallback={null}>
+          {isUserValid ? <Outlet /> : null}
+        </Suspense>
       </main>
     </>
   );

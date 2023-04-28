@@ -1,1 +1,1 @@
-export { default } from './console-group-details';
+export { default } from './console-group-details-container';

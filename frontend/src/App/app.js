@@ -1,5 +1,5 @@
 // Modules
-import { Suspense, lazy } from 'react';
+import { lazy } from 'react';
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 
 // Config
@@ -23,37 +23,35 @@ const ConsoleGroups = lazy(() => import('Screens/Dashboard/Screens/Console/Scree
 const ConsoleFaculties = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleFaculties/console-faculties'));
 const ConsoleUsers = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUsers/console-users'));
 const ConsoleUserDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUserDetails'));
-const ConsoleGroupDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroupDetails/console-group-details'));
+const ConsoleGroupDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroupDetails'));
 
 function App() {
   return (
     <UserContextProvider>
-      <Suspense fallback={null}>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Auth />} path={ROUTES.auth}>
-              <Route element={<SignIn />} index />
-              <Route element={<SignUp />} path={ROUTES.signUp} />
-              <Route element={<Congratulations />} path={ROUTES.congratulations} />
-            </Route>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Auth />} path={ROUTES.auth}>
+            <Route element={<SignIn />} index />
+            <Route element={<SignUp />} path={ROUTES.signUp} />
+            <Route element={<Congratulations />} path={ROUTES.congratulations} />
+          </Route>
 
-            <Route element={<Dashboard />} path={ROUTES.dashboard}>
-              <Route index element={<Profile />} />
-              <Route path={ROUTES.console} element={<Console />}>
-                <Route index element={<ConsoleInitial />} />
-                <Route path={ROUTES.consoleDepartments} element={<ConsoleDepartments />} />
-                <Route path={ROUTES.consoleGroups} element={<ConsoleGroups />} />
-                <Route path={ROUTES.consoleFaculties} element={<ConsoleFaculties />} />
-                <Route path={ROUTES.consoleUsers} element={<ConsoleUsers />} />
-                <Route path={ROUTES.consoleUsersDetails} element={<ConsoleUserDetails />} />
-                <Route path={ROUTES.consoleGroupsDetails} element={<ConsoleGroupDetails />} />
-              </Route>
+          <Route element={<Dashboard />} path={ROUTES.dashboard}>
+            <Route index element={<Profile />} />
+            <Route path={ROUTES.console} element={<Console />}>
+              <Route index element={<ConsoleInitial />} />
+              <Route path={ROUTES.consoleDepartments} element={<ConsoleDepartments />} />
+              <Route path={ROUTES.consoleGroups} element={<ConsoleGroups />} />
+              <Route path={ROUTES.consoleFaculties} element={<ConsoleFaculties />} />
+              <Route path={ROUTES.consoleUsers} element={<ConsoleUsers />} />
+              <Route path={ROUTES.consoleUsersDetails} element={<ConsoleUserDetails />} />
+              <Route path={ROUTES.consoleGroupsDetails} element={<ConsoleGroupDetails />} />
             </Route>
+          </Route>
 
-            <Route element={<Navigate replace to={ROUTES.auth} />} path="*" />
-          </Routes>
-        </BrowserRouter>
-      </Suspense>
+          <Route element={<Navigate replace to={ROUTES.auth} />} path="*" />
+        </Routes>
+      </BrowserRouter>
     </UserContextProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './student.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Group } from '../groups/group.entity';
 import { Faculty } from '../faculties/faculty.entity';
@@ -62,7 +62,7 @@ export class StudentsService {
 
     if (dto.groupId !== student.group?.id) {
       const group = await this.groupsRepository.findOneBy({
-        id: dto.groupId,
+        id: dto.groupId || IsNull(),
       });
 
       student.group = group;
@@ -70,7 +70,7 @@ export class StudentsService {
 
     if (dto.facultyId !== student.faculty?.id) {
       const faculty = await this.facultiesRepository.findOneBy({
-        id: dto.facultyId,
+        id: dto.facultyId || IsNull(),
       });
 
       student.faculty = faculty;
