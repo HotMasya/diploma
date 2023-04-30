@@ -10,6 +10,13 @@ export const ROUTES = freeze({
   congratulations: '/auth/congratulations',
 
   dashboard: '/dashboard',
+
+  grades: '/dashboard/grades',
+  gradeDetails: '/dashboard/grades/:journalId',
+
+  journals: '/dashboard/journals',
+  journalDetails: '/journals/:journalId',
+
   console: '/dashboard/console',
   consoleUsers: '/dashboard/console/users',
   consoleUsersDetails: '/dashboard/console/users/:userId',

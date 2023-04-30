@@ -3,14 +3,32 @@
 @import 'global.scss';
 
 .container {
-  align-items: center;
-  border-radius: 8px;
-  gap: 16px;
   box-shadow: $small-elevation;
-  display: flex;
   padding: 24px 16px;
+  max-width: 1000px;
+  width: 100%;
 }
 
-.avatar {
-  font-size: 2rem;
+.email {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  color: $text_subdued;
+  font-weight: 500;
+}
+
+.details {
+  margin-top: 4px;
+}
+
+.statuses {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.user {
+  display: flex;
+  gap: 16px;
 }

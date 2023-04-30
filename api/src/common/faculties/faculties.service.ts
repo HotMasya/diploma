@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Faculty } from './faculty.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { AdminFindDto } from '../../dto/admin-find.dto';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
@@ -47,8 +47,17 @@ export class FacultiesService {
     return builder.getMany();
   }
 
-  async getTotalCount() {
-    return await this.facultiesRepository.count();
+  async getTotalCount(search?: string) {
+    if (!search) {
+      return await this.facultiesRepository.count();
+    } else {
+      return await this.facultiesRepository.count({
+        where: [
+          { name: ILike(`%${search}%`) },
+          { shortName: ILike(`%${search}%`) },
+        ],
+      });
+    }
   }
 
   async create(dto: CreateFacultyDto) {

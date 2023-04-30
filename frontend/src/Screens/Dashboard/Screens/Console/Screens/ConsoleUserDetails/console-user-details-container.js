@@ -19,6 +19,7 @@ import { isPassword } from 'Helpers/isPassword';
 
 // Mod
 import User from 'Models/User';
+import { useUserContext } from 'Context/UserContext';
 
 const validateForm = (values) => {
   if (!values.password && !values.repeatPassword) return {};
@@ -43,6 +44,7 @@ const validateForm = (values) => {
 function ConsoleUserDetailsContainer() {
   const { userId } = useParams();
   const [user, setUser] = useState();
+  const [currentUser] = useUserContext();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -99,7 +101,7 @@ function ConsoleUserDetailsContainer() {
     }
 
     Object.keys(PERMISSION).forEach((k) => {
-      values.permissions[k] = user.hasPermissions(PERMISSION[k]);
+      values.permissions[k] = user.hasPermissionsNA(PERMISSION[k]);
     });
 
     return values;
@@ -132,7 +134,7 @@ function ConsoleUserDetailsContainer() {
 
         return new User(prev);
       });
-      navigate(pathname);
+      navigate(pathname, { replace: true });
     });
   }, [initialValues.student?.id, navigate, pathname]);
 
@@ -143,7 +145,7 @@ function ConsoleUserDetailsContainer() {
 
         return new User(prev);
       });
-      navigate(pathname);
+      navigate(pathname, { replace: true });
     });
   }, [initialValues.teacher?.id, navigate, pathname]);
 
@@ -231,6 +233,7 @@ function ConsoleUserDetailsContainer() {
 
   return (
     <Form
+      areSelfDetails={currentUser?.id === +userId}
       component={ConsoleUserDetails}
       initialValues={initialValues}
       onStudentCreate={handleStudentCreate}

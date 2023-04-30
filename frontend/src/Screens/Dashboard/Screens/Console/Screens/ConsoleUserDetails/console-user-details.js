@@ -66,6 +66,7 @@ const spySubscription = { dirty: true };
 
 function ConsoleUserDetails(props) {
   const {
+    areSelfDetails,
     form,
     handleSubmit,
     initialValues,
@@ -182,7 +183,9 @@ function ConsoleUserDetails(props) {
                 [styles.active]: activeTab === tag,
               })}
               state={tag}
-              to={generatePath(ROUTES.consoleUsersDetails, { userId: user.id })}
+              to={generatePath(ROUTES.consoleUsersDetails, {
+                userId: user.id,
+              })}
             >
               {icon}
               {title}
@@ -206,7 +209,7 @@ function ConsoleUserDetails(props) {
       </ul>
       <form className={styles.content} onSubmit={handleSubmit}>
         <Suspense fallback={null}>
-          <TabContent onDelete={handleDelete} />
+          <TabContent areSelfDetails={areSelfDetails} onDelete={handleDelete} />
         </Suspense>
       </form>
       <FormSpy onChange={handleChange} subscription={spySubscription} />

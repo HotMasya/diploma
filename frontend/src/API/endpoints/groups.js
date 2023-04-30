@@ -19,12 +19,14 @@ async function remove(groupId, requestOptions = {}) {
 }
 
 async function update(groupId, data, requestOptions = {}) {
-  return API.instance.patch(`groups/${groupId}`, data, requestOptions)
+  return API.instance
+    .patch(`groups/${groupId}`, data, requestOptions)
     .then((res) => new Group(res.data));
 }
 
 async function findOne(groupId, requestOptions = {}) {
-  return API.instance.get(`groups/${groupId}`, requestOptions)
+  return API.instance
+    .get(`groups/${groupId}`, requestOptions)
     .then((res) => new Group(res.data));
 }
 
@@ -46,13 +48,30 @@ async function removeCurator(groupId, requestOptions = {}) {
     .then((res) => new Group(res.data));
 }
 
+async function addStudents(groupId, studentIds, requestOptions = {}) {
+  return API.instance.post(
+    `groups/${groupId}/students`,
+    { studentIds },
+    requestOptions
+  );
+}
+
+async function removeStudent(groupId, studentId, requestOptions = {}) {
+  return API.instance.delete(
+    `groups/${groupId}/students/${studentId}`,
+    requestOptions
+  );
+}
+
 const groups = {
+  addStudents,
   countTotal,
   create,
   findAll,
   findOne,
   remove,
   removeCurator,
+  removeStudent,
   update,
 };
 

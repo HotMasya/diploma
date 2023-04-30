@@ -8,6 +8,7 @@ import Auth from './endpoints/auth';
 import Departments from './endpoints/departments';
 import Faculties from './endpoints/factulties';
 import Groups from './endpoints/groups';
+import Journals from './endpoints/journals';
 import Users from './endpoints/users';
 import Students from './endpoints/students';
 import Teachers from './endpoints/teachers';
@@ -66,6 +67,7 @@ const api = {
   Departments,
   Faculties,
   Groups,
+  Journals,
   Students,
   Teachers,
   Users,

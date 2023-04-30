@@ -31,12 +31,10 @@ export class UsersService {
       searchQuery: `%${search}%`,
     };
 
-    builder
-      .where(
-        `CONCAT(user.firstName, ' ', user.lastName) ILIKE :searchQuery`,
-        params,
-      )
-      .orWhere('user.email ILIKE :searchQuery', params);
+    builder.andWhere(
+      `(CONCAT(user.firstName, ' ', user.lastName) ILIKE :searchQuery OR user.email ILIKE :searchQuery)`,
+      params,
+    );
   }
 
   async changePassword(password: string, userId: number) {

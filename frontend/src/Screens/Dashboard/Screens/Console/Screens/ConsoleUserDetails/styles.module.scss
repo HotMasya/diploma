@@ -120,7 +120,7 @@
   display: flex;
   justify-content: space-between;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 0;
 
   .label {
     transition: all 100ms ease;
@@ -143,6 +143,37 @@
 
   & + & {
     border-top: 1px solid $grey_300;
+  }
+}
+
+.permissionGroup {
+  border-bottom: 1px solid $grey_300;
+  gap: 24px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 8px 0;
+
+  & > input {
+    margin-top: 4px;
+  }
+
+  h3 {
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin-bottom: 8px;
+    line-height: 22px;
+  }
+
+  &.disabled {
+    color: $text_disabled;
+    cursor: not-allowed;
+
+    &:hover .label {
+      font-weight: 400;
+    }
   }
 }
 
@@ -181,5 +212,48 @@
 
   & > span:last-child {
     color: $text_disabled;
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+
+  & > label:nth-child(2) {
+    border-top: 0;
+  }
+
+  & > label:not(:first-child) {
+    margin-left: 48px;
+  }
+
+  & + & {
+    margin-top: 48px;
+  }
+}
+
+.admin {
+  align-items: flex-start;
+  margin-bottom: 32px;
+
+  &:hover {
+    & > div {
+      span {
+        font-weight: 600 !important;
+      }
+    }
+  }
+
+  & > div {
+    span {
+      display: block;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    p {
+      line-height: 22px;
+    }
   }
 }

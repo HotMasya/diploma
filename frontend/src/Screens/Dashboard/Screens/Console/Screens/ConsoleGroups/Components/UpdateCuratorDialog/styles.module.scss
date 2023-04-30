@@ -30,6 +30,29 @@
   }
 }
 
+.curator {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+
+  span {
+    color: $text_subdued;
+    display: block;
+    font-size: 14px;
+    text-overflow: ellipsis;
+  overflow: hidden;
+    width: 100%;
+  }
+
+  p {
+    font-weight: 500;
+    font-size: 16px;
+    text-overflow: ellipsis;
+  overflow: hidden;
+    width: 100%;
+  }
+}
+
 .selected {
   display: flex;
   gap: 8px;
@@ -40,6 +63,6 @@
   button {
     position: absolute;
     right: 8px;
-    top: 8px;
+    top: 16px;
   }
 }

@@ -61,4 +61,22 @@ export class GroupsController {
   async removeCurator(@Param('id') id: string) {
     return this.service.removeCurator(+id);
   }
+
+  @Post(':id/students')
+  @Permissions(Permission.UPDATE_GROUPS)
+  async addStudents(
+    @Param('id') groupId: string,
+    @Body('studentIds') studentIds: number[],
+  ) {
+    return this.service.addStudents(+groupId, studentIds);
+  }
+
+  @Delete(':groupId/students/:studentId')
+  @Permissions(Permission.UPDATE_GROUPS)
+  async removeStudent(
+    @Param('groupId') groupId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.service.removeStudent(+groupId, +studentId);
+  }
 }

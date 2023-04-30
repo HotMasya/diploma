@@ -26,6 +26,7 @@ export class Student {
   @ManyToOne(() => Group, (group) => group.students, {
     nullable: true,
     eager: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'groupid' })
   group?: Group;
@@ -33,6 +34,7 @@ export class Student {
   @ManyToOne(() => Faculty, (faculty) => faculty.students, {
     nullable: true,
     eager: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'facultyid' })
   faculty?: Faculty;

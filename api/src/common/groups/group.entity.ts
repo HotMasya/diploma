@@ -35,4 +35,6 @@ export class Group {
   })
   @JoinColumn({ name: 'curatorid' })
   curator: Teacher;
+
+  studentsCount: number;
 }

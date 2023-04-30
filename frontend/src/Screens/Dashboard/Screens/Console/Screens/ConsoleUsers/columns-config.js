@@ -1,7 +1,5 @@
 // Modules
 import { createColumnHelper } from '@tanstack/react-table';
-import { FaCheckCircle } from 'react-icons/fa';
-import { FaTimesCircle } from 'react-icons/fa';
 import formatRelative from 'date-fns/formatRelative';
 import ukLocale from 'date-fns/locale/uk';
 import { FaCrown } from 'react-icons/fa';
@@ -10,8 +8,10 @@ import { FaCrown } from 'react-icons/fa';
 import ActionsCell from './Components/ActionsCell/actions-cell';
 
 // Constants
-import { GREEN, RED, YELLOW } from 'Constants/colors';
-import { PERMISSION } from 'Constants/permission';
+import { YELLOW } from 'Constants/colors';
+
+// Helpers
+import { getVerificationIcon } from 'Helpers/getVerificationIcon';
 
 // Styles
 import styles from './styles.module.scss';
@@ -20,17 +20,13 @@ const helper = createColumnHelper();
 
 const renderVerifiedCell = (props) => (
   <span className={styles.centered}>
-    {props.getValue() ? (
-      <FaCheckCircle color={GREEN._500} size={24} />
-    ) : (
-      <FaTimesCircle color={RED._500} size={24} />
-    )}
+    {getVerificationIcon(props.getValue())}
   </span>
 );
 
 const rendarFullNameCell = (props) => (
   <div className={styles.name}>
-    {props.row.original.hasPermissions(PERMISSION.ADMIN) && (
+    {props.row.original.isAdmin && (
       <FaCrown color={YELLOW._500} size={20} title="Адміністратор" />
     )}
     {props.row.original.fullName}

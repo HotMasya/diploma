@@ -23,7 +23,7 @@ const transitionDurationMs = 150;
 let timeout;
 
 const Dialog = forwardRef((props, ref) => {
-  const { children, description, onClose, pending, title } = props;
+  const { children, className, description, onClose, pending, title } = props;
 
   const [closing, setClosing] = useState(false);
   const overlayRef = useRef(null);
@@ -72,7 +72,7 @@ const Dialog = forwardRef((props, ref) => {
     [styles.closing]: closing,
   });
 
-  const dialogClassNames = cx(styles.dialog, {
+  const dialogClassNames = cx(className, styles.dialog, {
     [styles.closing]: closing,
     [styles.pending]: pending,
   });
@@ -99,6 +99,7 @@ const Dialog = forwardRef((props, ref) => {
 
 Dialog.propTypes = {
   children: PropTypes.node,
+  className: PropTypes.string,
   description: PropTypes.node,
   onClose: PropTypes.func,
   pending: PropTypes.bool,
@@ -107,6 +108,7 @@ Dialog.propTypes = {
 
 Dialog.defaultProps = {
   children: [],
+  className: '',
   description: null,
   onClose: undefined,
   pending: false,

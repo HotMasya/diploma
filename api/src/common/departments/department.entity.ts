@@ -26,6 +26,8 @@ export class Department {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Teacher, (teacher) => teacher.departments)
+  @ManyToMany(() => Teacher, (teacher) => teacher.departments, {
+    onDelete: 'CASCADE',
+  })
   teachers: Teacher[];
 }

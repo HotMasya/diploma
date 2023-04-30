@@ -1,0 +1,11 @@
+.container {
+  max-width: 900px;
+  min-height: 60vh;
+  position: relative;
+}
+
+.toolbar {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+}

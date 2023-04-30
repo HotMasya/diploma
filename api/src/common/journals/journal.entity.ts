@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -21,8 +22,8 @@ export class Journal {
   @Column({ length: 256 })
   name: string;
 
-  @Column({ length: 512 })
-  description: string;
+  @Column({ length: 512, nullable: true })
+  description?: string;
 
   @Column({
     type: 'jsonb',
@@ -46,9 +47,11 @@ export class Journal {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(() => Group)
-  groups: Group[];
+  @ManyToOne(() => Group, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'group_id' })
+  group: Group;
 
-  @OneToOne(() => Teacher)
+  @OneToOne(() => Teacher, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
 }

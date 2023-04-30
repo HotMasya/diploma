@@ -29,7 +29,14 @@ async function update(studentId, data = {}, requestOptions = {}) {
     .then((res) => new Student(res.data));
 }
 
+async function countTotal(search) {
+  return API.instance
+    .get('students/count/total', { params: { search } })
+    .then((res) => res.data);
+}
+
 const students = {
+  countTotal,
   create,
   findAll,
   update,

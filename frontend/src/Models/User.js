@@ -29,6 +29,11 @@ class User {
   hasPermissions(...permissions) {
     if (!permissions.length || this.isAdmin) return true;
 
+    return this.hasPermissionsNA(permissions);
+  }
+
+  // without admin rights
+  hasPermissionsNA(...permissions) {
     const mergedPermissions = reduce(
       permissions,
       (acc, permission) => (acc |= permission),
@@ -43,7 +48,7 @@ class User {
   }
 
   get isAdmin() {
-    return this.permissions | PERMISSION.ADMIN === this.permissions;
+    return (this.permissions | PERMISSION.ADMIN) === this.permissions;
   }
 
   get acronym() {

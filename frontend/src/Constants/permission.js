@@ -11,37 +11,58 @@ export const PERMISSION = Object.freeze({
   UPDATE_GROUPS: 1 << 7,
   DELETE_GROUPS: 1 << 8,
 
-  CREATE_FACULTIES: 1 << 6,
-  READ_FACULTIES: 1 << 7,
-  UPDATE_FACULTIES: 1 << 8,
-  DELETE_FACULTIES: 1 << 9,
+  CREATE_FACULTIES: 1 << 9,
+  READ_FACULTIES: 1 << 10,
+  UPDATE_FACULTIES: 1 << 11,
+  DELETE_FACULTIES: 1 << 12,
 
-  CREATE_DEPARTMENTS: 1 << 10,
-  READ_DEPARTMENTS: 1 << 11,
-  UPDATE_DEPARTMENTS: 1 << 12,
-  DELETE_DEPARTMENTS: 1 << 13,
+  CREATE_DEPARTMENTS: 1 << 13,
+  READ_DEPARTMENTS: 1 << 14,
+  UPDATE_DEPARTMENTS: 1 << 15,
+  DELETE_DEPARTMENTS: 1 << 16,
 });
 
-export const PERMISSIONS_MAP = Object.freeze({
-  ADMIN: 'Адміністратор',
-
-  CREATE_USERS: 'Створювати користувачів',
-  READ_USERS: 'Переглядати користувачів',
-  DELETE_USERS: 'Видаляти користувачів',
-  UPDATE_USERS: 'Оновлювати користувачів',
-
-  CREATE_GROUPS: 'Створювати групи',
-  READ_GROUPS: 'Переглядати групи',
-  DELETE_GROUPS: 'Видаляти групи',
-  UPDATE_GROUPS: 'Оновлювати групи',
-
-  CREATE_FACULTIES: 'Створювати факультети',
-  READ_FACULTIES: 'Переглядати факультети',
-  DELETE_FACULTIES: 'Видаляти факультети',
-  UPDATE_FACULTIES: 'Оновлювати факультети',
-
-  CREATE_DEPARTMENTS: 'Створювати кафедри',
-  READ_DEPARTMENTS: 'Переглядати кафедри',
-  DELETE_DEPARTMENTS: 'Видаляти кафедри',
-  UPDATE_DEPARTMENTS: 'Оновлювати кафедри',
-});
+export const PERMISSION_GROUPS = Object.freeze([
+  {
+    description:
+      'Дозволяє додавати нових користувачів, а також редагувати та видаляти вже існуючих. Редагувати можна буде персональні дані користувача, права, дані про студента і дані про викладача',
+    name: 'Керування користувачами',
+    fields: [
+      { labelText: 'Створювати користувачів', name: 'CREATE_USERS' },
+      { labelText: 'Переглядати користувачів', name: 'READ_USERS' },
+      { labelText: 'Оновлювати користувачів', name: 'UPDATE_USERS' },
+      { labelText: 'Видаляти користувачів', name: 'DELETE_USERS' },
+    ],
+  },
+  {
+    description:
+      'Дозволяє створювати нові групи, а також редагувати і видаляти існуючі. Також дозволяє вибирати куратора групи серед існуючих викладачів, і керувати складом групи: додавати та видаляти студентів.',
+    name: 'Керування групами',
+    fields: [
+      { labelText: 'Створювати групи', name: 'CREATE_GROUPS' },
+      { labelText: 'Переглядати групи', name: 'READ_GROUPS' },
+      { labelText: 'Оновлювати групи', name: 'UPDATE_GROUPS' },
+      { labelText: 'Видаляти групи', name: 'DELETE_GROUPS' },
+    ],
+  },
+  {
+    description: 'Дозволяє створювати, редагувати та видаляти факультети.',
+    name: 'Керування факультетами',
+    fields: [
+      { labelText: 'Створювати факультети', name: 'CREATE_FACULTIES' },
+      { labelText: 'Переглядати факультети', name: 'READ_FACULTIES' },
+      { labelText: 'Оновлювати факультети', name: 'UPDATE_FACULTIES' },
+      { labelText: 'Видаляти факультети', name: 'DELETE_FACULTIES' },
+    ],
+  },
+  {
+    description: 'Дозволяє створювати, редагувати та видаляти кафедри.',
+    name: 'Керування кафедрами',
+    fields: [
+      { labelText: 'Створювати кафедри', name: 'CREATE_DEPARTMENTS' },
+      { labelText: 'Переглядати кафедри', name: 'READ_DEPARTMENTS' },
+      { labelText: 'Оновлювати кафедри', name: 'UPDATE_DEPARTMENTS' },
+      { labelText: 'Видаляти кафедри', name: 'DELETE_DEPARTMENTS' },
+    ],
+  },
+]);

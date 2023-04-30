@@ -12,6 +12,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { Teacher } from '../teacher/teacher.entity';
 import { Student } from '../students/student.entity';
+import * as _ from 'lodash';
 
 @Injectable()
 export class GroupsService {
@@ -24,48 +25,72 @@ export class GroupsService {
     private readonly studentRepository: Repository<Student>,
   ) {}
 
-  private static validateGroup(group: Group) {
-    if (!group) {
-      throw new NotFoundException(null, 'Група не знайдена');
-    }
-  }
-
   async findOne(id: number) {
     const builder = this.groupsRepository
       .createQueryBuilder('group')
+      .select(
+        (qb) =>
+          qb
+            .subQuery()
+            .select('COALESCE(COUNT(*), 0)::INTEGER')
+            .from(Student, 's')
+            .where('s.groupid = group.id'),
+        'studentsCount',
+      )
       .leftJoinAndSelect('group.curator', 'curator')
       .leftJoinAndSelect('curator.user', 'user')
       .leftJoinAndSelect('curator.departments', 'departments')
-      .addSelect(
-        (qb) =>
-          qb
-            .select('COUNT(*)')
-            .from(Student, 's')
-            .where('group.id = s.groupid'),
-        'studentsCount',
-      )
       .where('group.id = :id', { id });
 
-    const group = await builder.getOne();
+    const { raw, entities } = await builder.getRawAndEntities();
 
-    GroupsService.validateGroup(group);
+    if (!entities.length) {
+      throw new NotFoundException(null, 'Група не знайдена');
+    }
+
+    const group = entities[0];
+
+    group.studentsCount = raw[0].studentsCount;
 
     return group;
   }
 
+  async addStudents(groupId: number, ids: number[]) {
+    const group = await this.groupsRepository.findOne({
+      relations: ['students'],
+      where: { id: groupId },
+    });
+
+    if (!group) {
+      throw new NotFoundException(null, 'Група не знайдена');
+    }
+
+    const students = ids.map((id) => {
+      const student = new Student();
+      student.id = id;
+
+      return student;
+    });
+
+    group.students = [...group.students, ...students];
+
+    await this.groupsRepository.save(group);
+  }
+
   async findAll(dto: AdminFindDto) {
     const builder = this.groupsRepository
-      .createQueryBuilder('group')
-      .leftJoinAndSelect('group.curator', 'curator')
-      .leftJoinAndSelect('curator.user', 'user')
-      .addSelect(
+      .createQueryBuilder('g')
+      .select(
         (qb) =>
           qb
-            .select('COUNT(*)')
+            .subQuery()
+            .select('COALESCE(COUNT(*), 0)::INTEGER')
             .from(Student, 's')
-            .where('group.id = s.groupid'),
+            .where('s.groupid = g.id'),
         'studentsCount',
       )
+      .leftJoinAndSelect('g.curator', 'curator')
+      .leftJoinAndSelect('curator.user', 'user')
       .skip(dto.skip)
       .take(dto.take);
 
@@ -91,7 +116,13 @@ export class GroupsService {
       builder.andWhere(`${builder.alias}.id NOT IN (:...ids)`, params);
     }
 
-    return builder.getMany();
+    const { raw, entities } = await builder.getRawAndEntities();
+
+    return entities.map((entity, idx) => {
+      entity.studentsCount = raw[idx].studentsCount;
+
+      return entity;
+    });
   }
 
   async getTotalCount(search?: string) {
@@ -145,6 +176,23 @@ export class GroupsService {
     if (group.curator) {
       group.curator = null;
     }
+
+    return this.groupsRepository.save(group);
+  }
+
+  async removeStudent(groupId: number, studentId: number) {
+    const group = await this.groupsRepository.findOne({
+      relations: ['students'],
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new NotFoundException(null, 'Група не знайдена');
+    }
+
+    group.students = _.filter(group.students, ({ id }) => id !== studentId);
 
     return this.groupsRepository.save(group);
   }

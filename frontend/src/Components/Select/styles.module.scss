@@ -85,7 +85,7 @@ $transition-duration: 150ms;
     color: $grey_600;
   }
 
-  &.hasError {
+  &.error {
     border-color: $red_500;
   }
 }

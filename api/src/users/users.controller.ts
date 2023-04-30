@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
   Query,
+  Req,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -48,8 +48,8 @@ export class UsersController {
 
   @Get('me')
   @Permissions(Permission.ANY)
-  findMe(@Request() req) {
-    return req.user;
+  findMe(@Req() req: Request & { user?: User }) {
+    return this.usersService.findOne(req.user.id);
   }
 
   @Get(':id')

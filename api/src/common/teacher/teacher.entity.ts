@@ -27,6 +27,7 @@ export class Teacher {
 
   @ManyToMany(() => Department, (department) => department.teachers, {
     nullable: true,
+    onDelete: 'CASCADE',
   })
   @JoinTable({
     name: 'teacher_department',

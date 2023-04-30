@@ -10,6 +10,7 @@ $transition-duration: 150ms;
   background-color: $grey_300;
   border-radius: 5000px;
   cursor: pointer;
+  flex-shrink: 0;
   height: calc($thumb_size + $padding * 2);
   position: relative;
   transition: all $transition-duration ease-out;
@@ -31,7 +32,7 @@ $transition-duration: 150ms;
   &:checked {
     background-color: $blue_500;
 
-    &:hover {
+    &:not(:disabled):hover {
       background-color: $blue_600;
     }
 
@@ -40,7 +41,7 @@ $transition-duration: 150ms;
     }
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     background-color: $grey_400;
   }
 

@@ -20,7 +20,10 @@ export class Faculty {
   @Column({ length: 16 })
   shortName: string;
 
-  @OneToMany(() => Student, (student) => student.faculty, { nullable: true })
+  @OneToMany(() => Student, (student) => student.faculty, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   students: Student[];
 
   @CreateDateColumn({ name: 'created_at' })

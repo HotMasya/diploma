@@ -1,14 +1,18 @@
 // Modules
 import { Link, NavLink } from 'react-router-dom';
 import cx from 'classnames';
-import { FaUserGraduate } from 'react-icons/fa';
+import { FaUserGraduate, FaBook, FaStar } from 'react-icons/fa';
 import { HiDesktopComputer } from 'react-icons/hi';
+import get from 'lodash/get';
 
 // Assets
 import { EducationCap } from 'Assets/Icons/education-cap';
 
 // Components
 import HeaderProfile from 'Components/HeaderProfile';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Config
 import { ROUTES } from 'Config/routes';
@@ -17,6 +21,12 @@ import { ROUTES } from 'Config/routes';
 import styles from './styles.module.scss';
 
 function Header() {
+  const [user] = useUserContext();
+
+  const isAdmin = get(user, 'isAdmin');
+  const isTeacher = Boolean(get(user, 'teacher'));
+  const isStudent = Boolean(get(user, 'student'));
+
   return (
     <header className={styles.header}>
       <Link className={styles.logo} to={ROUTES.dashboard}>
@@ -26,7 +36,9 @@ function Header() {
 
       <nav className={styles.navbar}>
         <NavLink
-          className={({ isActive }) => cx(styles.navlink, { [styles.active]: isActive})}
+          className={({ isActive }) =>
+            cx(styles.navlink, { [styles.active]: isActive })
+          }
           end
           to={ROUTES.dashboard}
         >
@@ -34,13 +46,41 @@ function Header() {
           Профіль
         </NavLink>
 
-        <NavLink
-          className={({ isActive }) => cx(styles.navlink, { [styles.active]: isActive})}
-          to={ROUTES.console}
-        >
-          <HiDesktopComputer size="24px" />
-          Консоль
-        </NavLink>
+        {isStudent && (
+          <NavLink
+            className={({ isActive }) =>
+              cx(styles.navlink, { [styles.active]: isActive })
+            }
+            to={ROUTES.grades}
+          >
+            <FaStar size="24px" />
+            Оцінки
+          </NavLink>
+        )}
+
+        {isTeacher && (
+          <NavLink
+            className={({ isActive }) =>
+              cx(styles.navlink, { [styles.active]: isActive })
+            }
+            to={ROUTES.journals}
+          >
+            <FaBook size="24px" />
+            Журнали
+          </NavLink>
+        )}
+
+        {isAdmin && (
+          <NavLink
+            className={({ isActive }) =>
+              cx(styles.navlink, { [styles.active]: isActive })
+            }
+            to={ROUTES.console}
+          >
+            <HiDesktopComputer size="24px" />
+            Консоль
+          </NavLink>
+        )}
       </nav>
 
       <HeaderProfile />

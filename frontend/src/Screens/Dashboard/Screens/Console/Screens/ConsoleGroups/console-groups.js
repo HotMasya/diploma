@@ -1,6 +1,5 @@
 // Modules
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { MdGroupAdd } from 'react-icons/md';
 
@@ -18,10 +17,11 @@ import UpdateCuratorDialog from './Components/UpdateCuratorDialog';
 
 // Constants
 import { columns } from './columns-config';
-import { ORDER } from 'Constants/order';
 
 // Hooks
-import { useDebounceValue } from 'Hooks/useDebounceValue';
+import { useSorting } from 'Hooks/useSorting';
+import { usePagination } from 'Hooks/usePagination';
+import { useSearch } from 'Hooks/useSearch';
 
 // Styles
 import styles from '../ConsoleUsers/styles.module.scss';
@@ -32,15 +32,14 @@ const limit = 10;
 function ConsoleGroups() {
   const [groups, setGroups] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [curatorModalOpen, setCuratorModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteCuratorModalOpen, setDeleteCuratorModalOpen] = useState(false);
 
-  const searchValue = useDebounceValue(searchParams.get('q'));
-  const currentPage = Number(searchParams.get('p')) || 1;
-  const order = searchParams.get('o') || '';
+  const [order, handleSortingChange] = useSorting();
+  const [currentPage, handlePageChange] = usePagination();
+  const { debouncedSearch, handleSearch, search } = useSearch();
 
   const handleDeleteModalClose = useCallback(
     () => setDeleteModalOpen(false),
@@ -72,80 +71,15 @@ function ConsoleGroups() {
     []
   );
 
-  const setParamsWithoutReplace = useCallback(
-    (func) => setSearchParams(func, { replace: true }),
-    [setSearchParams]
-  );
-
-  const handlePageChange = useCallback(
-    (newPage) => {
-      setParamsWithoutReplace((prev) => {
-        if (newPage > 1) {
-          prev.set('p', newPage);
-        } else {
-          prev.delete('p');
-        }
-
-        return prev;
-      });
-    },
-    [setParamsWithoutReplace]
-  );
-
-  const handleSearch = useCallback(
-    ({ target }) => {
-      setParamsWithoutReplace((prev) => {
-        if (target.value) {
-          prev.set('q', target.value);
-        } else {
-          prev.delete('q');
-        }
-
-        handlePageChange(1);
-
-        return prev;
-      });
-    },
-    [handlePageChange, setParamsWithoutReplace]
-  );
-
-  const handleSortingChange = useCallback(
-    (sort) => {
-      setParamsWithoutReplace((prev) => {
-        if (!sort.length) {
-          prev.delete('o');
-        } else {
-          const { id, desc } = sort[0];
-          const order = `${id} ${desc ? ORDER.desc : ORDER.asc}`;
-
-          prev.set('o', order);
-        }
-
-        return prev;
-      });
-    },
-    [setParamsWithoutReplace]
-  );
-
   const fetchGroups = useCallback(
     async () =>
       API.Groups.findAll({
         skip: (currentPage - 1) * limit,
         take: limit,
-        search: searchValue,
+        search: debouncedSearch,
         order,
-      })
-        .then((groups) => {
-          setGroups(groups);
-
-          if (Math.ceil(totalCount / limit) < currentPage) {
-            handlePageChange(currentPage - 1);
-          }
-
-          return API.Groups.countTotal(searchValue);
-        })
-        .then(setTotalCount),
-    [currentPage, handlePageChange, order, searchValue, totalCount]
+      }).then(setGroups),
+    [currentPage, debouncedSearch, order]
   );
 
   useEffect(() => {
@@ -153,16 +87,16 @@ function ConsoleGroups() {
       const message = API.parseError(err).message;
       toast(message, { toastId: 'fetch-groups-error' });
     });
-  }, [currentPage, fetchGroups, order, searchValue]);
+  }, [fetchGroups]);
+
+  useEffect(() => {
+    API.Groups.countTotal(debouncedSearch).then(setTotalCount);
+  }, [debouncedSearch]);
 
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Input
-          onChange={handleSearch}
-          placeholder="Пошук..."
-          value={searchParams.get('q') || ''}
-        />
+        <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
         <Button onClick={handleCreateModalOpen}>
           <MdGroupAdd size={24} /> Додати групу
         </Button>

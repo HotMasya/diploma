@@ -1,6 +1,5 @@
 // Modules
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaUserPlus } from 'react-icons/fa';
 
@@ -14,13 +13,15 @@ import Button from 'Components/Button';
 import Paginator from 'Components/Paginator';
 import DeleteUserDialog from './Components/DeleteUserDialog';
 import ChangePasswordDialog from './Components/ChangePasswordDialog';
+import CreateUserDialog from './Components/CreateUserDialog';
 
 // Constants
 import { columns } from './columns-config';
-import { ORDER } from 'Constants/order';
 
 // Hooks
-import { useDebounceValue } from 'Hooks/useDebounceValue';
+import { useSorting } from 'Hooks/useSorting';
+import { usePagination } from 'Hooks/usePagination';
+import { useSearch } from 'Hooks/useSearch';
 
 // Styles
 import styles from './styles.module.scss';
@@ -30,13 +31,13 @@ const limit = 10;
 function ConsoleUsers() {
   const [users, setUsers] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
-  const searchValue = useDebounceValue(searchParams.get('q'));
-  const currentPage = Number(searchParams.get('p')) || 1;
-  const order = searchParams.get('o') || '';
+  const [order, handleSortingChange] = useSorting();
+  const [currentPage, handlePageChange] = usePagination();
+  const { debouncedSearch, handleSearch, search } = useSearch();
 
   const handleDeleteModalClose = useCallback(
     () => setDeleteModalOpen(false),
@@ -46,65 +47,19 @@ function ConsoleUsers() {
     () => setPasswordModalOpen(false),
     []
   );
-
-  const tableMeta = useMemo(() => ({
-    setDeleteModalOpen,
-    setPasswordModalOpen,
-  }), []);
-
-  const setParamsWithoutReplace = useCallback(
-    (func) => setSearchParams(func, { replace: true }),
-    [setSearchParams]
+  const handleCreateModalClose = useCallback(
+    () => setCreateModalOpen(false),
+    []
   );
 
-  const handlePageChange = useCallback(
-    (newPage) => {
-      setParamsWithoutReplace((prev) => {
-        if (newPage > 1) {
-          prev.set('p', newPage);
-        } else {
-          prev.delete('p');
-        }
+  const handleCreateModalOpen = useCallback(() => setCreateModalOpen(true), []);
 
-        return prev;
-      });
-    },
-    [setParamsWithoutReplace]
-  );
-
-  const handleSearch = useCallback(
-    ({ target }) => {
-      setParamsWithoutReplace((prev) => {
-        if (target.value) {
-          prev.set('q', target.value);
-        } else {
-          prev.delete('q');
-        }
-
-        handlePageChange(1);
-
-        return prev;
-      });
-    },
-    [handlePageChange, setParamsWithoutReplace]
-  );
-
-  const handleSortingChange = useCallback(
-    (sort) => {
-      setParamsWithoutReplace((prev) => {
-        if (!sort.length) {
-          prev.delete('o');
-        } else {
-          const { id, desc } = sort[0];
-          const order = `${id} ${desc ? ORDER.desc : ORDER.asc}`;
-
-          prev.set('o', order);
-        }
-
-        return prev;
-      });
-    },
-    [setParamsWithoutReplace]
+  const tableMeta = useMemo(
+    () => ({
+      setDeleteModalOpen,
+      setPasswordModalOpen,
+    }),
+    []
   );
 
   const fetchUsers = useCallback(
@@ -112,40 +67,28 @@ function ConsoleUsers() {
       API.Users.findAll({
         skip: (currentPage - 1) * limit,
         take: limit,
-        search: searchValue,
+        search: debouncedSearch,
         order,
-      })
-        .then((users) => {
-          setUsers(users);
-
-          if (Math.ceil(totalCount / limit) < currentPage) {
-            handlePageChange(currentPage - 1);
-          }
-
-          return API.Users.countTotal(searchValue);
-        })
-        .then(setTotalCount),
-    [currentPage, handlePageChange, order, searchValue, totalCount]
+      }).then(setUsers),
+    [currentPage, debouncedSearch, order]
   );
 
   useEffect(() => {
-    if (searchValue !== searchParams.get('q')) return;
-
     fetchUsers().catch((err) => {
       const message = API.parseError(err).message;
       toast(message, { toastId: 'fetch-users-error' });
     });
-  }, [fetchUsers, searchParams, searchValue]);
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    API.Users.countTotal(debouncedSearch).then(setTotalCount);
+  }, [debouncedSearch]);
 
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Input
-          onChange={handleSearch}
-          placeholder="Пошук..."
-          value={searchParams.get('q') || ''}
-        />
-        <Button>
+        <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
+        <Button onClick={handleCreateModalOpen}>
           <FaUserPlus size={24} /> Додати користувача
         </Button>
       </div>
@@ -174,6 +117,10 @@ function ConsoleUsers() {
 
       {passwordModalOpen && (
         <ChangePasswordDialog onClose={handlePasswordModalClose} />
+      )}
+
+      {createModalOpen && (
+        <CreateUserDialog onClose={handleCreateModalClose} />
       )}
     </div>
   );

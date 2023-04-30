@@ -29,8 +29,11 @@ function Option(props) {
 
   return (
     <li className={styles.option} onClick={() => onSelect(curator)}>
-      <Avatar user={curator.user} />
-      {curator.user.fullName}
+      <Avatar user={curator.user} size={48} />
+      <div className={styles.curator}>
+        <p>{curator.user.fullName}</p>
+        <span>{curator.user.email}</span>
+      </div>
     </li>
   );
 }
@@ -40,8 +43,11 @@ function SelectedOption(props) {
 
   return (
     <div className={styles.selected}>
-      <Avatar user={curator.user} />
-      {curator.user.fullName}
+      <Avatar user={curator.user} size={48} />
+      <div className={styles.curator}>
+        <p>{curator.user.fullName}</p>
+        <span>{curator.user.email}</span>
+      </div>
 
       <IconButton onClick={onDelete} title="Видалити вибрану опцію">
         <IoClose size={24} />
@@ -75,7 +81,7 @@ function UpdateCuratorDialog(props) {
   const handleCuratorRemove = useCallback(() => setCurator(null), []);
 
   const handleUpdate = useCallback(
-    (name) => {
+    () => {
       if (pending) return;
 
       setPending(true);
@@ -116,7 +122,7 @@ function UpdateCuratorDialog(props) {
     setPendingSearch(true);
 
     API.Teachers.findAll({
-      take: 10,
+      take: 8,
       search: debouncedSearch,
       excludeIds: group.curator ? [group.curator.id] : [],
     })

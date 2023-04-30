@@ -34,13 +34,19 @@ export class DepartmentsController {
 
   @Patch(':id')
   @Permissions(Permission.UPDATE_DEPARTMENTS)
-  async update(@Param() id: string, @Body() dto: UpdateDepartmentDto) {
+  async update(@Param('id') id: string, @Body() dto: UpdateDepartmentDto) {
     return this.service.update(+id, dto);
   }
 
   @Delete(':id')
   @Permissions(Permission.DELETE_DEPARTMENTS)
-  async delete(@Param() id: string) {
+  async delete(@Param('id') id: string) {
     return this.service.delete(+id);
+  }
+
+  @Get('count/total')
+  @Permissions(Permission.READ_DEPARTMENTS)
+  async totalCount(@Query('search') search?: string) {
+    return this.service.getTotalCount(search);
   }
 }

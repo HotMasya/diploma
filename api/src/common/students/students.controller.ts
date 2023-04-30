@@ -14,7 +14,8 @@ import { Permissions } from '../../decorators/permissions.decorator';
 import { Permission } from '../../constants/permission';
 import { StudentsService } from './students.service';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { AdminFindDto } from '../../dto/admin-find.dto';
+import { FindStudentsDto } from './dto/find-students.dto';
+import * as _ from 'lodash';
 
 @Controller('students')
 export class StudentsController {
@@ -22,7 +23,11 @@ export class StudentsController {
 
   @Get()
   @Permissions(Permission.READ_USERS)
-  async findAll(@Query() dto: AdminFindDto) {
+  async findAll(@Query() dto: FindStudentsDto) {
+    if (dto.excludeIds?.length) {
+      dto.excludeIds = _.map(dto.excludeIds, Number);
+    }
+
     return this.service.findAll(dto);
   }
 
@@ -48,5 +53,10 @@ export class StudentsController {
   @Permissions(Permission.UPDATE_USERS)
   async delete(@Param('id') id: string) {
     return this.service.delete(+id);
+  }
+
+  @Get('count/total')
+  async countTotal(@Query('search') search?: string) {
+    return this.service.getTotalCount(search);
   }
 }
