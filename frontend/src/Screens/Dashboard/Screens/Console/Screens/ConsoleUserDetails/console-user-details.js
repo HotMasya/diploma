@@ -23,6 +23,10 @@ import { ROUTES } from 'Config/routes';
 
 // Constants
 import { tags } from './constants';
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Styles
 import styles from './styles.module.scss';
@@ -78,6 +82,7 @@ function ConsoleUserDetails(props) {
   } = props;
 
   const { state } = useLocation();
+  const [currentUser] = useUserContext();
   const [changes, setChanges] = useState({});
   const activeTab = state || tags.user;
   const TabContent = tabs[activeTab] || tabs[tags.user];
@@ -176,40 +181,62 @@ function ConsoleUserDetails(props) {
         )}
       </div>
       <ul className={styles.tabs}>
-        {tabLinks.map(({ icon, title, tag }) => (
-          <li key={tag} onClick={() => handleLinkClick(tag)}>
-            <Link
-              className={cx(styles.tab, {
-                [styles.active]: activeTab === tag,
-              })}
-              state={tag}
-              to={generatePath(ROUTES.consoleUsersDetails, {
-                userId: user.id,
-              })}
-            >
-              {icon}
-              {title}
+        {tabLinks.map(({ icon, title, tag }) => {
+          if (
+            tag === tags.student &&
+            !user.student &&
+            !currentUser?.hasPermissions(PERMISSION.UPDATE_USERS)
+          ) {
+            return null;
+          }
 
-              {changes[tag] && (
-                <BsFillPencilFill
-                  className={styles.changed}
-                  title="Незбережені зміни"
-                />
-              )}
+          if (
+            tag === tags.teacher &&
+            !user.teacher &&
+            !currentUser?.hasPermissions(PERMISSION.UPDATE_USERS)
+          ) {
+            return null;
+          }
 
-              {isEmptyTab(tag) && (
-                <BsPlusLg
-                  className={styles.changed}
-                  title="Натисніть, щоб створити"
-                />
-              )}
-            </Link>
-          </li>
-        ))}
+          return (
+            <li key={tag} onClick={() => handleLinkClick(tag)}>
+              <Link
+                className={cx(styles.tab, {
+                  [styles.active]: activeTab === tag,
+                })}
+                state={tag}
+                to={generatePath(ROUTES.consoleUsersDetails, {
+                  userId: user.id,
+                })}
+              >
+                {icon}
+                {title}
+
+                {changes[tag] && (
+                  <BsFillPencilFill
+                    className={styles.changed}
+                    title="Незбережені зміни"
+                  />
+                )}
+
+                {isEmptyTab(tag) && (
+                  <BsPlusLg
+                    className={styles.changed}
+                    title="Натисніть, щоб створити"
+                  />
+                )}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       <form className={styles.content} onSubmit={handleSubmit}>
         <Suspense fallback={null}>
-          <TabContent areSelfDetails={areSelfDetails} onDelete={handleDelete} />
+          <TabContent
+            areSelfDetails={areSelfDetails}
+            onDelete={handleDelete}
+            user={user}
+          />
         </Suspense>
       </form>
       <FormSpy onChange={handleChange} subscription={spySubscription} />

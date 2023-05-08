@@ -1,0 +1,27 @@
+@import 'colors.scss';
+
+.container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.journal {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0 16px;
+
+  p {
+    color: $text_subdued;
+  }
+}
+
+.badge {
+  background-color: $blue_100;
+  border-radius: 4px;
+  color: $blue_600;
+  display: inline-block;
+  font-weight: 500;
+  margin-top: 4px;
+  padding: 4px;
+}
+

@@ -39,7 +39,7 @@ export class Student {
   @JoinColumn({ name: 'facultyid' })
   faculty?: Faculty;
 
-  @OneToOne(() => User, { nullable: false })
+  @OneToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userid' })
   user: User;
 }

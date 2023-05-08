@@ -36,10 +36,12 @@ export class Teacher {
   })
   departments: Department[];
 
-  @OneToMany(() => Group, (group) => group.curator, { nullable: true })
+  @OneToMany(() => Group, (group) => group.curator, {
+    nullable: true,
+  })
   groups: Group[];
 
-  @OneToOne(() => User, { nullable: false })
+  @OneToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userid' })
   user: User;
 }

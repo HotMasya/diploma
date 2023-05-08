@@ -1,6 +1,8 @@
 .container {
+  height: 918px;
   max-width: 900px;
   min-height: 60vh;
+  padding-bottom: 64px;
   position: relative;
 }
 
@@ -8,4 +10,18 @@
   margin-top: 24px;
   display: flex;
   gap: 16px;
+}
+
+.list {
+  margin-top: 16px;
+
+  li + li {
+    margin-top: 8px;
+  }
+}
+
+.paginator {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
 }

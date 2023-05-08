@@ -1,8 +1,9 @@
 // Modules
-import { useCallback, useRef, useState } from 'react';
-import { generatePath, useNavigate } from 'react-router-dom';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { generatePath, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Field } from 'react-final-form';
+import get from 'lodash/get';
 
 // API
 import API from 'API';
@@ -19,40 +20,76 @@ import { ROUTES } from 'Config/routes';
 
 // Helpers
 import { isRequired } from 'Helpers/isRequired';
+import { createDefaultColumns } from '../../Helpers/createDefaultColumns';
 
 // Styles
 import styles from './styles.module.scss';
+import { createDefaultRows } from '../../Helpers/createDefaultRows';
 
 function CreateJournalDialog(props) {
-  const { onClose } = props;
+  const { onClose, onEdit } = props;
 
   const [pending, setPending] = useState(false);
+  const [outletContext] = useOutletContext();
   const modalRef = useRef();
   const navigate = useNavigate();
 
+  const journal = get(outletContext, 'journal');
+
+  const name = get(journal, 'name');
+  const description = get(journal, 'description');
+  const id = get(journal, 'id');
+
+  const isEditMode = Boolean(id);
+
+  const initialValues = useMemo(
+    () => ({
+      name: name || '',
+      description: description || '',
+    }),
+    [description, name]
+  );
+
   const handleSubmit = useCallback(
-    (values) => {
+    async (values) => {
       setPending(true);
 
       const data = {
         name: values.name,
         description: values.description,
-        groupId: values.group.value,
       };
 
-      const request = API.Journals.create(data)
-        .then((journal) => {
-          const path = generatePath(ROUTES.journalDetails, {
-            journalId: journal.id,
+      if (values.group?.value) {
+        data.groupId = values.group.value;
+
+        const students = await API.Students.findAll({
+          groupId: Number(data.groupId),
+        });
+
+        data.columns = createDefaultColumns();
+        data.rows = createDefaultRows(students);
+      }
+
+      const request = isEditMode
+        ? API.Journals.partialUpdate(id, values).then(() => {
+            onEdit();
+            modalRef.current.close();
+          })
+        : API.Journals.create(data).then((journal) => {
+            const path = generatePath(ROUTES.journalDetails, {
+              journalId: journal.id,
+            });
+            navigate(path);
           });
-          navigate(path);
-        })
-        .finally(() => setPending(false));
+
+      request.finally(() => setPending(false));
 
       toast.promise(
         request,
         {
-          success: 'Журнал був успішно створений',
+          success: isEditMode
+            ? 'Інформацію про журнал було успішно оновлено'
+            : 'Журнал був успішно створений',
           error: {
             render({ data }) {
               return (
@@ -65,22 +102,32 @@ function CreateJournalDialog(props) {
         },
         {
           autoClose: 3000,
-          toastId: 'create-journal',
+          toastId: isEditMode ? 'edit-journal' : 'create-journal',
         }
       );
     },
-    [navigate]
+    [id, isEditMode, navigate, onEdit]
+  );
+
+  const title = isEditMode ? 'Редагувати журнал' : 'Створити журнал';
+  const modalDescription = isEditMode ? (
+    <>
+      Редагування журналу <b>{name}</b> для групи <b>{journal.group.name}</b>
+    </>
+  ) : (
+    'Для вказаної групи буде створено новий журнал, який пізніше можна буде детально налаштувати під ваші потреби.'
   );
 
   return (
     <Dialog
-      description="Для вказаної групи буде створено новий журнал, який пізніше можна буде детально налаштувати під ваші потреби."
+      description={modalDescription}
       onClose={onClose}
       pending={pending}
       ref={modalRef}
-      title="Створити журнал"
+      title={title}
     >
       <Form
+        initialValues={initialValues}
         onSubmit={handleSubmit}
         render={({ handleSubmit }) => (
           <form className={styles.form} onSubmit={handleSubmit}>
@@ -99,18 +146,22 @@ function CreateJournalDialog(props) {
               name="description"
             />
 
-            <Field
-              component={SearchableFormSelect}
-              labelText="Група"
-              name="group"
-              placeholder="Виберіть групу"
-              request={API.Groups.findAll}
-              title="Виберіть групу"
-              validate={isRequired()}
-            />
+            {!isEditMode && (
+              <Field
+                component={SearchableFormSelect}
+                labelText="Група"
+                name="group"
+                placeholder="Виберіть групу"
+                request={API.Groups.findAll}
+                title="Виберіть групу"
+                validate={isRequired()}
+              />
+            )}
 
             <div className={styles.buttons}>
-              <Button type="submit">Створити</Button>
+              <Button type="submit">
+                {isEditMode ? 'Зберегти' : 'Створити'}
+              </Button>
               <Button
                 onClick={() => modalRef.current?.close()}
                 type="button"

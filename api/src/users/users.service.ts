@@ -1,6 +1,6 @@
 import { AdminFindDto } from '../dto/admin-find.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DeleteResult, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { EmailService } from '../email/email.service';
 import { hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,7 +32,7 @@ export class UsersService {
     };
 
     builder.andWhere(
-      `(CONCAT(user.firstName, ' ', user.lastName) ILIKE :searchQuery OR user.email ILIKE :searchQuery)`,
+      `(CONCAT(user.lastName, ' ', user.firstName) ILIKE :searchQuery OR user.email ILIKE :searchQuery)`,
       params,
     );
   }
@@ -90,11 +90,7 @@ export class UsersService {
 
       if (field === 'firstName') {
         builder.addOrderBy(
-          `${builder.alias}.firstName`,
-          order as 'ASC' | 'DESC',
-        );
-        builder.addOrderBy(
-          `${builder.alias}.lastName`,
+          `CONCAT(${builder.alias}.lastName, ${builder.alias}.firstName)`,
           order as 'ASC' | 'DESC',
         );
       } else {
@@ -148,8 +144,12 @@ export class UsersService {
     return { ...user, ...updatedUser } as User;
   }
 
-  async remove(id: number): Promise<DeleteResult> {
-    return this.usersRepository.delete(id);
+  async remove(id: number) {
+    const user = await this.usersRepository.findOneBy({
+      id,
+    });
+
+    return this.usersRepository.remove(user);
   }
 
   async save(user: User): Promise<User> {

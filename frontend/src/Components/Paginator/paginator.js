@@ -15,6 +15,8 @@ function Paginator(props) {
 
   const totalPages = Math.ceil(total / limit);
 
+  if (total <= 1) return null;
+
   return (
     <div className={cx(className, styles.container)}>
       <span>

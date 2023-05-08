@@ -33,7 +33,12 @@ const Dialog = forwardRef((props, ref) => {
 
     if (!isFunction(onClose)) return;
 
-    timeout = setTimeout(onClose, transitionDurationMs);
+    return new Promise((resolve) => {
+      timeout = setTimeout(() => {
+        onClose();
+        resolve();
+      }, transitionDurationMs);
+    });
   }, [onClose]);
 
   useImperativeHandle(

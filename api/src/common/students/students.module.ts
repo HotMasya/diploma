@@ -5,11 +5,16 @@ import { StudentsController } from './students.controller';
 import { StudentsService } from './students.service';
 import { Group } from '../groups/group.entity';
 import { Faculty } from '../faculties/faculty.entity';
+import { StudentSubscriber } from './student.subscriber';
+import { JournalsModule } from '../journals/journals.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, Group, Faculty])],
+  imports: [
+    JournalsModule,
+    TypeOrmModule.forFeature([Student, Group, Faculty]),
+  ],
   controllers: [StudentsController],
-  providers: [StudentsService],
+  providers: [StudentsService, StudentSubscriber],
   exports: [StudentsService],
 })
 export class StudentsModule {}

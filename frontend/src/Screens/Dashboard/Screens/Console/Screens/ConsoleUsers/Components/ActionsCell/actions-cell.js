@@ -1,5 +1,5 @@
 // Modules
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import {
   Link,
   generatePath,
@@ -16,27 +16,14 @@ import Dropdown from 'Components/Dropdown';
 // Config
 import { ROUTES } from 'Config/routes';
 
+// Constants
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Styles
 import styles from './styles.module.scss';
-
-const options = [
-  {
-    label: 'Змінити пароль',
-    value: 'password',
-  },
-  {
-    label: 'Деталі',
-    value: 'details',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.remove,
-    label: 'Видалити',
-    value: 'remove',
-  },
-];
 
 function ActionsCell(props) {
   const { row, table } = props;
@@ -44,10 +31,44 @@ function ActionsCell(props) {
   const { setDeleteModalOpen, setPasswordModalOpen } = table.options.meta;
   const user = row.original;
   const [, setOutletContext] = useOutletContext();
+  const [currentUser] = useUserContext();
   const navigate = useNavigate();
 
   const userId = get(user, 'id');
   const detailsPath = generatePath(ROUTES.consoleUsersDetails, { userId });
+
+  const options = useMemo(() => {
+    const options = [];
+
+    if (currentUser.hasPermissions(PERMISSION.UPDATE_USERS)) {
+      options.push({
+        label: 'Змінити пароль',
+        value: 'password',
+      });
+    }
+
+    options.push({
+      label: 'Деталі',
+      value: 'details',
+    });
+
+    if (
+      currentUser.hasPermissions(PERMISSION.DELETE_USERS) &&
+      currentUser.id !== userId
+    ) {
+      options.push({
+        separator: true,
+      });
+
+      options.push({
+        className: styles.remove,
+        label: 'Видалити',
+        value: 'remove',
+      });
+    }
+
+    return options;
+  }, [currentUser, userId]);
 
   const handleSelect = useCallback(
     ({ value }) => {

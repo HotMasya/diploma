@@ -21,7 +21,7 @@ export class GroupsController {
   constructor(private readonly service: GroupsService) {}
 
   @Get()
-  @Permissions(Permission.READ_GROUPS)
+  @Permissions(Permission.ANY)
   async findAll(@Query() dto: AdminFindDto) {
     return this.service.findAll(dto);
   }

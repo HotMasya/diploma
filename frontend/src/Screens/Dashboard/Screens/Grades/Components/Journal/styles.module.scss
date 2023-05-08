@@ -1,0 +1,62 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+.journal {
+  border: 1px solid $grey_100;
+  border-radius: 12px;
+  box-shadow: $small-elevation;
+  display: flex;
+  gap: 24px;
+  height: 174px;
+  justify-content: space-between;
+  padding: 16px;
+  position: relative;
+
+  a {
+    bottom: 16px;
+    display: block;
+    flex-shrink: 0;
+    position: absolute;
+    right: 16px;
+    text-decoration: none;
+  }
+}
+
+.details {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+
+  & > div:last-child {
+    margin-top: 8px;
+  }
+
+  p {
+    color: $text_subdued;
+
+    pre {
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      display: -webkit-box;
+      overflow: hidden;
+      white-space: pre-wrap;
+    }
+  }
+
+  & p:not(:last-child) {
+    margin: 4px 0 8px;
+  }
+
+  & p:last-child {
+    position: absolute;
+    bottom: 16px;
+  }
+}
+
+.badge {
+  background-color: $blue_100;
+  border-radius: 4px;
+  color: $blue_500;
+  font-weight: 500;
+  padding: 4px;
+}

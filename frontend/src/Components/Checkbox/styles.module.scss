@@ -12,6 +12,10 @@ $size: 20px;
   position: relative;
   width: fit-content;
 
+  &.disabled {
+    cursor: not-allowed;
+  }
+
   input {
     appearance: none;
     border: 1px solid $grey_300;
@@ -25,6 +29,14 @@ $size: 20px;
 
       & + svg {
         transform: scale(1) rotate(0deg);
+      }
+    }
+
+    &:disabled {
+      color: $text_disabled;
+
+      &:checked {
+        background-color: $grey_500;
       }
     }
   }

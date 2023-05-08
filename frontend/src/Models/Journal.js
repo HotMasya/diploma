@@ -8,9 +8,9 @@ class Journal {
     this.name = props.name;
     this.description = props.description;
     this.columns = props.columns;
-    this.data = props.data;
-    this.teacher = new Teacher(props.teacher);
-    this.group = new Group(props.group);
+    this.rows = props.rows;
+    this.teacher = props.teacher ? new Teacher(props.teacher) : null;
+    this.group = props.group ? new Group(props.group) : null;
 
     if (props.updatedAt) {
       this.updatedAt = new Date(props.updatedAt);
@@ -19,6 +19,13 @@ class Journal {
     if (props.createdAt) {
       this.createdAt = new Date(props.createdAt);
     }
+  }
+
+  get acronym() {
+    return this.name
+      .split(' ', 3)
+      .map((item) => item[0].toUpperCase())
+      .join('');
   }
 }
 

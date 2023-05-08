@@ -1,45 +1,42 @@
 import {
-  Column,
+  Column as TableColumn,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Group } from '../groups/group.entity';
 import { Teacher } from '../teacher/teacher.entity';
-
-export class ColumnData {}
+import { GridColumn } from './interfaces/grid-column.interface';
+import { GridRow } from './interfaces/grid-row.interface';
 
 @Entity()
 export class Journal {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ length: 256 })
+  @TableColumn({ length: 256 })
   name: string;
 
-  @Column({ length: 512, nullable: true })
+  @TableColumn({ length: 512, nullable: true })
   description?: string;
 
-  @Column({
+  @TableColumn({
     type: 'jsonb',
-    array: false,
     default: () => "'[]'",
     nullable: false,
   })
-  columns: ColumnData[];
+  columns: GridColumn[];
 
-  @Column({
+  @TableColumn({
     type: 'jsonb',
-    array: false,
     default: () => "'[]'",
     nullable: false,
   })
-  data: string[][];
+  rows: GridRow[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -51,7 +48,7 @@ export class Journal {
   @JoinColumn({ name: 'group_id' })
   group: Group;
 
-  @OneToOne(() => Teacher, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Teacher, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
 }

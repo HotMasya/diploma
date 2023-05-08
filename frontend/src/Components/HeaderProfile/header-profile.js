@@ -20,11 +20,11 @@ import styles from './styles.module.scss';
 
 const options = [
   {
-    label: 'Settings',
+    label: 'Налаштування (не готово)',
     value: 'settings',
   },
   {
-    label: 'Log Out',
+    label: 'Вийти',
     value: 'logout',
   },
 ];

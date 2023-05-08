@@ -1,0 +1,11 @@
+@import 'colors.scss';
+
+.grid {
+  margin: 16px;
+}
+
+.wrapper {
+  width: 100vw;
+  height: calc(100vh - 104px);
+  overflow: auto;
+}

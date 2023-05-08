@@ -9,4 +9,10 @@ export class CreateJournalDto {
 
   @ApiProperty()
   groupId: number;
+
+  @ApiProperty()
+  columns: [];
+
+  @ApiProperty()
+  rows: [];
 }

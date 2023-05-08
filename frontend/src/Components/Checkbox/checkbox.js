@@ -19,7 +19,11 @@ function Checkbox(props) {
   } = props;
 
   return (
-    <label className={cx(className, styles.checkbox)}>
+    <label
+      className={cx(className, styles.checkbox, {
+        [styles.disabled]: disabled,
+      })}
+    >
       <input
         checked={checked}
         onChange={onChange}

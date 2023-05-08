@@ -18,6 +18,9 @@ import CreateUserDialog from './Components/CreateUserDialog';
 // Constants
 import { columns } from './columns-config';
 
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Hooks
 import { useSorting } from 'Hooks/useSorting';
 import { usePagination } from 'Hooks/usePagination';
@@ -25,6 +28,7 @@ import { useSearch } from 'Hooks/useSearch';
 
 // Styles
 import styles from './styles.module.scss';
+import { PERMISSION } from '../../../../../../Constants/permission';
 
 const limit = 10;
 
@@ -38,6 +42,8 @@ function ConsoleUsers() {
   const [order, handleSortingChange] = useSorting();
   const [currentPage, handlePageChange] = usePagination();
   const { debouncedSearch, handleSearch, search } = useSearch();
+
+  const [user] = useUserContext();
 
   const handleDeleteModalClose = useCallback(
     () => setDeleteModalOpen(false),
@@ -88,9 +94,11 @@ function ConsoleUsers() {
     <div className={styles.container}>
       <div className={styles.top}>
         <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
-        <Button onClick={handleCreateModalOpen}>
-          <FaUserPlus size={24} /> Додати користувача
-        </Button>
+        {user.hasPermissions(PERMISSION.CREATE_USERS) && (
+          <Button onClick={handleCreateModalOpen}>
+            <FaUserPlus size={24} /> Додати користувача
+          </Button>
+        )}
       </div>
 
       <Table
@@ -119,9 +127,7 @@ function ConsoleUsers() {
         <ChangePasswordDialog onClose={handlePasswordModalClose} />
       )}
 
-      {createModalOpen && (
-        <CreateUserDialog onClose={handleCreateModalClose} />
-      )}
+      {createModalOpen && <CreateUserDialog onClose={handleCreateModalClose} />}
     </div>
   );
 }

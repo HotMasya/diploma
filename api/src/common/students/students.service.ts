@@ -22,9 +22,9 @@ export class StudentsService {
   async findAll(dto?: FindStudentsDto) {
     const builder = this.studentsRepository
       .createQueryBuilder('student')
-      .leftJoinAndSelect('student.user', 'user')
       .leftJoinAndSelect('student.faculty', 'faculty')
       .leftJoinAndSelect('student.group', 'group')
+      .leftJoinAndSelect('student.user', 'user')
       .skip(dto.skip)
       .take(dto.take);
 
@@ -32,8 +32,8 @@ export class StudentsService {
       const [field, order] = dto.order.split(' ');
 
       if (field === 'user.fullName') {
+        builder.orderBy('user.lastName', order as 'ASC' | 'DESC');
         builder.addOrderBy('user.firstName', order as 'ASC' | 'DESC');
-        builder.addOrderBy('user.lastName', order as 'ASC' | 'DESC');
       } else {
         builder.orderBy(field, order as 'ASC' | 'DESC');
       }
@@ -113,7 +113,11 @@ export class StudentsService {
     return this.studentsRepository.save(student);
   }
 
-  async delete(teacherId: number) {
-    return this.studentsRepository.delete(teacherId);
+  async delete(studentId: number) {
+    const student = await this.studentsRepository.findOneBy({
+      id: studentId,
+    });
+
+    return this.studentsRepository.remove(student);
   }
 }

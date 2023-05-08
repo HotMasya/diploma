@@ -43,6 +43,8 @@ function SearchableFormSelect(props) {
   const { showError } = getErrorFromMeta(meta);
 
   useEffect(() => {
+    if (disabled) return;
+
     setPending(true);
 
     const filter = { ...defaultFilter };
@@ -61,7 +63,7 @@ function SearchableFormSelect(props) {
       .then((groups) => groups.map(mapToOption))
       .then(setOptions)
       .finally(() => setPending(false));
-  }, [debouncedSearch, input.value, mapToOption, request]);
+  }, [debouncedSearch, disabled, input.value, mapToOption, request]);
 
   return (
     <FieldGroup>

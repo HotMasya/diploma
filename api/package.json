@@ -33,6 +33,7 @@
     "@types/pg": "^8.6.6",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
+    "csv-writer": "^1.6.0",
     "lodash": "^4.17.21",
     "nodemailer": "^6.9.1",
     "passport": "^0.6.0",

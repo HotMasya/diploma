@@ -22,7 +22,7 @@ export class StudentsController {
   constructor(private readonly service: StudentsService) {}
 
   @Get()
-  @Permissions(Permission.READ_USERS)
+  @Permissions(Permission.ANY)
   async findAll(@Query() dto: FindStudentsDto) {
     if (dto.excludeIds?.length) {
       dto.excludeIds = _.map(dto.excludeIds, Number);

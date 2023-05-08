@@ -1,0 +1,31 @@
+@import 'colors.scss';
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+
+  h1 {
+    margin: 24px 0 16px;
+    width: 40%;
+  }
+}
+
+.link {
+  background-color: transparent;
+  border: none;
+  color: $blue_500;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  text-decoration: underline;
+
+  &:hover {
+    color: $blue_600;
+  }
+}

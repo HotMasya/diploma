@@ -38,26 +38,35 @@ function ActionsCell(props) {
   const detailsPath = generatePath(ROUTES.consoleGroupsDetails, { groupId });
 
   const options = useMemo(() => {
-    const options = [
-      {
+    const options = [];
+
+    if (user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
         label: 'Змінити куратора',
         value: 'change_curator',
-      },
-      {
-        label: 'Деталі',
-        value: 'details',
-      },
-      {
-        separator: true,
-      },
-    ];
+      });
+    }
 
-    if (group.curator) {
+    options.push({
+      label: 'Деталі',
+      value: 'details',
+    });
+
+    if (
+      (group.curator && user.hasPermissions(PERMISSION.UPDATE_GROUPS)) ||
+      user.hasPermissions(PERMISSION.DELETE_GROUPS)
+    ) {
+      options.push({
+        separator: true,
+      });
+    }
+
+    if (group.curator && user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
       options.push({
         className: styles.remove,
         label: 'Видалити куратора',
         value: 'remove_curator',
-      })
+      });
     }
 
     if (user.hasPermissions(PERMISSION.DELETE_GROUPS)) {
@@ -117,9 +126,11 @@ function ActionsCell(props) {
 
   return (
     <div className={styles.cell}>
-      <Link className={styles.actions} to={detailsPath}>
-        <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
-      </Link>
+      {user.hasPermissions(PERMISSION.READ_USERS) && (
+        <Link className={styles.actions} to={detailsPath}>
+          <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
+        </Link>
+      )}
 
       <Dropdown
         onSelect={handleSelect}

@@ -76,7 +76,14 @@ $transition-duration: 150ms;
   }
 
   &:disabled {
+    background-color: $grey_100;
     cursor: not-allowed;
+    color: $text_disabled;
+
+    .multiValue {
+      background-color: $grey_200;
+      color: $text_disabled;
+    }
   }
 
   &.placeholder {

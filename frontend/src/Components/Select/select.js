@@ -12,10 +12,13 @@ import some from 'lodash/some';
 
 // Components
 import Input from 'Components/Input';
+import IconButton from 'Components/IconButton';
+
+// Constants
+import { TEXT } from 'Constants/colors';
 
 // Styles
 import styles from './styles.module.scss';
-import IconButton from 'Components/IconButton/icon-button';
 
 function MultiValue(props) {
   const { formatMultiValue, option } = props;
@@ -229,7 +232,10 @@ function Select(props) {
         {valueContent}
       </button>
 
-      <FiChevronDown size={24} />
+      <FiChevronDown
+        color={disabled ? TEXT.disabled : TEXT.default}
+        size={24}
+      />
 
       {isOpen && (
         <div

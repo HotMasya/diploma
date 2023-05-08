@@ -13,6 +13,7 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { Teacher } from '../teacher/teacher.entity';
 import { Student } from '../students/student.entity';
 import * as _ from 'lodash';
+import { JournalsService } from '../journals/journals.service';
 
 @Injectable()
 export class GroupsService {
@@ -23,6 +24,7 @@ export class GroupsService {
     private readonly teacherRepository: Repository<Teacher>,
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    private readonly journalsService: JournalsService,
   ) {}
 
   async findOne(id: number) {
@@ -71,6 +73,8 @@ export class GroupsService {
 
       return student;
     });
+
+    await this.journalsService.addStudentsToJournal(ids, groupId);
 
     group.students = [...group.students, ...students];
 
@@ -192,7 +196,13 @@ export class GroupsService {
       throw new NotFoundException(null, 'Група не знайдена');
     }
 
+    const student = await this.studentRepository.findOneBy({ id: studentId });
+
+    if (!student) return;
+
     group.students = _.filter(group.students, ({ id }) => id !== studentId);
+
+    await this.journalsService.removeStudentFromJournal(student);
 
     return this.groupsRepository.save(group);
   }

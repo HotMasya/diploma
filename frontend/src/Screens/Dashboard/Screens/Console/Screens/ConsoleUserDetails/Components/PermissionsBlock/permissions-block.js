@@ -6,7 +6,7 @@ import Permission from './permission';
 import PermissionsGroup from './permissions-group';
 
 // Constants
-import { PERMISSION_GROUPS } from 'Constants/permission';
+import { PERMISSION, PERMISSION_GROUPS } from 'Constants/permission';
 
 // Context
 import { useUserContext } from 'Context/UserContext';
@@ -18,13 +18,16 @@ function PermissionsBlock(props) {
   const { areSelfDetails } = props;
   const [user] = useUserContext();
 
-  const adminTitle =
-    areSelfDetails && user?.isAdmin
-      ? 'Адміністратор не може лишити себе прав'
-      : '';
+  let adminTitle;
 
-  const permissionTitle = !user?.isAdmin
-    ? 'Тільки адміністратор може редагувати права користувачів'
+  if (areSelfDetails && user?.isAdmin) {
+    adminTitle = 'Адміністратор не може лишити себе прав';
+  } else if (!user?.isAdmin) {
+    adminTitle = 'Тільки адміністратори можуть редагувати цей пункт';
+  }
+
+  const permissionTitle = !user?.hasPermissions(PERMISSION.UPDATE_USERS)
+    ? 'Ви не можете редагувати права користувачів'
     : '';
 
   return (
@@ -34,7 +37,7 @@ function PermissionsBlock(props) {
         className={styles.admin}
         component={Permission}
         description="Дозволяє робити будь-що, тобто перевизначає усі інші можливі права по відношенню до консолі адміністратора."
-        disabled={areSelfDetails && user?.isAdmin}
+        disabled={areSelfDetails || !user?.isAdmin}
         labelText="Адміністратор"
         name={`permissions[ADMIN]`}
         title={adminTitle}
@@ -46,7 +49,7 @@ function PermissionsBlock(props) {
           <div className={styles.group} key={name}>
             <PermissionsGroup
               description={description}
-              disabled={!user?.isAdmin}
+              disabled={!user?.hasPermissions(PERMISSION.UPDATE_USERS)}
               fields={fields}
               labelText={name}
               title={permissionTitle}
@@ -56,7 +59,7 @@ function PermissionsBlock(props) {
             {fields?.map(({ name, labelText }) => (
               <Field
                 component={Permission}
-                disabled={!user?.isAdmin}
+                disabled={!user?.hasPermissions(PERMISSION.UPDATE_USERS)}
                 key={name}
                 labelText={labelText}
                 name={`permissions[${name}]`}

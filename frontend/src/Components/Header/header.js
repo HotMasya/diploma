@@ -19,13 +19,21 @@ import { ROUTES } from 'Config/routes';
 
 // Styles
 import styles from './styles.module.scss';
+import { PERMISSION } from 'Constants/permission';
 
 function Header() {
   const [user] = useUserContext();
 
-  const isAdmin = get(user, 'isAdmin');
+  if (!user) return null;
+
   const isTeacher = Boolean(get(user, 'teacher'));
   const isStudent = Boolean(get(user, 'student'));
+  const canUseConsole = [
+    user.hasPermissions(PERMISSION.READ_USERS),
+    user.hasPermissions(PERMISSION.READ_GROUPS),
+    user.hasPermissions(PERMISSION.READ_DEPARTMENTS),
+    user.hasPermissions(PERMISSION.READ_FACULTIES),
+  ].some(Boolean);
 
   return (
     <header className={styles.header}>
@@ -70,7 +78,7 @@ function Header() {
           </NavLink>
         )}
 
-        {isAdmin && (
+        {canUseConsole && (
           <NavLink
             className={({ isActive }) =>
               cx(styles.navlink, { [styles.active]: isActive })

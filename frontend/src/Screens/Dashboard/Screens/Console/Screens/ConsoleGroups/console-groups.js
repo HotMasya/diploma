@@ -17,6 +17,10 @@ import UpdateCuratorDialog from './Components/UpdateCuratorDialog';
 
 // Constants
 import { columns } from './columns-config';
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Hooks
 import { useSorting } from 'Hooks/useSorting';
@@ -36,6 +40,7 @@ function ConsoleGroups() {
   const [curatorModalOpen, setCuratorModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteCuratorModalOpen, setDeleteCuratorModalOpen] = useState(false);
+  const [user] = useUserContext();
 
   const [order, handleSortingChange] = useSorting();
   const [currentPage, handlePageChange] = usePagination();
@@ -97,9 +102,11 @@ function ConsoleGroups() {
     <div className={styles.container}>
       <div className={styles.top}>
         <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
-        <Button onClick={handleCreateModalOpen}>
-          <MdGroupAdd size={24} /> Додати групу
-        </Button>
+        {!!user.hasPermissions(PERMISSION.CREATE_GROUPS) && (
+          <Button onClick={handleCreateModalOpen}>
+            <MdGroupAdd size={24} /> Додати групу
+          </Button>
+        )}
       </div>
 
       <Table

@@ -32,7 +32,11 @@ class User {
     return this.hasPermissionsNA(permissions);
   }
 
-  // without admin rights
+  /**
+   * Check for permissions not including admin
+   * @param  {...number} permissions
+   * @returns {boolean}
+   */
   hasPermissionsNA(...permissions) {
     const mergedPermissions = reduce(
       permissions,
@@ -44,7 +48,7 @@ class User {
   }
 
   get fullName() {
-    return [this.firstName, this.lastName].filter(Boolean).join(' ');
+    return [this.lastName, this.firstName].filter(Boolean).join(' ');
   }
 
   get isAdmin() {
@@ -54,7 +58,7 @@ class User {
   get acronym() {
     return this.fullName
       .split(' ', 2)
-      .map((item) => item[0])
+      .map((item) => item[0].toUpperCase())
       .join('');
   }
 }

@@ -52,6 +52,10 @@ export class User {
   @OneToOne(() => Student, (student) => student.user)
   student: Student;
 
+  get fullName() {
+    return [this.lastName, this.firstName].filter(Boolean).join(' ');
+  }
+
   static readonly saltRounds = 10;
 
   static async fromDto(dto: CreateUserDto): Promise<User> {
