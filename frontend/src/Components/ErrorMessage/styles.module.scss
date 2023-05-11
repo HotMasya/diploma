@@ -1,0 +1,10 @@
+@import 'colors.scss';
+
+.error {
+  color: $red_500;
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 4px;
+  width: 100%;
+}

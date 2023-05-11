@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+
+  input {
+    margin-bottom: 16px;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}

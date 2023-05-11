@@ -1,0 +1,126 @@
+@import 'colors.scss';
+
+.container {
+  margin-top: 24px;
+}
+
+.basic {
+  border-bottom: 1px solid $grey_300;
+  display: grid;
+  gap: 16px;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 16px 0;
+
+  b {
+    color: $text_default;
+    font-weight: 500;
+  }
+
+  p {
+    color: $text_subdued;
+  }
+}
+
+.curator {
+  align-items: center;
+  border-bottom: 1px solid $grey_300;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: auto repeat(3, 1fr) auto;
+  margin-top: 16px;
+  padding-bottom: 16px;
+
+  .name, .email {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .email {
+    color: $text_subdued;
+    font-weight: 500;
+  }
+}
+
+.empty {
+  align-items: center;
+  border-bottom: 1px solid $grey_300;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.departments {
+  display: flex;
+  gap: 8px;
+
+  span {
+    background-color: $blue_100;
+    border-radius: 4px;
+    color: $blue_600;
+    cursor: pointer;
+    display: block;
+    font-weight: 600;
+    padding: 4px 8px;
+  }
+}
+
+.redOption {
+  color: $red_500;
+
+  &:hover {
+    background-color: $red_100;
+  }
+}
+
+.search {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  margin: 24px 0 16px;
+}
+
+.paginator {
+  bottom: 0;
+  margin-top: 16px;
+  position: absolute;
+  right: 0;
+}
+
+.table {
+  min-height: 798px;
+  position: relative;
+}
+
+.placeholder {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 600px;
+  justify-content: center;
+
+  p {
+    color: $text_subdued;
+    margin-top: -16px;
+
+    button {
+      background-color: transparent;
+      border: none;
+      color: $blue_500;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      text-decoration: underline;
+
+      &:hover {
+        color: $blue_600;
+      }
+    }
+  }
+}

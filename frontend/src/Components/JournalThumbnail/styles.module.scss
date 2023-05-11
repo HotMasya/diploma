@@ -1,0 +1,12 @@
+@import 'colors.scss';
+
+.acronym {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  font-weight: 500;
+  background-color: $yellow_100;
+  color: $yellow_600;
+}

@@ -1,0 +1,117 @@
+@import 'colors.scss';
+@import 'responsive.scss';
+@import 'global.scss';
+
+$transition-duration: 150ms;
+$timing-function: $bounce;
+
+@keyframes showOverlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hideOverlay {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showDialog {
+  from {
+    transform: scale(0.7);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hideDialog {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(0);
+  }
+}
+
+.overlay {
+  align-items: center;
+  animation: showOverlay $transition-duration $timing-function forwards;
+  background-color: $overlay;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  &.closing {
+    animation: hideOverlay $transition-duration linear forwards;
+  }
+
+  @include sm {
+    display: none;
+  }
+}
+
+.dialog {
+  animation: showDialog $transition-duration $timing-function forwards;
+  background-color: $bg_primary;
+  border-radius: 4px;
+  width: 500px;
+
+  &.closing {
+    animation: hideDialog $transition-duration linear forwards;
+  }
+
+  &.pending {
+    cursor: wait;
+
+    & > * {
+      transition: opacity 100ms ease-out;
+      opacity: 0.5;
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  @include sm {
+    border-radius: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    transform: none;
+  }
+}
+
+.header {
+  align-items: center;
+  border-bottom: 1px solid $grey_300;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.description {
+  line-height: 22px;
+  padding: 16px;
+}
+
+.buttons {
+  display: flex;
+  padding: 0px 16px 16px;
+  justify-content: space-between;
+}

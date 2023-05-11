@@ -1,0 +1,34 @@
+@import 'colors.scss';
+@import 'responsive.scss';
+@import 'global.scss';
+
+.container {
+  box-shadow: $small-elevation;
+  padding: 24px 16px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.email {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  color: $text_subdued;
+  font-weight: 500;
+}
+
+.details {
+  margin-top: 4px;
+}
+
+.statuses {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.user {
+  display: flex;
+  gap: 16px;
+}

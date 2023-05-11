@@ -1,0 +1,68 @@
+@import 'colors.scss';
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.empty {
+  color: $text_subdued;
+  text-align: center;
+}
+
+.option {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 16px;
+  transition: all 150ms ease-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $grey_100;
+  }
+}
+
+.curator {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+
+  span {
+    color: $text_subdued;
+    display: block;
+    font-size: 14px;
+    text-overflow: ellipsis;
+  overflow: hidden;
+    width: 100%;
+  }
+
+  p {
+    font-weight: 500;
+    font-size: 16px;
+    text-overflow: ellipsis;
+  overflow: hidden;
+    width: 100%;
+  }
+}
+
+.selected {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  align-items: center;
+  position: relative;
+
+  button {
+    position: absolute;
+    right: 8px;
+    top: 16px;
+  }
+}

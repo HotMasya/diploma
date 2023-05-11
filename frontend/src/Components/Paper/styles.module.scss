@@ -1,0 +1,12 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+.paper {
+  border-radius: 8px;
+  box-shadow: $small-elevation;
+  display: inline-block;
+  max-width: 1400px;
+  padding: 16px;
+  position: relative;
+  width: 100%;
+}

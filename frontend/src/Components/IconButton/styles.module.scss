@@ -1,0 +1,23 @@
+@import 'colors.scss';
+
+.button {
+  align-items: center;
+  background-color: transparent;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+
+  &:disabled {
+    background-color: $grey_200 !important;
+    color: $text_disabled;
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    background-color: $grey_100;
+  }
+}

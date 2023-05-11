@@ -1,0 +1,91 @@
+@import 'colors.scss';
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 500px;
+  position: relative;
+  width: 100%;
+}
+
+.buttons {
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.arrows {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 24px;
+  height: 100%;
+  justify-content: center;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.lists {
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 60px;
+  width: 100%;
+
+  ul {
+    overflow: auto;
+    flex: 1;
+    width: 100%;
+  }
+}
+
+.empty {
+  color: $text_subdued;
+  text-align: center;
+}
+
+.option {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 8px;
+  transition: all 150ms ease-out;
+  cursor: pointer;
+  width: 100%;
+
+  &:hover {
+    background-color: $grey_100;
+  }
+
+  .student {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+
+    span {
+      color: $text_subdued;
+      display: block;
+      font-size: 14px;
+      text-overflow: ellipsis;
+    overflow: hidden;
+      width: 100%;
+    }
+
+    p {
+      font-weight: 500;
+      font-size: 16px;
+      text-overflow: ellipsis;
+    overflow: hidden;
+      width: 100%;
+    }
+  }
+}
+
+.dialog {
+  max-width: 700px !important;
+  width: 100%;
+}

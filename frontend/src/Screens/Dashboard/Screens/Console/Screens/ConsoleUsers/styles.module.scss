@@ -1,0 +1,43 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1400px;
+  min-height: $min-admin-height;
+  position: relative;
+  width: 100%;
+}
+
+.top {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.paginator {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.centered {
+  display: block;
+  text-align: center;
+}
+
+.name {
+  align-items: center;
+  font-weight: 700;
+  position: relative;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+
+  svg {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}

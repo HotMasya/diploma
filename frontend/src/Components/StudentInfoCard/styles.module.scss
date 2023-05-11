@@ -1,0 +1,37 @@
+@import 'colors.scss';
+
+.card {
+  background-color: $green_100;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 18px;
+  width: 100%;
+
+  & > h2 {
+    color: $green_600;
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  & + & {
+    margin-top: 8px;
+  }
+
+  & > p:first-child {
+    font-weight: 500;
+  }
+
+  & > p:last-child {
+    background-color: $green_200;
+    border-radius: 4px;
+    color: $green_700;
+    font-weight: 600;
+    padding: 4px;
+  }
+}

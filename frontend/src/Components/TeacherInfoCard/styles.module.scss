@@ -1,0 +1,43 @@
+@import 'colors.scss';
+
+.card {
+  background-color: $blue_100;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 18px;
+  width: 100%;
+
+  & > h2 {
+    color: $blue_600;
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  & + & {
+    margin-top: 8px;
+  }
+
+  & > p:first-child {
+    font-weight: 500;
+  }
+
+  .departments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    & > span {
+      padding: 4px;
+      border-radius: 4px;
+      background-color: $blue_200;
+      color: $blue_700;
+      font-weight: 600;
+    }
+  }
+}

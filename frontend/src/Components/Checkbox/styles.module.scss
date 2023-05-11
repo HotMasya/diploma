@@ -1,0 +1,52 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+$size: 20px;
+
+.checkbox {
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+  display: flex;
+  position: relative;
+  width: fit-content;
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  input {
+    appearance: none;
+    border: 1px solid $grey_300;
+    border-radius: 4px;
+    height: $size;
+    transition: transform 150ms ease-out;
+    width: $size;
+
+    &:checked {
+      background-color: $blue_500;
+
+      & + svg {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    &:disabled {
+      color: $text_disabled;
+
+      &:checked {
+        background-color: $grey_500;
+      }
+    }
+  }
+
+  svg {
+    color: $bg_primary;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: scale(0) rotate(180deg);
+    transition: all 150ms $bounce;
+  }
+}

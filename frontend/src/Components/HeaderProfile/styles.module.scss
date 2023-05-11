@@ -1,0 +1,15 @@
+@import 'colors.scss';
+
+.container {
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  padding: 8px;
+  width: fit-content;
+
+  &:hover {
+    background-color: rgba(0,0,0,0.05);
+  }
+}

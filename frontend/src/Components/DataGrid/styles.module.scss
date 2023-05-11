@@ -1,0 +1,95 @@
+@import 'colors.scss';
+
+$padding: 10px;
+
+.table {
+  border-collapse: collapse;
+  width: fit-content;
+
+  th {
+    border: 1px solid $grey_300;
+    padding: 8px 0;
+    font-size: 14px;
+    color: $text_subdued;
+    text-align: left;
+    padding: $padding;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  tr + tr,
+  tr:first-child {
+    border-top: 1px solid $grey_300;
+  }
+
+  tr:last-child {
+    border-bottom: 1px solid $grey_300;
+  }
+
+  td {
+    border: 1px solid $grey_300;
+    font-size: 16px;
+    line-height: 18px;
+    overflow: hidden;
+    padding: $padding calc($padding + 4px);
+    text-overflow: ellipsis;
+    min-width: 100px;
+    white-space: nowrap;
+
+    &.add {
+      background-color: $grey_100;
+    }
+
+    &.editableCell {
+      border: none;
+      border-left: 1px solid $grey_300;
+      overflow: visible;
+      padding: 0;
+    }
+  }
+
+  .editable {
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    transition: background-color 100ms ease-out;
+    width: fit-content;
+
+    &:hover {
+      background-color: $grey_100;
+    }
+  }
+
+  .inputWrapper {
+    position: relative;
+
+    svg {
+      position: absolute;
+      right: 4px;
+      top: 4px;
+    }
+  }
+
+  .input {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    height: 100%;
+    padding: $padding calc($padding + 4px);
+    width: 100%;
+
+    &:focus {
+      outline: 2px solid $blue_500 !important;
+      outline-offset: -1px;
+    }
+  }
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
