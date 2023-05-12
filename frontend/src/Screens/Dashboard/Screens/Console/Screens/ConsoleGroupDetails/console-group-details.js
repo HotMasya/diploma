@@ -10,15 +10,16 @@ import cx from 'classnames';
 import { FaUsersSlash } from 'react-icons/fa';
 
 // Components
+import AddStudentsDialog from './Components/AddStudentsDialog';
 import Avatar from 'Components/Avatar/avatar';
 import Button, { BUTTON_VARIANT } from 'Components/Button';
 import DeleteCuratorDialog from '../ConsoleGroups/Components/DeleteCuratorDialog';
 import Dropdown from 'Components/Dropdown';
 import Input from 'Components/Input/input';
 import Paginator from 'Components/Paginator/paginator';
+import RemoveStudentDialog from './Components/RemoveStudentDialog';
 import Table from 'Components/Table';
 import UpdateCuratorDialog from '../ConsoleGroups/Components/UpdateCuratorDialog';
-import RemoveStudentDialog from './Components/RemoveStudentDialog';
 
 // Config
 import { ROUTES } from 'Config/routes';
@@ -27,29 +28,13 @@ import { ROUTES } from 'Config/routes';
 import { tags } from '../ConsoleUserDetails/constants';
 import { columns } from './columns-config';
 import { RED } from 'Constants/colors';
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Styles
 import styles from './styles.module.scss';
-import AddStudentsDialog from './Components/AddStudentsDialog/add-students-dialog';
-
-const dropdownOptions = [
-  {
-    label: 'Змінити куратора',
-    value: 'change-curator',
-  },
-  {
-    label: 'Деталі',
-    value: 'edit-curator',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.redOption,
-    label: 'Видалити куратора',
-    value: 'remove-curator',
-  },
-];
 
 function ConsoleGroupDetails(props) {
   const {
@@ -73,6 +58,7 @@ function ConsoleGroupDetails(props) {
   const [removeStudentModalOpen, setRemoveStudentModalOpen] = useState(false);
 
   const [, setOutletContext] = useOutletContext();
+  const [user] = useUserContext();
 
   const openCuratorModal = useCallback(() => {
     setOutletContext({ group });
@@ -119,6 +105,45 @@ function ConsoleGroupDetails(props) {
     [openRemoveStudentModal]
   );
 
+  const curatorOptions = useMemo(() => {
+    const options = [];
+
+    if (
+      !user.hasPermissions(PERMISSION.READ_USERS) &&
+      !user.hasPermissions(PERMISSION.UPDATE_GROUPS)
+    ) {
+      return options;
+    }
+
+    if (user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
+        label: 'Змінити куратора',
+        value: 'change-curator',
+      });
+    }
+
+    if (user.hasPermissions(PERMISSION.READ_USERS)) {
+      options.push({
+        label: 'Деталі',
+        value: 'edit-curator',
+      });
+    }
+
+    if (options.length && user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
+        separator: true,
+      });
+    }
+
+    if (user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
+        className: styles.redOption,
+        label: 'Видалити куратора',
+        value: 'remove-curator',
+      });
+    }
+  }, [user]);
+
   const handleSelect = useCallback(
     ({ value }) => {
       switch (value) {
@@ -146,6 +171,10 @@ function ConsoleGroupDetails(props) {
     [group, navigate, setOutletContext]
   );
 
+  const showCuratorDropdown =
+    user.hasPermissions(PERMISSION.READ_USERS) ||
+    user.hasPermissions(PERMISSION.UPDATE_GROUPS);
+
   return (
     <div className={styles.container}>
       <h3>Інформація про групу: {group.name}</h3>
@@ -168,12 +197,14 @@ function ConsoleGroupDetails(props) {
         {!curator ? (
           <p className={styles.empty}>
             У даної групи відсутній куратор.
-            <Button
-              variant={BUTTON_VARIANT.secondary}
-              onClick={openCuratorModal}
-            >
-              Додати куратора
-            </Button>
+            {user.hasPermissions(PERMISSION.UPDATE_GROUPS) && (
+              <Button
+                variant={BUTTON_VARIANT.secondary}
+                onClick={openCuratorModal}
+              >
+                Додати куратора
+              </Button>
+            )}
           </p>
         ) : (
           <div className={styles.curator}>
@@ -188,11 +219,13 @@ function ConsoleGroupDetails(props) {
               ))}
             </div>
 
-            <Dropdown
-              onSelect={handleSelect}
-              options={dropdownOptions}
-              targetElement={dropdownTarget}
-            />
+            {showCuratorDropdown && (
+              <Dropdown
+                onSelect={handleSelect}
+                options={curatorOptions}
+                targetElement={dropdownTarget}
+              />
+            )}
           </div>
         )}
       </div>
@@ -201,7 +234,9 @@ function ConsoleGroupDetails(props) {
         <h3>Студенти ({group.studentsCount})</h3>
         <div className={styles.search}>
           <Input onChange={onSearch} placeholder="Пошук..." value={search} />
-          <Button onClick={openStudentsModal}>Додати студентів</Button>
+          {user.hasPermissions(PERMISSION.UPDATE_GROUPS) && (
+            <Button onClick={openStudentsModal}>Додати студентів</Button>
+          )}
         </div>
         <Table
           columns={columns}
@@ -213,10 +248,16 @@ function ConsoleGroupDetails(props) {
           <div className={styles.placeholder}>
             <FaUsersSlash color={RED._500} size={128} />
             <h2>У даної групи ще нема студентів</h2>
-            <p>
-              Але ви можете їх{' '}
-              <button onClick={openStudentsModal}>додати</button>.
-            </p>
+            {user.hasPermissions(PERMISSION.UPDATE_GROUPS) ? (
+              <p>
+                Але ви можете їх&nbsp;
+                <button onClick={openStudentsModal}>додати</button>.
+              </p>
+            ) : (
+              <p>
+                Нажаль, у вас недостатньо прав, щоб додавати студентів в групи
+              </p>
+            )}
           </div>
         )}
         <Paginator

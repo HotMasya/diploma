@@ -17,6 +17,10 @@ import RemoveDepartmentDialog from './Components/RemoveDepartmentDialog';
 
 // Constants
 import { columns } from './columns-config';
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Hooks
 import { useSorting } from 'Hooks/useSorting';
@@ -35,6 +39,8 @@ function ConsoleDepartments() {
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
   const [, setOutletContext] = useOutletContext();
+  const [user] = useUserContext();
+
   const [order, handleSortingChange] = useSorting();
   const [currentPage, handlePageChange] = usePagination();
   const { debouncedSearch, handleSearch, search } = useSearch();
@@ -81,9 +87,11 @@ function ConsoleDepartments() {
     <div className={styles.container}>
       <div className={styles.top}>
         <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
-        <Button onClick={openDetailsModal}>
-          <BiBookAdd size={24} /> Додати кафедру
-        </Button>
+        {user.hasPermissions(PERMISSION.CREATE_DEPARTMENTS) && (
+          <Button onClick={openDetailsModal}>
+            <BiBookAdd size={24} /> Додати кафедру
+          </Button>
+        )}
       </div>
 
       <Table

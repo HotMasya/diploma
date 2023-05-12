@@ -1,5 +1,5 @@
 // Modules
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { Link, generatePath, useNavigate } from 'react-router-dom';
 import { FaEllipsisH } from 'react-icons/fa';
 import get from 'lodash/get';
@@ -11,26 +11,19 @@ import Dropdown from 'Components/Dropdown';
 // Config
 import { ROUTES } from 'Config/routes';
 
+// Constants
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Styles
 import styles from './styles.module.scss';
 
-const options = [
-  {
-    label: 'Деталі',
-    value: 'details',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.remove,
-    label: 'Видалити з групи',
-    value: 'remove',
-  },
-];
-
 function ActionsCell(props) {
   const { row, table } = props;
+
+  const [user] = useUserContext();
 
   const { openRemoveStudentModal } = table.options.meta;
   const student = row.original;
@@ -40,6 +33,33 @@ function ActionsCell(props) {
   const detailsPath = generatePath(ROUTES.consoleUsersDetails, {
     userId,
   });
+
+  const options = useMemo(() => {
+    const options = [];
+
+    if (user.hasPermissions(PERMISSION.READ_USERS)) {
+      options.push({
+        label: 'Деталі',
+        value: 'details',
+      });
+    }
+
+    if (options.length && user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
+        separator: true,
+      });
+    }
+
+    if (user.hasPermissions(PERMISSION.UPDATE_GROUPS)) {
+      options.push({
+        className: styles.remove,
+        label: 'Видалити з групи',
+        value: 'remove',
+      });
+    }
+
+    return options;
+  }, [user]);
 
   const handleSelect = useCallback(
     ({ value }) => {
@@ -66,17 +86,25 @@ function ActionsCell(props) {
     </Button>
   );
 
+  const showDropdown =
+    user.hasPermissions(PERMISSION.READ_USERS) ||
+    user.hasPermissions(PERMISSION.UPDATE_GROUPS);
+
   return (
     <div className={styles.cell}>
-      <Link className={styles.actions} to={detailsPath}>
-        <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
-      </Link>
+      {user.hasPermissions(PERMISSION.READ_USERS) && (
+        <Link className={styles.actions} to={detailsPath}>
+          <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
+        </Link>
+      )}
 
-      <Dropdown
-        onSelect={handleSelect}
-        options={options}
-        targetElement={dropdownTarget}
-      />
+      {showDropdown && (
+        <Dropdown
+          onSelect={handleSelect}
+          options={options}
+          targetElement={dropdownTarget}
+        />
+      )}
     </div>
   );
 }

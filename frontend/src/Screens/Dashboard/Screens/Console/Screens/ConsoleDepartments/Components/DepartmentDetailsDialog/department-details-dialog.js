@@ -13,6 +13,12 @@ import Button, { BUTTON_VARIANT } from 'Components/Button';
 import FormInput from 'Components/FormInput';
 import Dialog from 'Components/Dialog';
 
+// Constants
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Helpers
 import { isRequired } from 'Helpers/isRequired';
 
@@ -23,6 +29,8 @@ function DepartmentDetailsDialog(props) {
   const { onClose, onUpdate } = props;
 
   const [outletContext] = useOutletContext();
+  const [user] = useUserContext();
+
   const [pending, setPending] = useState(false);
   const modalRef = useRef(null);
 
@@ -85,6 +93,7 @@ function DepartmentDetailsDialog(props) {
           <form className={styles.form} onSubmit={handleSubmit}>
             <Field
               component={FormInput}
+              disabled={!user.hasPermissions(PERMISSION.UPDATE_DEPARTMENTS)}
               labelText="Назва"
               name="name"
               placeholder="Вкажіть назву"
@@ -93,6 +102,7 @@ function DepartmentDetailsDialog(props) {
 
             <Field
               component={FormInput}
+              disabled={!user.hasPermissions(PERMISSION.UPDATE_DEPARTMENTS)}
               labelText="Скорочена назва (абревіатура)"
               name="shortName"
               placeholder="Вкажіть скорочену назву"
@@ -100,7 +110,12 @@ function DepartmentDetailsDialog(props) {
             />
 
             <div className={styles.buttons}>
-              <Button type="submit">{buttonText}</Button>
+              <Button
+                disabled={!user.hasPermissions(PERMISSION.UPDATE_DEPARTMENTS)}
+                type="submit"
+              >
+                {buttonText}
+              </Button>
               <Button
                 onClick={() => modalRef.current?.close()}
                 variant={BUTTON_VARIANT.secondary}

@@ -1,5 +1,5 @@
 // Modules
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { FaEllipsisH } from 'react-icons/fa';
 
@@ -7,23 +7,14 @@ import { FaEllipsisH } from 'react-icons/fa';
 import Button, { BUTTON_VARIANT } from 'Components/Button/button';
 import Dropdown from 'Components/Dropdown';
 
+// Constants
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
+
 // Styles
 import styles from './styles.module.scss';
-
-const options = [
-  {
-    label: 'Деталі',
-    value: 'details',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.remove,
-    label: 'Видалити',
-    value: 'remove',
-  },
-];
 
 function ActionsCell(props) {
   const { row, table } = props;
@@ -31,6 +22,7 @@ function ActionsCell(props) {
   const { setDetailsModalOpen, setRemoveModalOpen } = table.options.meta;
   const department = row.original;
   const [, setOutletContext] = useOutletContext();
+  const [user] = useUserContext();
 
   const handleDetails = useCallback(() => {
     setOutletContext({ department });
@@ -56,6 +48,31 @@ function ActionsCell(props) {
     },
     [department, handleDetails, setRemoveModalOpen, setOutletContext]
   );
+
+  const options = useMemo(() => {
+    const options = [
+      {
+        label: 'Деталі',
+        value: 'details',
+      },
+    ];
+
+    if (user.hasPermissions(PERMISSION.DELETE_DEPARTMENTS)) {
+      options.push(
+        {
+          separator: true,
+        },
+        {
+          className: styles.remove,
+          label: 'Видалити',
+          value: 'remove',
+        }
+      );
+    }
+
+    return options;
+  }, [user]);
+
 
   const dropdownTarget = (
     <Button className={styles.dropdown} variant={BUTTON_VARIANT.secondary}>

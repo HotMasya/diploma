@@ -16,12 +16,14 @@ import Dropdown from 'Components/Dropdown';
 // Config
 import { ROUTES } from 'Config/routes';
 
+// Constants
+import { PERMISSION } from 'Constants/permission';
+
 // Context
 import { useUserContext } from 'Context/UserContext';
 
 // Styles
 import styles from './styles.module.scss';
-import { PERMISSION } from 'Constants/permission';
 
 function ActionsCell(props) {
   const { row, table } = props;
@@ -126,11 +128,9 @@ function ActionsCell(props) {
 
   return (
     <div className={styles.cell}>
-      {user.hasPermissions(PERMISSION.READ_USERS) && (
-        <Link className={styles.actions} to={detailsPath}>
-          <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
-        </Link>
-      )}
+      <Link className={styles.actions} to={detailsPath}>
+        <Button variant={BUTTON_VARIANT.secondary}>Деталі</Button>
+      </Link>
 
       <Dropdown
         onSelect={handleSelect}

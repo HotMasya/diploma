@@ -17,6 +17,10 @@ import RemoveFacultyDialog from './Components/RemoveFacultyDialog';
 
 // Constants
 import { columns } from './columns-config';
+import { PERMISSION } from 'Constants/permission';
+
+// Context
+import { useUserContext } from 'Context/UserContext';
 
 // Hooks
 import { useSorting } from 'Hooks/useSorting';
@@ -33,6 +37,8 @@ function ConsoleFaculties() {
   const [totalCount, setTotalCount] = useState(0);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
+
+  const [user] = useUserContext();
 
   const [, setOutletContext] = useOutletContext();
   const [order, handleSortingChange] = useSorting();
@@ -81,9 +87,12 @@ function ConsoleFaculties() {
     <div className={styles.container}>
       <div className={styles.top}>
         <Input onChange={handleSearch} placeholder="Пошук..." value={search} />
-        <Button onClick={openDetailsModal}>
-          <IoAddSharp size={24} />Додати факультет
-        </Button>
+        {user.hasPermissions(PERMISSION.CREATE_FACULTIES) && (
+          <Button onClick={openDetailsModal}>
+            <IoAddSharp size={24} />
+            Додати факультет
+          </Button>
+        )}
       </div>
 
       <Table

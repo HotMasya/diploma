@@ -27,7 +27,7 @@ export class TeachersController {
   }
 
   @Get()
-  @Permissions(Permission.READ_USERS)
+  @Permissions(Permission.ANY)
   async findAll(@Query() dto?: AdminFindDto) {
     return this.service.findAll(dto);
   }
