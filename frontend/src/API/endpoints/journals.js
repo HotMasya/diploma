@@ -6,6 +6,7 @@ import API from 'API';
 
 // Models
 import Journal from 'Models/Journal';
+import Teacher from 'Models/Teacher';
 
 // Helpers
 import { downloadFile } from '../../Helpers/downloadFile';
@@ -74,11 +75,27 @@ async function downloadJournalCsv(journalId, requestOptions = {}) {
     .then((res) => downloadFile(`${journalId}.csv`, res));
 }
 
+async function updateHelpers(journalId, data, requestOptions = {}) {
+  return API.instance.post(
+    `journals/${journalId}/helpers`,
+    data,
+    requestOptions
+  );
+}
+
+async function findHelpers(journalId, requestOptions = {}) {
+  return API.instance
+    .get(`journals/${journalId}/helpers`, requestOptions)
+    .then((res) => res.data)
+    .then((data) => map(data, (item) => new Teacher(item)));
+}
+
 const journals = {
   countTotal,
   create,
   downloadJournalCsv,
   findAll,
+  findHelpers,
   findOne,
   getStudentGradeDetails,
   getStudentGrades,
@@ -86,6 +103,7 @@ const journals = {
   remove,
   update,
   updateCell,
+  updateHelpers,
 };
 
 export default journals;

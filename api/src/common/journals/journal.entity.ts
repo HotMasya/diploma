@@ -6,6 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 import { Group } from '../groups/group.entity';
@@ -51,4 +53,8 @@ export class Journal {
   @ManyToOne(() => Teacher, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
+
+  @ManyToMany(() => Teacher, { nullable: true, onDelete: 'CASCADE' })
+  @JoinTable({ name: 'journals_helpers' })
+  helpers?: Teacher[];
 }

@@ -23,12 +23,12 @@ function CellNoteDialog(props) {
   const id = get(journalContext, 'id');
   const index = get(journalContext, 'index');
 
-  const [note, setNote] = useState(cell.note || '');
+  const [note, setNote] = useState(cell?.note || '');
 
   const handleChange = useCallback(({ target }) => setNote(target.value), []);
 
   const handleSave = () => {
-    if (cell.note !== note) {
+    if (cell?.note !== note) {
       onCellNoteUpdate(index, id, note);
     }
 

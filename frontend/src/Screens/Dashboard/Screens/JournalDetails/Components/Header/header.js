@@ -1,5 +1,5 @@
 // Modules
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import formatRelative from 'date-fns/formatRelative';
 import ukLocale from 'date-fns/locale/uk';
 import { BsArrowLeft } from 'react-icons/bs';
@@ -23,44 +23,91 @@ import { useNavigate } from 'react-router-dom';
 // Styles
 import styles from './styles.module.scss';
 import { toast } from 'react-toastify';
-
-const options = [
-  {
-    label: 'Керування доступом',
-    value: 'manage-access',
-  },
-  {
-    label: 'Редагувати',
-    value: 'update',
-  },
-  {
-    separator: true,
-  },
-  {
-    label: 'Завантажити CSV',
-    value: 'download-csv',
-  },
-  {
-    separator: true,
-  },
-  {
-    className: styles.alert,
-    label: 'Видалити',
-    value: 'remove',
-  },
-];
+import { useLoadCurrentUser } from '../../../../../../Hooks/useLoadCurrentUser';
 
 /**
  * @param {{ journal: import('Models/Journal').default }} props
  */
 function Header(props) {
-  const { journal, onRemove, onUpdate } = props;
+  const { journal, onRemove, onUpdate, onManageAccess } = props;
+
+  const [user] = useLoadCurrentUser();
 
   const navigate = useNavigate();
+
+  const isOwner = user.id === journal.teacher.user.id;
+
+  const options = useMemo(() => {
+    const options = [];
+
+    if (isOwner) {
+      options.push(
+        {
+          label: 'Керування доступом',
+          value: 'manage-access',
+        },
+        {
+          label: 'Редагувати',
+          value: 'update',
+        }
+      );
+    }
+
+    options.push(
+      {
+        label: 'Створити копію',
+        value: 'create-copy',
+      },
+      {
+        separator: true,
+      },
+      {
+        label: 'Завантажити CSV',
+        value: 'download-csv',
+      },
+      {
+        label: 'Завантажити CSV логи',
+        value: 'download-csv-logs',
+      }
+    );
+
+    if (isOwner) {
+      options.push(
+        {
+          separator: true,
+        },
+        {
+          className: styles.alert,
+          label: 'Видалити',
+          value: 'remove',
+        }
+      );
+    }
+
+    return options;
+  }, [isOwner]);
 
   const handleGoBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
+
+  const handleLogsDownload = useCallback(() => {
+    const request = API.Logs.downloadLogs(journal.id);
+
+    toast.promise(request, {
+      pending: 'Обробляємо запит...',
+      success: 'Найбличим часом файл буде завантажено.',
+      error: {
+        render({ data }) {
+          return (
+            <>
+              <b>Сталася помилка!</b> {API.parseError(data).message}.
+            </>
+          );
+        },
+      },
+    });
+  }, [journal]);
 
   const handleDownload = useCallback(() => {
     const request = API.Journals.downloadJournalCsv(journal.id);
@@ -95,12 +142,20 @@ function Header(props) {
           handleDownload();
           break;
 
+        case 'download-csv-logs':
+          handleLogsDownload();
+          break;
+
+        case 'manage-access':
+          onManageAccess();
+          break;
+
         default:
           alert(`${value} is not implemented yet`);
           break;
       }
     },
-    [handleDownload, onRemove, onUpdate]
+    [handleDownload, handleLogsDownload, onManageAccess, onRemove, onUpdate]
   );
 
   const dropdownTarget = (
@@ -123,6 +178,9 @@ function Header(props) {
         <div>
           <h2 className={styles.title}>
             {journal.name}
+            {!isOwner && (
+              <span className={styles.hint}>(Обмежений доступ)</span>
+            )}
             <Dropdown
               options={options}
               onSelect={handleSelect}
@@ -138,6 +196,14 @@ function Header(props) {
                 locale: ukLocale,
               })}
             </span>
+            {!isOwner && (
+              <>
+                &nbsp; &#x25cf; &nbsp;
+                <span className={styles.badge}>
+                  Власник: {journal.teacher.user.fullName}
+                </span>
+              </>
+            )}
           </p>
         </div>
       </div>

@@ -8,6 +8,11 @@ import ManageColumnDialog from './Components/ManageColumnDialog';
 import CellNoteDialog from './Components/CellNoteDialog';
 import RemoveJournalDialog from './Components/RemoveJournalDialog';
 import UpdateJournalDialog from './Components/UpdateJournalDialog';
+import Table from 'Components/Table';
+import Paginator from 'Components/Paginator/paginator';
+
+// Constants
+import { columns } from './columns-config';
 
 // Context
 import { useJournalContext } from 'Context/JournalContext';
@@ -17,24 +22,36 @@ import { createGridColumns } from 'Components/DataGrid/Helpers/createGridColumns
 
 // Styles
 import styles from './styles.module.scss';
+import AddHelpersDialog from './Components/AddHelpersDialog/add-helpers-dialog';
 
 /**
  * @param {{ journal: import('Models/Journal').default }} props
  */
 function JournalDetails(props) {
   const {
+    currentPage,
+    isOwner,
     journal,
+    limit,
+    logs,
     onAddColumn,
-    onCellUpdate,
+    onCellHighlight,
     onCellNoteUpdate,
-    onSaveColumn,
+    onCellUpdate,
     onJournalUpdate,
+    onPageChange,
+    onSaveColumn,
+    totalCount,
   } = props;
 
   const [manageModalOpen, setManageModalOpen] = useState(false);
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [accessModalOpen, setAccessModalOpen] = useState(false);
+
+  const openAccessModal = useCallback(() => setAccessModalOpen(true), []);
+  const closeAccessModal = useCallback(() => setAccessModalOpen(false), []);
 
   const openRemoveModal = useCallback(() => setRemoveModalOpen(true), []);
   const closeRemoveModal = useCallback(() => setRemoveModalOpen(false), []);
@@ -44,7 +61,10 @@ function JournalDetails(props) {
 
   const [, setJournalContext] = useJournalContext();
 
-  const columns = useMemo(() => createGridColumns(journal.columns), [journal]);
+  const gridColumns = useMemo(
+    () => createGridColumns(journal.columns, true, isOwner),
+    [isOwner, journal.columns]
+  );
 
   const handleAddColumn = useCallback(() => {
     setManageModalOpen(true);
@@ -77,23 +97,43 @@ function JournalDetails(props) {
 
   const closeNoteModal = useCallback(() => setNoteModalOpen(false), []);
 
+  const logsTableMeta = useMemo(() => ({ onCellHighlight }), [onCellHighlight]);
+
   return (
     <>
       <Header
         journal={journal}
+        onManageAccess={openAccessModal}
         onRemove={openRemoveModal}
         onUpdate={openUpdateModal}
       />
       <div className={styles.wrapper}>
         <DataGrid
           className={styles.grid}
-          columns={columns}
+          columns={gridColumns}
           data={journal.rows}
           onAddColumn={handleAddColumn}
           onEditColumn={handleEditColumn}
           onCellUpdate={onCellUpdate}
           onCellNoteUpdate={handleCellNoteUpdate}
         />
+
+        <div className={styles.logs}>
+          <h2>Логи</h2>
+          <Table
+            data={logs}
+            columns={columns}
+            meta={logsTableMeta}
+            preventOverflow={false}
+          />
+          <Paginator
+            className={styles.paginator}
+            currentPage={currentPage}
+            limit={limit}
+            onChange={onPageChange}
+            total={totalCount}
+          />
+        </div>
       </div>
 
       {manageModalOpen && (
@@ -117,8 +157,15 @@ function JournalDetails(props) {
 
       {updateModalOpen && (
         <UpdateJournalDialog
+          journal={journal}
           onClose={closeUpdateModal}
           onEdit={onJournalUpdate}
+        />
+      )}
+
+      {accessModalOpen && (
+        <AddHelpersDialog
+          onClose={closeAccessModal}
           journal={journal}
         />
       )}

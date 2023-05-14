@@ -1,4 +1,5 @@
 // Modules
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
@@ -8,7 +9,6 @@ import IconButton from 'Components/IconButton';
 
 // Styles
 import styles from './styles.module.scss';
-import { memo } from 'react';
 
 function Paginator(props) {
   const { className, currentPage, limit, onChange, total } = props;

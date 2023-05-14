@@ -23,15 +23,18 @@ function EditableCell(props) {
   const note = getValue()?.note;
 
   const [value, setValue] = useState(initialValue);
+  const [changed, setChanged] = useState(false);
 
   const onBlur = useCallback(() => {
-    if (value === initialValue) return;
+    if (!changed) return;
 
     table.options.meta?.onCellUpdate(index, id, value);
-  }, [id, index, initialValue, table, value]);
+    setChanged(false);
+  }, [changed, id, index, table.options.meta, value]);
 
   const handleChange = useCallback(({ target }) => {
     setValue(target.value);
+    setChanged(true);
   }, []);
 
   const handleDoubleClick = useCallback(() => {
@@ -43,7 +46,7 @@ function EditableCell(props) {
   }, [initialValue]);
 
   return (
-    <div className={styles.inputWrapper}>
+    <div className={styles.inputWrapper} id={`grid-cell-${index}-${id}`}>
       <input
         className={styles.input}
         onBlur={onBlur}
@@ -57,7 +60,7 @@ function EditableCell(props) {
   );
 }
 
-export const createGridColumns = (columns, expendable = true) => {
+export const createGridColumns = (columns, expendable = true, editable = true) => {
   const gridColumns = [
     helper.display({
       enableSorting: false,
@@ -70,7 +73,7 @@ export const createGridColumns = (columns, expendable = true) => {
   columns.forEach((column) => {
     const accessor = helper.accessor(column.id, {
       header: column.title,
-      editable: column.editable,
+      editable: editable ? column.editable : false,
       visibleForStudents: column.visibleForStudents,
       enableSorting: false,
     });

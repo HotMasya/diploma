@@ -14,6 +14,10 @@ import { Student } from '../students/student.entity';
 import { GridRow } from './interfaces/grid-row.interface';
 import * as _ from 'lodash';
 import { createObjectCsvStringifier } from 'csv-writer';
+import { format } from 'date-fns';
+import { LogService } from '../log/log.service';
+import { UpdateHelpersDto } from './dto/update-helpers.dto';
+import { GridCell } from './interfaces/grid-cell.interface';
 
 @Injectable()
 export class JournalsService {
@@ -28,6 +32,7 @@ export class JournalsService {
     private readonly studentsRepository: Repository<Student>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly logService: LogService,
   ) {}
 
   async removeStudentFromJournal(student: Student) {
@@ -72,10 +77,13 @@ export class JournalsService {
 
     journals.forEach((j) => {
       users.forEach((user) => {
-        j.rows.push({ id: user.student.id, fullName: user.fullName });
+        j.rows.push({
+          id: user.student.id,
+          fullName: { value: user.fullName },
+        });
       });
 
-      j.rows = _.orderBy(j.rows, (row) => row.fullName, 'asc');
+      j.rows = _.orderBy(j.rows, (row) => row.fullName.value, 'asc');
     });
 
     await this.journalsRepository.save(journals);
@@ -103,8 +111,8 @@ export class JournalsService {
     if (!user) return;
 
     journals.forEach((j) => {
-      j.rows.push({ id: student.id, fullName: user.fullName });
-      j.rows = _.orderBy(j.rows, (row) => row.fullName, 'asc');
+      j.rows.push({ id: student.id, fullName: { value: user.fullName } });
+      j.rows = _.orderBy(j.rows, (row) => row.fullName.value, 'asc');
     });
 
     await this.journalsRepository.save(journals);
@@ -116,30 +124,68 @@ export class JournalsService {
       relations: ['teacher', 'teacher.user', 'group'],
       skip: dto?.skip,
       take: dto?.take,
-      where: {
-        name: undefined,
-        teacher: { user: { id: user.id } },
-      },
+      where: [
+        {
+          name: undefined,
+          teacher: { user: { id: user.id } },
+        },
+        {
+          name: undefined,
+          helpers: {
+            user: { id: user.id },
+          },
+        },
+      ],
     };
 
     if (dto?.search) {
-      params.where.name = ILike(`%${dto.search}%`);
+      params.where[0].name = ILike(`%${dto.search}%`);
+      params.where[1].name = ILike(`%${dto.search}%`);
     }
 
     return this.journalsRepository.find(params);
   }
 
+  async findHelpers(user: User, journalId: number) {
+    const journal = await this.journalsRepository.findOne({
+      relations: ['helpers', 'helpers.user'],
+      where: {
+        id: journalId,
+        teacher: {
+          user: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
+    if (!journal) {
+      throw new NotFoundException(null, 'Журнал не знайдено');
+    }
+
+    return journal.helpers;
+  }
+
   async totalCount(user: User, search?: string) {
     const params = {
       relations: ['teacher', 'teacher.user'],
-      where: {
-        name: undefined,
-        teacher: { user: { id: user.id } },
-      },
+      where: [
+        {
+          name: undefined,
+          teacher: { user: { id: user.id } },
+        },
+        {
+          name: undefined,
+          helpers: {
+            user: { id: user.id },
+          },
+        },
+      ],
     };
 
     if (search) {
-      params.where.name = ILike(`%${search}%`);
+      params.where[0].name = ILike(`%${search}%`);
+      params.where[1].name = ILike(`%${search}%`);
     }
 
     return this.journalsRepository.count(params);
@@ -154,10 +200,16 @@ export class JournalsService {
         'group.students',
         'group.students.user',
       ],
-      where: {
-        id,
-        teacher: { user: { id: user.id } },
-      },
+      where: [
+        {
+          id,
+          teacher: { user: { id: user.id } },
+        },
+        {
+          id,
+          helpers: { user: { id: user.id } },
+        },
+      ],
     });
 
     if (!journal) {
@@ -165,6 +217,29 @@ export class JournalsService {
     }
 
     return journal;
+  }
+
+  async updateHelpers(user: User, journalId: number, dto: UpdateHelpersDto) {
+    const journal = await this.journalsRepository.findOne({
+      where: {
+        id: journalId,
+        teacher: {
+          user: { id: user.id },
+        },
+      },
+    });
+
+    if (!journal) {
+      throw new NotFoundException(null, 'Журнал не знайдено');
+    }
+
+    journal.helpers = this.teachersRepository.create(
+      dto.helperIds.map((id) => ({
+        id,
+      })),
+    );
+
+    await this.journalsRepository.save(journal);
   }
 
   async create(user: User, dto: CreateJournalDto) {
@@ -223,10 +298,16 @@ export class JournalsService {
   async generateCsv(user: User, journalId: number) {
     const journal = await this.journalsRepository.findOne({
       relations: ['teacher', 'teacher.user', 'group'],
-      where: {
-        id: journalId,
-        teacher: { user: { id: user.id } },
-      },
+      where: [
+        {
+          id: journalId,
+          teacher: { user: { id: user.id } },
+        },
+        {
+          id: journalId,
+          helpers: { user: { id: user.id } },
+        },
+      ],
     });
 
     if (!journal) {
@@ -247,24 +328,78 @@ export class JournalsService {
     const content = writer.getHeaderString() + writer.stringifyRecords(data);
 
     const fileName = encodeURIComponent(
-      `${journal.name}`.replace(/[^а-яa-z0-9їі]/gi, '_'),
+      `${journal.name} дамп ${format(new Date(), 'dd-MM-yyyy HH:MM')}`.replace(
+        /[^а-яa-z0-9їі]/gi,
+        '_',
+      ),
     );
 
     return { content, fileName };
   }
 
+  private static getUpdateCellLogMessage(prev: GridCell, next: GridCell) {
+    if (prev?.value && !next?.value) {
+      return 'Оцінку було видалено';
+    }
+
+    if (!prev?.value && next?.value) {
+      return `Виставлено оцінку "${next.value}"`;
+    }
+
+    return `Змінено оцінку із "${prev.value}" на "${next.value}"`;
+  }
+
+  private static getUpdateNoteLogMessage(prev: GridCell, next: GridCell) {
+    if (prev?.note && !next?.note) {
+      return 'Замітку було видалено';
+    }
+
+    if (!prev?.note && next?.note) {
+      return `Встановлено замітку "${next.note}"`;
+    }
+
+    return `Оновлено замітку із "${prev.note}" на "${next.note}"`;
+  }
+
   async updateCell(user: User, id: number, dto: UpdateCellDto) {
     const journal = await this.journalsRepository.findOne({
       relations: ['teacher', 'teacher.user', 'group'],
-      where: {
-        id,
-        teacher: { user: { id: user.id } },
-      },
+      where: [
+        {
+          id,
+          teacher: { user: { id: user.id } },
+        },
+        {
+          id,
+          helpers: { user: { id: user.id } },
+        },
+      ],
     });
 
     if (!journal) {
       throw new NotFoundException(null, 'Журнал не знайдений');
     }
+
+    const currentCell = journal.rows[dto.index][dto.id] as GridCell;
+
+    let logGenerateMessage = JournalsService.getUpdateCellLogMessage;
+
+    if (
+      currentCell?.value === dto.cell.value &&
+      currentCell?.note !== dto.cell.note
+    ) {
+      logGenerateMessage = JournalsService.getUpdateNoteLogMessage;
+    }
+
+    await this.logService.createLog({
+      column: journal.columns.find((col) => col.id === dto.id)?.title,
+      id: dto.id,
+      index: dto.index,
+      journalId: journal.id,
+      studentId: journal.rows[dto.index].id,
+      teacherId: dto.teacherId,
+      message: logGenerateMessage(currentCell, dto.cell),
+    });
 
     journal.rows[dto.index][dto.id] = dto.cell;
 

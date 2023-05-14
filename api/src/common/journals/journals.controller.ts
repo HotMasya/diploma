@@ -21,6 +21,7 @@ import { PartialUpdateDto } from './dto/partial-update.dto';
 import { UpdateJournaDto } from './dto/update-journal.dto';
 import { UpdateCellDto } from './dto/update-cell.dto';
 import { Response } from 'express';
+import { UpdateHelpersDto } from './dto/update-helpers.dto';
 
 @Controller('journals')
 export class JournalsController {
@@ -137,5 +138,23 @@ export class JournalsController {
     @Param('id') id: string,
   ) {
     return this.service.remove(request.user, +id);
+  }
+
+  @Post(':id/helpers')
+  @Permissions(Permission.ANY)
+  async updateHelpers(
+    @Req() request: Request & { user: User },
+    @Param('id') id: string,
+    @Body() dto: UpdateHelpersDto,
+  ) {
+    return this.service.updateHelpers(request.user, +id, dto);
+  }
+
+  @Get(':id/helpers')
+  async findHelpers(
+    @Req() request: Request & { user: User },
+    @Param('id') id: string,
+  ) {
+    return this.service.findHelpers(request.user, +id);
   }
 }

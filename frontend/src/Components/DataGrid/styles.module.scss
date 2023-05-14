@@ -36,6 +36,10 @@ $padding: 10px;
     min-width: 100px;
     white-space: nowrap;
 
+    &:first-child, &:nth-child(2) {
+      padding: $padding calc($padding + 4px) !important;
+    }
+
     &.add {
       background-color: $grey_100;
     }
@@ -64,7 +68,9 @@ $padding: 10px;
   }
 
   .inputWrapper {
+    background-color: $bg_primary;
     position: relative;
+    transition: background-color 1s ease-out;
 
     svg {
       position: absolute;

@@ -54,8 +54,14 @@
   background-color: $blue_100;
   border-radius: 4px;
   color: $blue_500;
+  cursor: pointer;
+  display: block;
   font-weight: 500;
+  max-width: 40%;
+  overflow: hidden;
   padding: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .options {
@@ -68,4 +74,9 @@
   button {
     width: fit-content;
   }
+}
+
+.meta {
+  align-items: center;
+  display: flex;
 }

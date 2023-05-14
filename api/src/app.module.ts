@@ -15,6 +15,7 @@ import { StudentsModule } from './common/students/students.module';
 import { TeachersModule } from './common/teacher/teachers.module';
 import { UpdatesModule } from './common/updates/updates.module';
 import { AdminModule } from './admin/admin.module';
+import { LogModule } from './common/log/log.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AdminModule } from './admin/admin.module';
     DepartmentsModule,
     FacultiesModule,
     GroupsModule,
+    LogModule,
     JournalsModule,
     StudentsModule,
     TeachersModule,

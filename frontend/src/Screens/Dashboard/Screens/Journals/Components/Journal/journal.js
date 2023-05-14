@@ -5,13 +5,18 @@ import formatRelative from 'date-fns/formatRelative';
 import ukLocale from 'date-fns/locale/uk';
 
 // Components
+import ActionsButton from '../ActionsButton';
 import Button from 'Components/Button';
 import JournalThumbnail from 'Components/JournalThumbnail';
 
+// Context
+import { useUserContext } from 'Context/UserContext';
+
+// Config
+import { ROUTES } from 'Config/routes';
+
 // Styles
 import styles from './styles.module.scss';
-import { ROUTES } from 'Config/routes';
-import ActionsButton from '../ActionsButton/actions-button';
 
 /**
  * @param {{ journal: import('Models/Journal').default}} props
@@ -19,20 +24,24 @@ import ActionsButton from '../ActionsButton/actions-button';
 function Journal(props) {
   const { journal, onEdit, onRemove } = props;
 
+  const [user] = useUserContext();
+
   const detailsPath = generatePath(ROUTES.journalDetails, {
     journalId: journal.id,
   });
+
+  const isOwner = user.id === journal.teacher.user.id;
 
   return (
     <li className={styles.journal}>
       <div className={styles.details}>
         <JournalThumbnail journal={journal} size={72} />
         <div>
-          <h3>{journal.name}</h3>
+          <h3>{journal.name}&nbsp;</h3>
           <p>
             <pre>{journal.description}</pre>
           </p>
-          <p>
+          <p className={styles.meta}>
             <span className={styles.badge}>{journal.group.name}</span>
             &nbsp; &#x25cf; &nbsp;
             <span>
@@ -40,12 +49,27 @@ function Journal(props) {
                 locale: ukLocale,
               })}
             </span>
+            {!isOwner && (
+              <>
+                &nbsp; &#x25cf; &nbsp;
+                <span className={styles.badge} title={journal.teacher.user.fullName}>
+                  Власник: {journal.teacher.user.fullName}asdasd
+                </span>
+              </>
+            )}
           </p>
         </div>
       </div>
 
       <div className={styles.options}>
-        <ActionsButton journal={journal} onEdit={onEdit} onRemove={onRemove} />
+        {isOwner ? (
+          <ActionsButton
+            journal={journal}
+            onEdit={onEdit}
+            onRemove={onRemove}
+          />
+        ) : <span />}
+
         <Link to={detailsPath}>
           <Button>
             Перейти до журналу

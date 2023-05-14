@@ -16,7 +16,8 @@ import {
 import styles from './styles.module.scss';
 
 function Table(props) {
-  const { className, columns, data, meta, onSortingChange } = props;
+  const { className, columns, data, meta, onSortingChange, preventOverflow } =
+    props;
 
   const [sorting, setSorting] = useState([]);
 
@@ -38,7 +39,11 @@ function Table(props) {
   }, [onSortingChange, sorting]);
 
   return (
-    <table className={cx(className, styles.table)}>
+    <table
+      className={cx(className, styles.table, {
+        [styles.overflow]: !preventOverflow,
+      })}
+    >
       <thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -90,6 +95,7 @@ Table.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   meta: PropTypes.any,
   onSortingChange: PropTypes.func,
+  preventOverflow: PropTypes.bool,
 };
 
 Table.defaultProps = {
@@ -98,6 +104,7 @@ Table.defaultProps = {
   data: [],
   meta: {},
   onSortingChange: undefined,
+  preventOverflow: true,
 };
 
 export default memo(Table);

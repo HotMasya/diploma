@@ -30,7 +30,7 @@ function renderCell(cell) {
   return (
     <td
       key={cell.id}
-      className={cx({ [styles.editableCell]: cell.column.columnDef.editable })}
+      className={styles.editableCell}
       style={{ width: cell.column.columnDef.width }}
     >
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -63,7 +63,11 @@ function renderHeader(header, onAddColumn = null, onEditColumn = null) {
         >
           {flexRender(header.column.columnDef.header, header.getContext())}
           {!header.column.columnDef.visibleForStudents && !isAddColumn && (
-            <FaEyeSlash color={RED._400} size={16} />
+            <FaEyeSlash
+              color={RED._400}
+              size={16}
+              title="Стовпчик прихований для студентів"
+            />
           )}
         </div>
       )}

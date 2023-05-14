@@ -10,4 +10,7 @@ export class UpdateCellDto {
 
   @ApiProperty()
   cell: GridCell;
+
+  @ApiProperty()
+  teacherId: number;
 }

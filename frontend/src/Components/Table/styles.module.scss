@@ -16,6 +16,11 @@ $padding: 10px;
     padding: $padding;
     user-select: none;
     white-space: nowrap;
+
+    &:last-child {
+      float: right;
+      border-bottom: 0;
+    }
   }
 
   tr + tr, tr:first-child {
@@ -53,5 +58,11 @@ $padding: 10px;
     &:hover {
       background-color: $grey_100;
     }
+  }
+
+  &.overflow td {
+    text-overflow: unset !important;
+    overflow: auto !important;
+    white-space: unset !important;
   }
 }

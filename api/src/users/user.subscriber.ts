@@ -73,9 +73,11 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
     journals.forEach((j) => {
       const row = j.rows.find((row) => row.id === student.id);
 
-      row.fullName = event.manager.create(User, event.entity).fullName;
+      row.fullName = {
+        value: event.manager.create(User, event.entity).fullName,
+      };
 
-      j.rows = _.orderBy(j.rows, (row) => row.fullName, 'asc');
+      j.rows = _.orderBy(j.rows, (row) => row.fullName.value, 'asc');
     });
 
     await event.manager.save(journals);
