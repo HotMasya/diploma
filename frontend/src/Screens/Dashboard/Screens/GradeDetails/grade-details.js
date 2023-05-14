@@ -55,10 +55,10 @@ function GradeDetails() {
 
     if (!row) return [];
 
-    return journal.columns.map(({ id, title }) => ({
+    return journal.columns.map(({ id, title, computed }) => ({
       title,
       value: row[id]?.value || '-',
-      editor: row[id]?.editor || '-',
+      editor: computed ? 'Автоматично' : row[id]?.editor || '-',
       note: row[id]?.note || '-',
       updatedAt: row[id]?.updatedAt,
     }));
@@ -86,7 +86,7 @@ function GradeDetails() {
           </p>
         </div>
       </div>
-      <Table className={styles.table} columns={columns} data={data} />
+      <Table className={styles.table} columns={columns} data={data} preventOverflow={false} />
     </Paper>
   );
 }

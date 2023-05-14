@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { FaEyeSlash } from 'react-icons/fa';
 import isFunction from 'lodash/isFunction';
+import { BsFillCalculatorFill } from 'react-icons/bs';
 
 import {
   flexRender,
@@ -13,7 +14,7 @@ import {
 
 // Constants
 import { RESERVED_COLUMNS } from './constants';
-import { RED } from 'Constants/colors';
+import { GREEN, RED } from 'Constants/colors';
 
 // Styles
 import styles from './styles.module.scss';
@@ -39,12 +40,14 @@ function renderCell(cell) {
 }
 
 function renderHeader(header, onAddColumn = null, onEditColumn = null) {
+  const columnDef = header.column.columnDef;
+
   var clickHandler;
 
   const isAddColumn =
     header.column.id === RESERVED_COLUMNS.addColumn && isFunction(onAddColumn);
 
-  const isEditable = header.column.columnDef.editable;
+  const isEditable = columnDef.editable;
 
   if (isEditable) {
     clickHandler = onEditColumn;
@@ -61,12 +64,20 @@ function renderHeader(header, onAddColumn = null, onEditColumn = null) {
           })}
           onClick={() => clickHandler(header.column.id)}
         >
-          {flexRender(header.column.columnDef.header, header.getContext())}
-          {!header.column.columnDef.visibleForStudents && !isAddColumn && (
+          {flexRender(columnDef.header, header.getContext())}
+          {!columnDef.visibleForStudents && !isAddColumn && (
             <FaEyeSlash
               color={RED._400}
               size={16}
               title="Стовпчик прихований для студентів"
+            />
+          )}
+
+          {columnDef.computed && (
+            <BsFillCalculatorFill
+              color={GREEN._500}
+              size={16}
+              title="Стовпчик розраховується автоматично"
             />
           )}
         </div>
@@ -75,7 +86,7 @@ function renderHeader(header, onAddColumn = null, onEditColumn = null) {
   );
 }
 
-function Table(props) {
+function DataGrid(props) {
   const {
     className,
     columns,
@@ -119,7 +130,7 @@ function Table(props) {
   );
 }
 
-Table.propTypes = {
+DataGrid.propTypes = {
   className: PropTypes.string,
   columns: PropTypes.arrayOf(PropTypes.object),
   data: PropTypes.arrayOf(PropTypes.object),
@@ -127,7 +138,7 @@ Table.propTypes = {
   onSortingChange: PropTypes.func,
 };
 
-Table.defaultProps = {
+DataGrid.defaultProps = {
   className: '',
   columns: [],
   data: [],
@@ -135,4 +146,4 @@ Table.defaultProps = {
   onSortingChange: undefined,
 };
 
-export default memo(Table);
+export default memo(DataGrid);

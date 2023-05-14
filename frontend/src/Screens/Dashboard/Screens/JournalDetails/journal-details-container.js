@@ -25,6 +25,7 @@ const limit = 10;
 
 function JournalDetailsContainer() {
   const [journal, setJournal] = useState();
+  const [rows, setRows] = useState([]);
   const [logs, setLogs] = useState([]);
   const { journalId } = useParams();
   const timeoutRef = useRef({});
@@ -82,64 +83,59 @@ function JournalDetailsContainer() {
 
   const handleCellUpdate = useCallback(
     (index, id, value) => {
-      setJournal((prev) => {
-        const journal = new Journal(prev);
+      const cell = Object.assign({}, rows[index][id] || {}, {
+        value,
+        editor: user.fullName,
+        updatedAt: new Date(),
+      });
 
-        if (!journal.rows[index][id]) {
-          journal.rows[index][id] = {};
-        }
+      const teacherId = user.teacher.id;
 
-        const cell = Object.assign({}, journal.rows[index][id], {
-          value,
-          editor: user.fullName,
-          updatedAt: new Date(),
-        });
+      API.Journals.updateCell(journal.id, {
+        index,
+        id,
+        cell,
+        teacherId,
+      }).then(fetchLogs);
 
-        const teacherId = user.teacher.id;
 
-        API.Journals.updateCell(journal.id, {
-          index,
-          id,
-          cell,
-          teacherId,
-        }).then(fetchLogs);
+      setRows((prev) => {
+        const rows = [...prev];
 
-        journal.rows[index][id] = cell;
+        rows[index][id] = cell;
 
-        return journal;
+        return rows;
       });
     },
-    [fetchLogs, user]
+    [fetchLogs, journal, rows, user]
   );
 
   const handleCellNoteUpdate = useCallback(
     (index, id, note) => {
-      setJournal((prev) => {
-        const journal = new Journal(prev);
+      const cell = Object.assign({}, rows[index][id], {
+        note,
+        editor: user.fullName,
+        updatedAt: new Date(),
+      });
 
-        if (!journal.rows[index][id]) {
-          journal.rows[index][id] = {};
-        }
+      const teacherId = user.teacher.id;
 
-        const cell = Object.assign(journal.rows[index][id], {
-          note,
-          editor: user.fullName,
-          updatedAt: new Date(),
-        });
+      API.Journals.updateCell(journal.id, {
+        index,
+        id,
+        cell,
+        teacherId,
+      }).then(fetchLogs);
 
-        const teacherId = user.teacher.id;
+      setRows((prev) => {
+        const rows = [...prev];
 
-        API.Journals.updateCell(journal.id, {
-          index,
-          id,
-          cell,
-          teacherId,
-        }).then(fetchLogs);
+        rows[index][id] = cell;
 
-        return journal;
+        return rows;
       });
     },
-    [fetchLogs, user]
+    [fetchLogs, journal, rows, user]
   );
 
   const handleCellHighlight = useCallback((log) => {
@@ -168,6 +164,7 @@ function JournalDetailsContainer() {
   useEffect(() => {
     API.Journals.findOne(journalId).then((journal) => {
       setJournal(journal);
+      setRows(journal.rows);
       return fetchLogs();
     });
   }, [fetchLogs, journalId]);
@@ -189,6 +186,7 @@ function JournalDetailsContainer() {
         onJournalUpdate={handleJournalUpdate}
         onPageChange={handlePageChange}
         onSaveColumn={handleSaveColumn}
+        rows={rows}
         totalCount={totalCount}
       />
     </JournalContextProvider>

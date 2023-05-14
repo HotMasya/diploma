@@ -96,6 +96,8 @@ export class LogService {
           title: 'Дата',
         },
       ],
+      fieldDelimiter: ';',
+      headerIdDelimiter: ';',
     });
 
     const headers = writer.getHeaderString();

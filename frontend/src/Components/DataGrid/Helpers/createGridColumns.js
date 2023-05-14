@@ -5,6 +5,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 
 // Constants
 import { RESERVED_COLUMNS } from '../constants';
+import { GRID_COLUMN_TYPE } from 'Constants/grid-column-type';
 
 // Styles
 import styles from '../styles.module.scss';
@@ -17,6 +18,7 @@ function EditableCell(props) {
     row: { index },
     column: { id },
     table,
+    type,
   } = props;
 
   const initialValue = getValue()?.value || '';
@@ -52,6 +54,7 @@ function EditableCell(props) {
         onBlur={onBlur}
         onChange={handleChange}
         onDoubleClick={handleDoubleClick}
+        type={type}
         value={value}
       />
 
@@ -60,7 +63,59 @@ function EditableCell(props) {
   );
 }
 
-export const createGridColumns = (columns, expendable = true, editable = true) => {
+function calculateGridCellValue(computedFields, original, initialValue, columns) {
+  return (
+    computedFields?.reduce((acc, field) => {
+      const column = columns.find(({ id }) => id === field);
+
+      if (column?.computed) {
+        acc += calculateGridCellValue(column.computedFields, original, initialValue, columns);
+      } else {
+        acc += Number(original[field]?.value) || 0;
+      }
+
+      return acc;
+    }, initialValue) || initialValue
+  );
+}
+
+function ComputableCell(props) {
+  const {
+    column: { id },
+    columns,
+    computedFields,
+    getValue,
+    row: { original, index },
+    table,
+  } = props;
+
+  const note = getValue()?.note;
+
+  const value = calculateGridCellValue(computedFields, original, 0, columns);
+
+  const handleDoubleClick = useCallback(() => {
+    table.options.meta?.onCellNoteUpdate(index, id);
+  }, [id, index, table]);
+
+  return (
+    <div className={styles.inputWrapper} id={`grid-cell-${index}-${id}`}>
+      <input
+        className={styles.input}
+        onDoubleClick={handleDoubleClick}
+        readOnly
+        value={value}
+      />
+
+      {!!note && <BsFillPencilFill size={12} title="Ця клітинка має замітку" />}
+    </div>
+  );
+}
+
+export const createGridColumns = (
+  columns,
+  expendable = true,
+  editable = true
+) => {
   const gridColumns = [
     helper.display({
       enableSorting: false,
@@ -75,15 +130,27 @@ export const createGridColumns = (columns, expendable = true, editable = true) =
       header: column.title,
       editable: editable ? column.editable : false,
       visibleForStudents: column.visibleForStudents,
+      computed: column.computed,
       enableSorting: false,
     });
 
     if (column.id === RESERVED_COLUMNS.fullName) {
       accessor.cell = ({ cell }) => <b>{cell.getValue().value}</b>;
-    }
-
-    if (column.editable) {
-      accessor.cell = EditableCell;
+    } else if (column.computed) {
+      accessor.cell = (props) => (
+        <ComputableCell
+          {...props}
+          computedFields={column.computedFields}
+          columns={columns}
+        />
+      );
+    } else if (column.editable) {
+      accessor.cell = (props) => (
+        <EditableCell
+          {...props}
+          type={column.type || GRID_COLUMN_TYPE.string}
+        />
+      );
     }
 
     gridColumns.push(accessor);

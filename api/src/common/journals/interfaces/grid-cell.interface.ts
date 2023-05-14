@@ -1,7 +1,6 @@
 export interface GridCell {
-  computed?: boolean;
   note?: string;
-  value: string | number | string[];
+  value: string | number;
   editor?: string;
   updatedAt?: Date;
 }

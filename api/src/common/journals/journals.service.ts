@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { LogService } from '../log/log.service';
 import { UpdateHelpersDto } from './dto/update-helpers.dto';
 import { GridCell } from './interfaces/grid-cell.interface';
+import { calculateGridCellValue } from './helpers';
 
 @Injectable()
 export class JournalsService {
@@ -316,11 +317,30 @@ export class JournalsService {
 
     const writer = createObjectCsvStringifier({
       header: journal.columns,
+      fieldDelimiter: ';',
+      headerIdDelimiter: ';',
     });
 
     const data = journal.rows.map((row) =>
-      Object.entries(row).reduce((acc, [key, value]) => {
-        acc[key] = _.isString(value) ? value : value['value'];
+      journal.columns.reduce((acc, column) => {
+        const gridCell = row[column.id] as GridCell;
+        let value;
+
+        if (column.computed) {
+          value = calculateGridCellValue(
+            column.computedFields,
+            row,
+            0,
+            journal.columns,
+          );
+        } else {
+          value = gridCell?.value;
+        }
+
+        acc[column.id] = `${value || ''}`.concat(
+          gridCell?.note ? ` / ${gridCell.note}` : '',
+        );
+
         return acc;
       }, {}),
     );
@@ -449,9 +469,21 @@ export class JournalsService {
 
     const studentRow = {};
 
-    visibleColumns.forEach(({ id }) => {
-      studentRow[id] = row[id];
-    });
+    journal.columns.forEach(
+      ({ id, computed, computedFields, visibleForStudents }) => {
+        if (!visibleForStudents) return;
+        studentRow[id] = row[id] || {};
+
+        if (computed) {
+          studentRow[id].value = calculateGridCellValue(
+            computedFields,
+            row,
+            0,
+            journal.columns,
+          );
+        }
+      },
+    );
 
     return { studentRow, visibleColumns };
   }

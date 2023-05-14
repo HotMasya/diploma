@@ -2,6 +2,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 // Components
+import AddHelpersDialog from './Components/AddHelpersDialog';
 import DataGrid from 'Components/DataGrid';
 import Header from './Components/Header';
 import ManageColumnDialog from './Components/ManageColumnDialog';
@@ -22,7 +23,6 @@ import { createGridColumns } from 'Components/DataGrid/Helpers/createGridColumns
 
 // Styles
 import styles from './styles.module.scss';
-import AddHelpersDialog from './Components/AddHelpersDialog/add-helpers-dialog';
 
 /**
  * @param {{ journal: import('Models/Journal').default }} props
@@ -41,6 +41,7 @@ function JournalDetails(props) {
     onJournalUpdate,
     onPageChange,
     onSaveColumn,
+    rows,
     totalCount,
   } = props;
 
@@ -63,7 +64,7 @@ function JournalDetails(props) {
 
   const gridColumns = useMemo(
     () => createGridColumns(journal.columns, true, isOwner),
-    [isOwner, journal.columns]
+    [isOwner, journal]
   );
 
   const handleAddColumn = useCallback(() => {
@@ -111,7 +112,7 @@ function JournalDetails(props) {
         <DataGrid
           className={styles.grid}
           columns={gridColumns}
-          data={journal.rows}
+          data={rows}
           onAddColumn={handleAddColumn}
           onEditColumn={handleEditColumn}
           onCellUpdate={onCellUpdate}
@@ -138,6 +139,7 @@ function JournalDetails(props) {
 
       {manageModalOpen && (
         <ManageColumnDialog
+          journal={journal}
           onClose={closeManageModal}
           onCreate={onAddColumn}
           onSave={onSaveColumn}

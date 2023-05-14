@@ -1,0 +1,67 @@
+@import 'colors.scss';
+@import 'global.scss';
+
+$size: 20px;
+
+.radio {
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+  display: flex;
+  position: relative;
+  width: fit-content;
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  input {
+    appearance: none;
+    box-sizing: border-box;
+    border: 1px solid $grey_300;
+    border-radius: 50%;
+    cursor: pointer;
+    height: $size;
+    position: relative;
+    transition: transform 150ms ease-out;
+    width: $size;
+
+    &::after {
+      background-color: $blue_500;
+      border-radius: 50%;
+      content: '';
+      cursor: pointer;
+      display: block;
+      position: absolute;
+      height: calc($size * 0.5);
+      transition: transform 150ms $bounce;
+      left: 3px;
+      top: 3px;
+      transform: scale(0);
+      width: calc($size * 0.5);
+    }
+
+    &:checked {
+      border: 2px solid $blue_500;
+    }
+
+    &:checked::after {
+      transform: scale(1);
+    }
+
+    &:disabled {
+      color: $text_disabled;
+      cursor: not-allowed;
+
+      &:checked {
+        background-color: $grey_500;
+
+        &::after {
+          background-color: $text_subdued;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
