@@ -103,7 +103,7 @@ function ComputableCell(props) {
         className={styles.input}
         onDoubleClick={handleDoubleClick}
         readOnly
-        value={value}
+        value={value ? value.toFixed(2) : ''}
       />
 
       {!!note && <BsFillPencilFill size={12} title="Ця клітинка має замітку" />}

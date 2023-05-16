@@ -22,7 +22,7 @@ import styles from './styles.module.scss';
  * @param {{ journal: import('Models/Journal').default}} props
  */
 function Journal(props) {
-  const { journal, onEdit, onRemove } = props;
+  const { editable, journal, onEdit, onRemove } = props;
 
   const [user] = useUserContext();
 
@@ -62,7 +62,7 @@ function Journal(props) {
       </div>
 
       <div className={styles.options}>
-        {isOwner ? (
+        {editable && isOwner ? (
           <ActionsButton
             journal={journal}
             onEdit={onEdit}

@@ -12,13 +12,15 @@ function Placeholder(props) {
     <div className={styles.container}>
       <TbBookOff color={RED._400} size={128} />
       <h1>У вас ще немає жодного журналу</h1>
-      <p>
-        Але ви можете його&nbsp;
-        <button className={styles.link} onClick={onCreate}>
-          створити
-        </button>
-        .
-      </p>
+      {onCreate && (
+        <p>
+          Але ви можете його&nbsp;
+          <button className={styles.link} onClick={onCreate}>
+            створити
+          </button>
+          .
+        </p>
+      )}
     </div>
   );
 }

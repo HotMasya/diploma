@@ -63,7 +63,10 @@
   }
 
   span {
+    align-items: center;
     background-color: transparent;
+    display: flex !important;
+    justify-content: space-between;
     font-size: 16px;
     font-weight: 500;
     color: $text_subdued;
@@ -81,5 +84,29 @@
   input:checked + span {
     background-color: $blue_500;
     color: $bg_primary;
+
+    svg path {
+      fill: $green_200;
+    }
+  }
+}
+
+.radios {
+  display: flex;
+  gap: 32px;
+  margin-top: 8px;
+}
+
+.checkbox {
+  margin-top: -16px;
+}
+
+.selectedLabel {
+  color: $green_400;
+  font-size: 13px;
+  margin: -24px 0 -8px;
+
+  &.red {
+    color: $red_400;
   }
 }

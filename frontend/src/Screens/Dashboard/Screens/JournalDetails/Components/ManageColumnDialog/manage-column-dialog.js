@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import size from 'lodash/size';
+import { BsFillCalculatorFill } from 'react-icons/bs';
 
 // Components
 import Button, { BUTTON_VARIANT } from 'Components/Button';
@@ -27,15 +28,25 @@ import {
   GRID_COLUMN_TYPE,
   GRID_COLUMN_TYPE_MAP,
 } from 'Constants/grid-column-type';
+import { GREEN } from 'Constants/colors';
 
 function ColumnOption(props) {
-  const { input, labelText } = props;
+  const { computed, input, labelText } = props;
 
   return (
     <li className={styles.option}>
       <label>
         <input type="checkbox" {...input} />
-        <span>{labelText}</span>
+        <span>
+          {labelText}
+          {computed && (
+            <BsFillCalculatorFill
+              color={GREEN._500}
+              size={24}
+              title="Поле розраховується автоматично"
+            />
+          )}
+        </span>
       </label>
     </li>
   );
@@ -125,48 +136,58 @@ function ManageColumnDialog(props) {
                   )}
                 />
 
-                <div>
-                  <Label>Тип даних</Label>
-                  {GRID_COLUMN_TYPE_MAP.map(({ labelText, value }) => (
-                    <Field
-                      name="type"
-                      type="radio"
-                      value={value}
-                      key={value}
-                      render={({ input }) => (
-                        <RadioButton labelText={labelText} {...input} />
-                      )}
-                    />
-                  ))}
-                </div>
-
                 <Field
                   name="computed"
                   type="checkbox"
                   render={({ input }) => (
                     <Checkbox
+                      className={styles.checkbox}
                       labelText="Розраховувати автоматично"
                       {...input}
                     />
                   )}
                 />
+
+                <div>
+                  <Label>Тип даних</Label>
+                  <div className={styles.radios}>
+                    {GRID_COLUMN_TYPE_MAP.map(({ labelText, value }) => (
+                      <Field
+                        name="type"
+                        type="radio"
+                        value={value}
+                        key={value}
+                        render={({ input }) => (
+                          <RadioButton labelText={labelText} {...input} />
+                        )}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {values.computed && (
                 <div className={cx(styles.column, styles.last)}>
                   <Label>Виберіть хоча б одне поле для розрахунку</Label>
-                  <Label>Вибрано: {size(values.computedFields)}</Label>
+                  <Label
+                    className={cx(styles.selectedLabel, {
+                      [styles.red]: !size(values.computedFields),
+                    })}
+                  >
+                    Вибрано: {size(values.computedFields)}
+                  </Label>
                   <ul className={styles.columns}>
                     {journal.columns
                       .filter(
                         ({ id, type, computed, computedFields }) =>
                           id !== column?.id &&
-                          (type === GRID_COLUMN_TYPE.number || computed)
-                          && !(computedFields || []).includes(column?.id)
+                          (type === GRID_COLUMN_TYPE.number || computed) &&
+                          !(computedFields || []).includes(column?.id)
                       )
                       .map((column) => (
                         <Field
                           component={ColumnOption}
+                          computed={column.computed}
                           key={column.id}
                           labelText={column.title}
                           name="computedFields"

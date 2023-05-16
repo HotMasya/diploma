@@ -2,11 +2,24 @@
 @import 'responsive.scss';
 @import 'global.scss';
 
-.container {
-  box-shadow: $small-elevation;
-  padding: 24px 16px;
+.wrapper {
   max-width: 1000px;
   width: 100%;
+}
+
+.container {
+  background-color: $bg_primary;
+  box-shadow: $small-elevation;
+  padding: 24px 16px;
+  width: 100%;
+
+  & + & {
+    margin-top: 24px;
+  }
+
+  li + li {
+    margin-top: 16px;
+  }
 }
 
 .email {
@@ -31,4 +44,16 @@
 .user {
   display: flex;
   gap: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  a {
+    color: $blue_500;
+    font-size: 16px;
+    font-weight: 500;
+  }
 }
