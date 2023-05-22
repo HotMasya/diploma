@@ -39,7 +39,7 @@ function Journals() {
   }, [fetchJournals]);
 
   useEffect(() => {
-    API.Journals.countTotal(debouncedSearch).then(setTotalCount);
+    API.Journals.gradesCountTotal(debouncedSearch).then(setTotalCount);
   }, [debouncedSearch]);
 
   return (

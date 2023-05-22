@@ -3,6 +3,7 @@ import { Link, generatePath } from 'react-router-dom';
 import { BsArrowRight } from 'react-icons/bs';
 import formatRelative from 'date-fns/formatRelative';
 import ukLocale from 'date-fns/locale/uk';
+import cx from 'classnames';
 
 // Components
 import ActionsButton from '../ActionsButton';
@@ -42,7 +43,7 @@ function Journal(props) {
             <pre>{journal.description}</pre>
           </p>
           <p className={styles.meta}>
-            <span className={styles.badge}>{journal.group.name}</span>
+            <span className={cx(styles.badge, styles.group)}>{journal.group.name}</span>
             &nbsp; &#x25cf; &nbsp;
             <span>
               {formatRelative(journal.updatedAt, new Date(), {

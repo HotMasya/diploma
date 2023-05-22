@@ -66,6 +66,15 @@ export class JournalsController {
     return this.service.totalCount(request.user, search);
   }
 
+  @Get('grades/count/total')
+  @Permissions(Permission.ANY)
+  async gradesTotalCount(
+    @Req() request: Request & { user: User },
+    @Query('search') search?: string,
+  ) {
+    return this.service.gradesTotalCount(request.user, search);
+  }
+
   @Get('grades')
   @Permissions(Permission.ANY)
   async getStudentGrades(

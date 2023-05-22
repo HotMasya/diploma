@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   Req,
+  ForbiddenException,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -61,12 +62,39 @@ export class UsersController {
   }
 
   @Post(':id/password')
-  @Permissions(Permission.UPDATE_USERS)
+  @Permissions(Permission.ANY)
   async changePassword(
+    @Req() req: Request & { user: User },
     @Body('password') password: string,
     @Param('id') id: string,
   ) {
-    this.usersService.changePassword(password, +id);
+    if (
+      +id === req.user.id ||
+      req.user.hasPermissions(Permission.UPDATE_USERS) ||
+      req.user.hasPermissions(Permission.ADMIN)
+    ) {
+      return this.usersService.changePassword(password, +id);
+    } else {
+      throw new ForbiddenException(null, 'У вас недостатньо прав');
+    }
+  }
+
+  @Post(':id/password/check')
+  @Permissions(Permission.ANY)
+  async checkPassword(
+    @Req() req: Request & { user: User },
+    @Body('password') password: string,
+    @Param('id') id: string,
+  ) {
+    if (
+      +id === req.user.id ||
+      req.user.hasPermissions(Permission.UPDATE_USERS) ||
+      req.user.hasPermissions(Permission.ADMIN)
+    ) {
+      return this.usersService.checkPassword(password, +id);
+    } else {
+      throw new ForbiddenException(null, 'У вас недостатньо прав');
+    }
   }
 
   @Patch(':id')

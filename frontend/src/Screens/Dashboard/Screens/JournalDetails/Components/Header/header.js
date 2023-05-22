@@ -29,7 +29,7 @@ import { useLoadCurrentUser } from '../../../../../../Hooks/useLoadCurrentUser';
  * @param {{ journal: import('Models/Journal').default }} props
  */
 function Header(props) {
-  const { journal, onRemove, onUpdate, onManageAccess } = props;
+  const { journal, onCopyJournal, onRemove, onUpdate, onManageAccess } = props;
 
   const [user] = useLoadCurrentUser();
 
@@ -138,6 +138,10 @@ function Header(props) {
           onRemove();
           break;
 
+        case 'create-copy':
+          onCopyJournal();
+          break;
+
         case 'download-csv':
           handleDownload();
           break;
@@ -155,7 +159,7 @@ function Header(props) {
           break;
       }
     },
-    [handleDownload, handleLogsDownload, onManageAccess, onRemove, onUpdate]
+    [handleDownload, handleLogsDownload, onCopyJournal, onManageAccess, onRemove, onUpdate]
   );
 
   const dropdownTarget = (

@@ -2,7 +2,7 @@ import { AdminFindDto } from '../dto/admin-find.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { EmailService } from '../email/email.service';
-import { hash } from 'bcrypt';
+import { hash, compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -49,6 +49,18 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     await this.emailService.sendChangePasswordEmail(user.email, password);
+  }
+
+  async checkPassword(password: string, userId: number) {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException(null, 'Користувач не знайдений');
+    }
+
+    const result = await compare(password, user.password);
+
+    if (!result) throw new ConflictException(null, 'Пароль невірний');
   }
 
   async getTotalCount(search?: string) {

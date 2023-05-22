@@ -4,6 +4,7 @@ import { generatePath, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Field } from 'react-final-form';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
 // API
 import API from 'API';
@@ -21,19 +22,20 @@ import { ROUTES } from 'Config/routes';
 // Helpers
 import { isRequired } from 'Helpers/isRequired';
 import { createDefaultColumns } from '../../Helpers/createDefaultColumns';
+import { createDefaultRows } from '../../Helpers/createDefaultRows';
 
 // Styles
 import styles from './styles.module.scss';
-import { createDefaultRows } from '../../Helpers/createDefaultRows';
 
 function CreateJournalDialog(props) {
-  const { onClose, onEdit } = props;
+  const { columns, onClose, onEdit } = props;
 
   const [pending, setPending] = useState(false);
-  const [outletContext] = useOutletContext();
+  const context  = useOutletContext();
   const modalRef = useRef();
   const navigate = useNavigate();
 
+  const outletContext = get(context, [0]);
   const journal = get(outletContext, 'journal');
 
   const name = get(journal, 'name');
@@ -66,7 +68,7 @@ function CreateJournalDialog(props) {
           groupId: Number(data.groupId),
         });
 
-        data.columns = createDefaultColumns();
+        data.columns = isArray(columns) ? columns : createDefaultColumns();
         data.rows = createDefaultRows(students);
       }
 
@@ -79,6 +81,7 @@ function CreateJournalDialog(props) {
             const path = generatePath(ROUTES.journalDetails, {
               journalId: journal.id,
             });
+            modalRef.current.close();
             navigate(path);
           });
 
@@ -106,7 +109,7 @@ function CreateJournalDialog(props) {
         }
       );
     },
-    [id, isEditMode, navigate, onEdit]
+    [columns, id, isEditMode, navigate, onEdit]
   );
 
   const title = isEditMode ? 'Редагувати журнал' : 'Створити журнал';
@@ -114,6 +117,8 @@ function CreateJournalDialog(props) {
     <>
       Редагування журналу <b>{name}</b> для групи <b>{journal.group.name}</b>
     </>
+  ) : isArray(columns) ? (
+    'Для вказаної групи буде створено новий журнал із конфігурацією поточного журналу. Конфігурацію також можна буде редагувати після створення журналу.'
   ) : (
     'Для вказаної групи буде створено новий журнал, який пізніше можна буде детально налаштувати під ваші потреби.'
   );

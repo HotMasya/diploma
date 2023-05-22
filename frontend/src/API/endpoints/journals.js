@@ -52,6 +52,12 @@ async function countTotal(search) {
     .then((res) => res.data);
 }
 
+async function gradesCountTotal(search) {
+  return API.instance
+  .get('journals/grades/count/total', { params: { search } })
+  .then((res) => res.data);
+}
+
 async function updateCell(id, data, requestOptions = {}) {
   return API.instance.patch(`journals/${id}/cells`, data, requestOptions);
 }
@@ -97,6 +103,7 @@ const journals = {
   findAll,
   findHelpers,
   findOne,
+  gradesCountTotal,
   getStudentGradeDetails,
   getStudentGrades,
   partialUpdate,

@@ -57,3 +57,28 @@
     font-weight: 500;
   }
 }
+
+.empty {
+  flex-direction: column;
+  padding: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  background-color: $grey_100;
+  border-radius: 8px;
+  margin-top: 24px;
+
+  h3, h4 {
+    text-align: center;
+    max-width: 50%;
+  }
+
+  h3 {
+    color: $grey_700;
+  }
+
+  h4 {
+    color: $grey_600;
+  }
+}

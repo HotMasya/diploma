@@ -2,6 +2,7 @@
 @import 'global.scss';
 
 .journal {
+  background-color: $bg_primary;
   border: 1px solid $grey_100;
   border-radius: 12px;
   box-shadow: $small-elevation;
@@ -62,6 +63,12 @@
   padding: 4px;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &.group {
+    text-overflow: unset;
+    overflow: unset;
+    max-width: unset;
+  }
 }
 
 .options {

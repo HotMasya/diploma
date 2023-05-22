@@ -67,6 +67,17 @@ function JournalDetailsContainer() {
     [journalId]
   );
 
+    const handleDeleteColumn = useCallback((column) => {
+      setJournal((prev) => {
+        const journal = new Journal(prev);
+        journal.columns = journal.columns.filter(({ id }) => id !== column.id);
+
+        API.Journals.update(journalId, journal);
+
+        return journal;
+      });
+    }, [journalId]);
+
   const fetchLogs = useCallback(() => {
     API.Logs.findAll({
       journalId,
@@ -180,6 +191,7 @@ function JournalDetailsContainer() {
         limit={limit}
         logs={logs}
         onAddColumn={handleAddColumn}
+        onDeleteColumn={handleDeleteColumn}
         onCellHighlight={handleCellHighlight}
         onCellNoteUpdate={handleCellNoteUpdate}
         onCellUpdate={handleCellUpdate}

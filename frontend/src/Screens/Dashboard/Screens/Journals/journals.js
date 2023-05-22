@@ -101,6 +101,7 @@ function Journals() {
           <ul className={styles.list}>
             {journals.map((journal) => (
               <Journal
+                editable
                 journal={journal}
                 key={journal.id}
                 onEdit={openEditModal}

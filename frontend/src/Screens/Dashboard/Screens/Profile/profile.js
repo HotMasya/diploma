@@ -80,9 +80,16 @@ function Profile() {
             <TeacherInfoCard teacher={user.teacher} />
           </div>
         )}
+
+        {(!isStudentDefined && !isTeacherDefined) && (
+          <div className={styles.empty}>
+            <h3>Ваш профіль поки що не містить інформації</h3>
+            <h4>Якщо ви вважаєте, що це помилка - зверніться до адміністратора</h4>
+          </div>
+        )}
       </section>
 
-      {isTeacherDefined && (
+      {isTeacherDefined && !journalsPending && (
         <div className={styles.container}>
           <div className={styles.header}>
             <h2>Нещодавно редаговані журнали</h2>
@@ -101,7 +108,7 @@ function Profile() {
         </div>
       )}
 
-      {isStudentDefined && (
+      {isStudentDefined && !gradesPending && (
         <div className={styles.container}>
           <div className={styles.header}>
             <h2>Нещодавно виставлені оцінки</h2>

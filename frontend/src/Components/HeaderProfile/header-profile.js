@@ -1,10 +1,11 @@
 // Modules
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Componets
 import Avatar from 'Components/Avatar';
 import Dropdown from 'Components/Dropdown';
+import ChangePasswordDialog from './ChangePasswordDialog';
 
 // Context
 import { useUserContext } from 'Context/UserContext';
@@ -20,8 +21,11 @@ import styles from './styles.module.scss';
 
 const options = [
   {
-    label: 'Налаштування (не готово)',
-    value: 'settings',
+    label: 'Змінити пароль',
+    value: 'change-password',
+  },
+  {
+    separator: true,
   },
   {
     label: 'Вийти',
@@ -31,6 +35,10 @@ const options = [
 
 function HeaderProfile() {
   const [user, setUser] = useUserContext();
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+
+  const closePasswordModal = useCallback(() => setPasswordModalOpen(false), []);
+
   const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {
@@ -45,6 +53,11 @@ function HeaderProfile() {
         case 'logout':
           handleLogout();
           break;
+
+        case 'change-password':
+          setPasswordModalOpen(true);
+          break;
+
         default:
           break;
       }
@@ -64,11 +77,15 @@ function HeaderProfile() {
   );
 
   return (
-    <Dropdown
-      targetElement={profile}
-      onSelect={handleSelect}
-      options={options}
-    />
+    <>
+      <Dropdown
+        className={styles.dropdown}
+        targetElement={profile}
+        onSelect={handleSelect}
+        options={options}
+      />
+      {passwordModalOpen && <ChangePasswordDialog onClose={closePasswordModal} userId={user.id} />}
+    </>
   );
 }
 

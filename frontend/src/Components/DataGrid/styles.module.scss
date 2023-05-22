@@ -36,6 +36,10 @@ $padding: 10px;
     min-width: 100px;
     white-space: nowrap;
 
+    &:last-child {
+      border-right: 1px solid $grey_300 !important;
+    }
+
     &:first-child, &:nth-child(2) {
       padding: $padding calc($padding + 4px) !important;
     }

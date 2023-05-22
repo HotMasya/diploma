@@ -50,6 +50,14 @@ async function changePassword(userId, password, requestOptions = {}) {
   );
 }
 
+async function checkPassoword(userId, password, requestOptions = {}) {
+  return API.instance.post(
+    `users/${userId}/password/check`,
+    { password },
+    requestOptions
+  )
+}
+
 async function update(userId, data, requestOptions = {}) {
   return API.instance.patch(`users/${userId}`, data, requestOptions)
     .then((res) => new User(res.data));
@@ -57,6 +65,7 @@ async function update(userId, data, requestOptions = {}) {
 
 const users = {
   changePassword,
+  checkPassoword,
   countTotal,
   create,
   findAll,

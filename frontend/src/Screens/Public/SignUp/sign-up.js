@@ -6,18 +6,19 @@ import { HiOutlineUserAdd } from 'react-icons/hi';
 // Components
 import FormInput from 'Components/FormInput';
 import Button from 'Components/Button';
+import GoogleAuthButton from 'Components/GoogleAuthButton';
 
 // Helpers
 import { combineValidators } from 'Helpers/combineValidators';
 import { isRequired } from 'Helpers/isRequired';
 import { isEmail } from 'Helpers/isEmail';
+import { isPassword } from 'Helpers/isPassword';
 
 // Constants
 import { BLUE, TEXT } from 'Constants/colors';
 
 // Styles
 import styles from './styles.module.scss';
-import GoogleAuthButton from 'Components/GoogleAuthButton/google-auth-button';
 
 const emailFieldValidator = combineValidators(isRequired(), isEmail());
 
@@ -47,7 +48,7 @@ function SignUp(props) {
         name="password"
         placeholder="Введіть пароль"
         type="password"
-        validate={isRequired()}
+        validate={isPassword()}
       />
       <Field
         component={FormInput}

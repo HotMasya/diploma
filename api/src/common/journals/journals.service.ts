@@ -120,18 +120,16 @@ export class JournalsService {
   }
 
   async findAll(user: User, dto?: FindJournalsDto) {
-    const params = {
+    const params: any & { where: [{ name?: string }] } = {
       order: { updatedAt: 'DESC' as FindOptionsOrderValue },
       relations: ['teacher', 'teacher.user', 'group'],
       skip: dto?.skip,
       take: dto?.take,
       where: [
         {
-          name: undefined,
           teacher: { user: { id: user.id } },
         },
         {
-          name: undefined,
           helpers: {
             user: { id: user.id },
           },
@@ -187,6 +185,37 @@ export class JournalsService {
     if (search) {
       params.where[0].name = ILike(`%${search}%`);
       params.where[1].name = ILike(`%${search}%`);
+    }
+
+    return this.journalsRepository.count(params);
+  }
+
+  async gradesTotalCount(user: User, search?: string) {
+    const student = await this.studentsRepository.findOne({
+      where: {
+        user: { id: user.id },
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException(null, 'Студент не знайдений');
+    }
+
+    const params = {
+      order: { updatedAt: 'DESC' as FindOptionsOrderValue },
+      relations: ['group', 'group.students'],
+      where: {
+        name: undefined,
+        group: {
+          students: {
+            id: student.id,
+          },
+        },
+      },
+    };
+
+    if (search) {
+      params.where.name = ILike(`%${search}%`);
     }
 
     return this.journalsRepository.count(params);

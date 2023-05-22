@@ -142,6 +142,8 @@ function ConsoleGroupDetails(props) {
         value: 'remove-curator',
       });
     }
+
+    return options;
   }, [user]);
 
   const handleSelect = useCallback(

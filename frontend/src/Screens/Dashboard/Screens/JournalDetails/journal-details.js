@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 // Components
 import AddHelpersDialog from './Components/AddHelpersDialog';
+import CreateJournalDialog from '../Journals/Components/CreateJournalDialog';
 import DataGrid from 'Components/DataGrid';
 import Header from './Components/Header';
 import ManageColumnDialog from './Components/ManageColumnDialog';
@@ -35,6 +36,7 @@ function JournalDetails(props) {
     limit,
     logs,
     onAddColumn,
+    onDeleteColumn,
     onCellHighlight,
     onCellNoteUpdate,
     onCellUpdate,
@@ -50,6 +52,10 @@ function JournalDetails(props) {
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [accessModalOpen, setAccessModalOpen] = useState(false);
+  const [copyModalOpen, setCopyModalOpen] = useState(false);
+
+  const openCopyModal = useCallback(() => setCopyModalOpen(true), []);
+  const closeCopyModal = useCallback(() => setCopyModalOpen(false), []);
 
   const openAccessModal = useCallback(() => setAccessModalOpen(true), []);
   const closeAccessModal = useCallback(() => setAccessModalOpen(false), []);
@@ -63,7 +69,7 @@ function JournalDetails(props) {
   const [, setJournalContext] = useJournalContext();
 
   const gridColumns = useMemo(
-    () => createGridColumns(journal.columns, true, isOwner),
+    () => createGridColumns(journal.columns, isOwner, isOwner),
     [isOwner, journal]
   );
 
@@ -104,6 +110,7 @@ function JournalDetails(props) {
     <>
       <Header
         journal={journal}
+        onCopyJournal={openCopyModal}
         onManageAccess={openAccessModal}
         onRemove={openRemoveModal}
         onUpdate={openUpdateModal}
@@ -141,6 +148,7 @@ function JournalDetails(props) {
         <ManageColumnDialog
           journal={journal}
           onClose={closeManageModal}
+          onDelete={onDeleteColumn}
           onCreate={onAddColumn}
           onSave={onSaveColumn}
         />
@@ -169,6 +177,13 @@ function JournalDetails(props) {
         <AddHelpersDialog
           onClose={closeAccessModal}
           journal={journal}
+        />
+      )}
+
+      {copyModalOpen && (
+        <CreateJournalDialog
+          onClose={closeCopyModal}
+          columns={journal.columns}
         />
       )}
     </>

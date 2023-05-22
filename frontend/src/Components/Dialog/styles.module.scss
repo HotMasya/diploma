@@ -56,6 +56,7 @@ $timing-function: $bounce;
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 1000;
 
   &.closing {
     animation: hideOverlay $transition-duration linear forwards;
@@ -71,6 +72,7 @@ $timing-function: $bounce;
   background-color: $bg_primary;
   border-radius: 4px;
   width: 500px;
+  z-index: 1000;
 
   &.closing {
     animation: hideDialog $transition-duration linear forwards;
@@ -99,13 +101,19 @@ $timing-function: $bounce;
 
 .header {
   align-items: center;
+  color: $text_default;
   border-bottom: 1px solid $grey_300;
   display: flex;
   justify-content: space-between;
   padding: 16px;
+
+  svg path {
+    fill: $text_default;
+  }
 }
 
 .description {
+  color: $text_subdued;
   line-height: 22px;
   padding: 16px;
 }
