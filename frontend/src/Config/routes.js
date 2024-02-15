@@ -8,6 +8,7 @@ export const ROUTES = freeze({
   auth: '/auth',
   signUp: '/auth/signup',
   congratulations: '/auth/congratulations',
+  redirect: '/auth/redirect',
 
   dashboard: '/dashboard',
 
@@ -28,5 +29,3 @@ export const ROUTES = freeze({
   consoleGroups: '/dashboard/console/groups',
   consoleGroupsDetails: '/dashboard/console/groups/:groupId',
 });
-
-export const GOOGLE_OAUTH_URL = `${BASE_URLS.API}/auth/google`;

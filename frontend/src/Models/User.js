@@ -16,6 +16,7 @@ class User {
     this.email = props.email;
     this.student = props.student ? new Student(props.student) : null;
     this.teacher = props.teacher ? new Teacher(props.teacher) : null;
+    this.avatarUrl = props.avatarUrl;
 
     if (props.updatedAt) {
       this.updatedAt = new Date(props.updatedAt);

@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix",
-    "typeorm": "typeorm-ts-node-esm -d src/db/data-source.ts",
+    "typeorm": "typeorm-ts-node-commonjs -d src/db/data-source.ts",
     "migration:generate": "yarn run typeorm migration:generate",
     "migration:run": "yarn run typeorm migration:run",
     "migration:revert": "yarn run typeorm migration:revert"

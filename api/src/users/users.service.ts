@@ -1,10 +1,8 @@
 import { AdminFindDto } from '../dto/admin-find.dto';
-import { CreateUserDto } from './dto/create-user.dto';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { EmailService } from '../email/email.service';
 import { hash, compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 import {
@@ -71,7 +69,7 @@ export class UsersService {
     return builder.getCount();
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: Partial<User>): Promise<User> {
     let user = await this.findOneByEmail(createUserDto.email);
 
     if (user) {
@@ -134,19 +132,16 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: number, data: Partial<User>): Promise<User> {
     const user = await this.usersRepository.findOne({
       relations: ['teacher', 'teacher.departments', 'student'],
       where: { id },
     });
 
-    const updatedUser = { ...updateUserDto, updatedAt: new Date() };
+    const updatedUser = { ...data, updatedAt: new Date() };
 
-    if (updateUserDto.password) {
-      updatedUser.password = await hash(
-        updateUserDto.password,
-        User.saltRounds,
-      );
+    if (data.password) {
+      updatedUser.password = await hash(data.password, User.saltRounds);
     }
 
     await this.usersRepository.update(id, updatedUser);
@@ -162,6 +157,18 @@ export class UsersService {
     });
 
     return this.usersRepository.remove(user);
+  }
+
+  async updateOrCreate(data: Partial<User>) {
+    let user = await this.findOneByEmail(data.email);
+
+    if (!user) {
+      user = await this.usersRepository.save(data);
+    } else {
+      user = await this.usersRepository.save({ id: user.id, ...data });
+    }
+
+    return user;
   }
 
   async save(user: User): Promise<User> {

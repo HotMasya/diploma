@@ -12,8 +12,6 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Permissions } from '../decorators/permissions.decorator';
 import { Permission } from '../constants/permission';
@@ -31,8 +29,8 @@ export class UsersController {
 
   @Post()
   @Public()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const user = await User.fromDto(createUserDto);
+  async create(@Body() data: Partial<User>): Promise<User> {
+    const user = await User.createFrom(data);
     await this.emailService.sendConfirmationEmail(user.email);
     return this.usersService.create(user);
   }
@@ -99,8 +97,8 @@ export class UsersController {
 
   @Patch(':id')
   @Permissions(Permission.UPDATE_USERS)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() data: Partial<User>) {
+    return this.usersService.update(+id, data);
   }
 
   @Delete(':id')

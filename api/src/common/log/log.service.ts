@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Log } from './log.entity';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, IsNull, Not, Repository } from 'typeorm';
 import { CreateLogDto } from './dto/create-log.dto';
 import { createObjectCsvStringifier } from 'csv-writer';
 import { FindLogsDto } from './dto/find-logs.dto';
@@ -26,6 +26,9 @@ export class LogService {
         journal: {
           id: dto.journalId,
         },
+        student: {
+          id: Not(IsNull()),
+        },
       },
     };
 
@@ -44,6 +47,9 @@ export class LogService {
     return this.logRepository.countBy({
       journal: {
         id: journalId,
+      },
+      student: {
+        id: Not(IsNull()),
       },
     });
   }

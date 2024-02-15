@@ -15,19 +15,20 @@ import Congratulations from 'Screens/Public/Congratulations';
 
 const Auth = lazy(() => import('Screens/Public/Auth'));
 const Console = lazy(() => import('Screens/Dashboard/Screens/Console'));
-const ConsoleDepartments = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleDepartments/console-departments'));
-const ConsoleFaculties = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleFaculties/console-faculties'));
+const ConsoleDepartments = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleDepartments'));
+const ConsoleFaculties = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleFaculties'));
 const ConsoleGroupDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroupDetails'));
-const ConsoleGroups = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroups/console-groups'));
+const ConsoleGroups = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleGroups'));
 const ConsoleInitial = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleInitial'));
 const ConsoleUserDetails = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUserDetails'));
-const ConsoleUsers = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUsers/console-users'));
+const ConsoleUsers = lazy(() => import('Screens/Dashboard/Screens/Console/Screens/ConsoleUsers'));
 const Dashboard = lazy(() => import('Screens/Dashboard'));
-const GradeDetails = lazy(() => import('Screens/Dashboard/Screens/GradeDetails/grade-details'));
+const GradeDetails = lazy(() => import('Screens/Dashboard/Screens/GradeDetails'));
 const Grades = lazy(() => import('Screens/Dashboard/Screens/Grades/grades'));
 const JournalDetails = lazy(() => import('Screens/Dashboard/Screens/JournalDetails'));
 const Journals = lazy(() => import('Screens/Dashboard/Screens/Journals'));
 const Profile = lazy(() => import('Screens/Dashboard/Screens/Profile'));
+const Redirect = lazy(() => import ('Screens/Public/Redirect'));
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
               <Route element={<SignUp />} path={ROUTES.signUp} />
               <Route element={<Congratulations />} path={ROUTES.congratulations} />
             </Route>
+
+            <Route element={<Redirect />} path={ROUTES.redirect} />
 
             <Route path={ROUTES.journalDetails} element={<JournalDetails />} />
 

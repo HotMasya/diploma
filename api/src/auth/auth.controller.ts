@@ -1,23 +1,14 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Request,
-  Response,
-  UseGuards,
-} from '@nestjs/common';
-
+import { Controller, Post, Request, UseGuards, Body } from '@nestjs/common';
 import { Public } from '../decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { GoogleOAuthGuard } from './guards/google-oauth.guard';
-import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    private readonly userService: UsersService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -31,18 +22,22 @@ export class AuthController {
     };
   }
 
-  @UseGuards(GoogleOAuthGuard)
   @Public()
-  @Get('google')
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  authWithGoogle() {}
+  @Post('login/google')
+  async loginWithGoogle(@Request() req, @Body() body: { accessToken: string }) {
+    const googleUser = await this.authService.getGoogleUser(body.accessToken);
 
-  @UseGuards(GoogleOAuthGuard)
-  @Public()
-  @Get('google-redirect')
-  async googleAuthRedirect(@Request() req, @Response() res) {
-    const accessToken = await this.authService.createAccessToken(req.user);
+    const user = await this.userService.updateOrCreate({
+      email: googleUser.email,
+      firstName: googleUser.given_name,
+      lastName: googleUser.family_name,
+      avatarUrl: googleUser.picture,
+    });
 
-    res.redirect(this.configService.getOrThrow('FRONTEND_BASE_URL') + '/auth');
+    const accessToken = await this.authService.createAccessToken(user);
+
+    return {
+      accessToken,
+    };
   }
 }

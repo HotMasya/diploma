@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { Permission } from '../../constants/permission';
 import * as _ from 'lodash';
 import { Teacher } from '../../common/teacher/teacher.entity';
@@ -25,13 +24,13 @@ export class User {
   @Column({ length: 256, unique: true })
   email: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256, nullable: true })
   password: string;
 
   @Column({ length: 256 })
   firstName: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256, nullable: true })
   lastName: string;
 
   @Column({ default: 0 })
@@ -39,6 +38,9 @@ export class User {
 
   @Column({ type: 'boolean', default: false })
   verified: boolean;
+
+  @Column({ length: 256, nullable: true })
+  avatarUrl: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -58,7 +60,7 @@ export class User {
 
   static readonly saltRounds = 10;
 
-  static async fromDto(dto: CreateUserDto): Promise<User> {
+  static async createFrom(dto: Partial<User>): Promise<User> {
     const user = new User(dto);
     user.password = await hash(user.password, User.saltRounds);
     return user;

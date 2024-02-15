@@ -30,6 +30,8 @@ function Avatar(props) {
 
   return (
     <LazyLoadImage
+      alt={user.fullName}
+      effect="opacity"
       className={cx(className, styles.avatar)}
       src={user.avatarUrl}
       style={style}

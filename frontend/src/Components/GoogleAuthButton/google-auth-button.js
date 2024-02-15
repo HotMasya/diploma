@@ -1,5 +1,4 @@
 // Modules
-import { useCallback } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import PropTypes from 'prop-types';
 
@@ -7,20 +6,18 @@ import PropTypes from 'prop-types';
 import Button from 'Components/Button';
 
 // Config
-import { GOOGLE_OAUTH_URL } from 'Config/routes';
+import { useLoginWithGoogle } from 'Hooks/useLoginWithGoogle';
 
 function GoogleAuthButton(props) {
   const { className, disabled } = props;
 
-  const handleClick = useCallback(() => {
-    window.open(GOOGLE_OAUTH_URL, '_self');
-  }, []);
+  const loginWithGoogle = useLoginWithGoogle();
 
   return (
     <Button
       className={className}
       disabled={disabled}
-      onClick={handleClick}
+      onClick={loginWithGoogle}
       type="button"
       variant="secondary"
     >
